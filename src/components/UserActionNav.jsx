@@ -1,0 +1,82 @@
+import bell from "../assets/images/bell.png";
+import { Menu } from '@headlessui/react'
+import {
+  ChevronDownIcon,
+
+} from '@heroicons/react/16/solid'
+
+const UserActionNav = () => {
+  return (
+    <div className="max-w-[300px] md:max-w-[400px] md:gap-2 flex items-center justify-end md:justify-between absolute right-0 top-3 md:top-0 md:relative  ">
+      {/* Avatar */}
+      <div>
+        <img src="" alt="" className="rounded-full size-10 bg-[#D9D9D9] bg-repeat" />
+      </div>
+
+      {/* Menu Dropdown */}
+      <div className="relative">
+        <Menu as="div" className="relative inline-block text-left z-10">
+          <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+            <div className="flex flex-col text-left z-10">
+              <span className="text-[14px] font-semibold">Sammy John</span>
+              <span className="text-[12px] text-gray-500">sammyjohn@gmail.com</span>
+            </div>
+            <ChevronDownIcon className="w-4 h-4 text-black/60" />
+          </Menu.Button>
+
+          <Menu.Items className="absolute p-4 right-0 z-50 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+            <div className="py-1">
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? 'bg-gray-100' : ''
+                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                  >
+                    Personal Info
+                  </button>
+                )}
+              </Menu.Item>
+
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? 'bg-gray-100' : ''
+                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                  >
+                    System settings
+                  </button>
+                )}
+              </Menu.Item>
+
+              <Menu.Item>
+                {({ active }) => (
+                  <button
+                    className={`${
+                      active ? 'bg-red-100 text-red-700' : 'text-red-500'
+                    } group flex items-center w-full gap-2 px-4 py-2 text-sm`}
+                  >
+                    Logout
+                  </button>
+                )}
+              </Menu.Item>
+            </div>
+          </Menu.Items>
+        </Menu>
+      </div>
+
+      {/* Bell with Dot */}
+      <div className="flex rounded-full size-9 bg-[#D9D9D9] bg-repeat justify-center relative items-center hidden md:block" >
+        <img src={bell} alt="bell" className="h-5 "/>
+        {/* <img
+          src={belldot}
+          alt="notification"
+          className="right-[1px] top-[-px] relative"
+        /> */}
+      </div>
+    </div>
+  );
+};
+
+export default UserActionNav;

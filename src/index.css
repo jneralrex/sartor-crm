@@ -1,0 +1,68 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=League+Spartan:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=League+Spartan:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=League+Spartan:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+@font-face {
+  font-family: 'sfpro';
+  src: url('./assets/fonts/SFPRODISPLAYREGULAR.OTF') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+:root {
+  --primary-grey-color: #F7F7F7;
+  --primary-blue-color: #000068;
+  --primary-white-color: #FFFFFF
+}
+
+body {
+  font-family: 'sfpro', sans-serif;
+}
+
+/* outlet nav frame */
+.outlet-frame {
+  @apply bg-primary_white h-[72px] w-full p-10 flex z-[50] items-center justify-between fixed top-0 right-0 md:w-[70%] lg:w-[80%] xl:w-[85%];
+}
+.outlet-title {
+  @apply text-primary_blue text-[24px] font-[sfpro] font-semibold hidden md:block;
+}
+
+/* calendar.css */
+/* .rbc-toolbar {
+  @apply bg-gray-100 p-2 rounded-md mb-4 flex flex-col sm:flex-row gap-2 sm:items-center justify-between;
+}
+
+.rbc-event {
+  @apply bg-blue-500 text-white text-sm px-2 py-1 rounded-md;
+}
+
+.rbc-today {
+  @apply bg-yellow-100;
+}
+
+.rbc-selected {
+  @apply bg-blue-700;
+}
+
+.rbc-month-view {
+  @apply border border-gray-200 rounded-md;
+} */
+
+.grid-cards {
+  @apply flex items-center gap-5 p-5 bg-primary_white border-b md:border-b-0 md:border-r md:max-w-[277px] h-[139px] md:justify-center w-[90%] m-auto md:m-0 md:w-full md:flex-col xl:flex-row 
+}
+.grid-cards-icons {
+  @apply bg-primary_grey size-10 rounded-full flex justify-center items-center
+}
+.grid-text-cards{
+@apply flex flex-col md:items-center justify-center
+}
+.grid-cards-text-main {
+  @apply text-primary_blue font-[sfpro] md:text-[12px] lg:text-[24px]
+}
+.grid-cards-text-sub {
+  @apply text-[#767676] font-light font-[sfpro] md:text-[12px] lg:text-[16px]
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
