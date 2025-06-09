@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import { useState } from 'react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline' // Optional icons
 import logo from '../assets/images/logo.png'
@@ -42,10 +42,10 @@ const Drawer = () => {
         <nav>
           <ul>
             <li className="mb-4">
-              <a href="/" className="hover:text-gray-600">Dashboard</a>
+             <Link to="/" className="hover:text-gray-600">Dashboard</Link>
             </li>
              <li className="mb-4">
-              <a href="/task-manager" className="hover:text-gray-600">Task Manager</a>
+              <Link to="task-manager" className="hover:text-gray-600">Task Manager</Link>
             </li>
              {/* <li className="mb-4">
               <a href="/" className="hover:text-gray-600">Dashboard</a>
