@@ -249,7 +249,7 @@ const TaskManager = () => {
             {stats.map((stat) => (
               <div
                 key={stat.label}
-                className="flex gap-2 items-center justify-center md:border-b-0 border-l  md:border-r md:last:border-r-0 h-[139px]"
+                className="flex flex-col gap-2 items-center justify-center border md:border-b-0 border-l  md:border-r md:first:border-l-0 md:border-t-0 md:last:border-r-0 h-[139px]"
               >
                 <img src={task} alt="" srcset="" />
                 <div className="text-center flex flex-col items-center">

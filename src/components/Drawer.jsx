@@ -28,14 +28,14 @@ const Drawer = () => {
       <aside
         className={`
           fixed top-0 left-0 h-full bg-white text-black flex flex-col p-6 z-40 transform transition-transform duration-300 ease-in-out
-          w-64 md:w-[30%] lg:w-[20%] xl:w-[15%]
+          w-64 md:w-[30%] lg:w-[20%] xl:w-[20%]
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:relative md:flex
         `}
       >
         <div className="flex items-center mb-8 justify-evenly">
           <img src={logo} alt="Logo" />
-          <div className="font-[sfpro] bg-primary_grey text-primary_blue p-2 rounded-md text-[14px] font-semibold">
+          <div className="font-[sfpro] bg-primary_grey text-primary_blue px-3 rounded-md text-[14px] font-semibold max-w-[103px] text-center">
             Super-Admin
           </div>
         </div>
@@ -47,9 +47,20 @@ const Drawer = () => {
              <li className="mb-4">
               <Link to="task-manager" className="hover:text-gray-600">Task Manager</Link>
             </li>
-             {/* <li className="mb-4">
-              <a href="/" className="hover:text-gray-600">Dashboard</a>
-            </li> */}
+            <li className="mb-4">
+              <Link to="lpos" className="hover:text-gray-600">LPOs</Link>
+            </li> <li className="mb-4">
+              <Link to="leads" className="hover:text-gray-600">Leads</Link>
+            </li>
+             <li className="mb-4">
+              <Link to="customers" className="hover:text-gray-600">Customers</Link>
+            </li>
+          <li className="mb-4">
+              <Link to="invoices" className="hover:text-gray-600">Invoices</Link>
+            </li>
+             <li className="mb-4">
+              <Link to="label-gen" className="hover:text-gray-600">Convert Label Gen</Link>
+            </li>
             {/* Add more links here */}
           </ul>
         </nav>

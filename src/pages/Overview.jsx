@@ -64,14 +64,14 @@ const Overview = () => {
                     </button>
 
                     {openCalendar && (
-                        <div className="absolute right-0 mt-2 w-[400px] bg-white p-4 shadow-lg rounded-md">
+                        <div className="absolute right-0 mt-2 w-[400px] bg-primary_white p-4 shadow-lg rounded-md">
                             <CalendarWidget />
                         </div>
                     )}
                 </div>
 
                 <div className="flex flex-col text-left">
-                    <div className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[14px] font-[sfpro]'>Download csv</span></div>
+                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[14px] font-[sfpro]'>Download csv</span></buttton>
                 </div>
             </div>
 
