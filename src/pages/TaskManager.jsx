@@ -19,10 +19,10 @@ const stats = [
 ];
 
 const statusColor = {
-  Assigned: "bg-[#EAEAFF] text-[#1F1F8F]",
-  Overdue: "bg-[#FFF1D6] text-[#E29300]",
-  Unconfirmed: "bg-[#FFE3E3] text-[#C92A2A]",
-  Due: "bg-[#FFE3E3] text-[#C92A2A]",
+  Assigned: " text-[#000068]",
+  Overdue: " text-[#FFB400]",
+  Unconfirmed: " text-[#FF6259]",
+  Due: " text-[#FF6259]",
 };
 
 const categories = [
@@ -221,17 +221,17 @@ const TaskManager = () => {
 
       <div className="pt-24 px-6 md:px-12">
         <TabGroup>
-          <div className="flex justify-between items-center mb-6">
-            <TabList className="flex gap-2 md:gap-4 overflow-auto">
+          <div className="flex justify-between flex-col lg:flex-row items-center mb-5">
+            <TabList className="flex gap-2 justify-between w-full lg:w-[80%] overflow-auto">
               {categories.map(({ name }) => (
                 <Tab
                   key={name}
                   className={({ selected }) =>
                     classNames(
-                      " text-[10px] sm:text-[14px] font-semibold px-2 py-1",
+                      " text-[10px] sm:text-[14px] md:text-[16px] font-normal py-1 outline-none",
                       selected
                         ? "border-b-2 border-primary_blue text-primary_blue"
-                        : "text-gray-500"
+                        : "text-[#484848]"
                     )
                   }
                 >
@@ -253,10 +253,10 @@ const TaskManager = () => {
               >
                 <img src={task} alt="" srcset="" />
                 <div className="text-center flex flex-col items-center">
-                    <span className="text-2xl font-semibold text-[#1F1F8F]">
+                    <span className="md:text-[22px] font-semibold text-primary_blue">
                   {stat.count}
                 </span>
-                <span className="text-sm text-gray-500">{stat.label}</span>
+                <span className="text-sm md:text-[16px] text-[#767676]">{stat.label}</span>
                 </div>
               </div>
             ))}
@@ -268,17 +268,17 @@ const TaskManager = () => {
                 {posts.map((post) => (
                   <div
                     key={post.id}
-                    className="bg-primary_white p-4 rounded-md shadow-sm border border-primary_grey md:max-w-[359px]"
+                    className="bg-primary_white p-5 rounded-md shadow-sm border border-primary_grey md:max-w-[359px]"
                   >
-                    <div className="flex items-center justify-between">
-                       <h3 className="font-semibold underline text-black">
+                      <div className="flex items-center ">
+                       <h3 className="font-semibold underline text-[#484848] text-[18px]">
                       {post.client}
                     </h3>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="flex justify-between items-center gap-1 w-[0%] m-auto">
                       {post.tags.map((tag) => (
                         <span
                           key={tag}
-                          className={`px-2 py-1 text-xs rounded-md font-semibold ${statusColor[tag]}`}
+                          className={`ma-w-[58px] h-[17px] px-2  text-[12px] rounded-md font-semibold text-center bg-[#F8F8F8] ${statusColor[tag]}`}
                         >
                           {tag}
                         </span>
@@ -286,10 +286,11 @@ const TaskManager = () => {
                     </div>
                     </div>
                    
-                    <p className="font-medium mt-1 text-black">{post.task}</p>
-                    <p className="text-sm text-gray-500 mt-1">{post.description}</p>
+                   
+                    <p className="font-medium mt-1 text-[16px] text-[#484848]">{post.task}</p>
+                    <p className="text-sm text-[#767676] mt-1 font-medium">{post.description}</p>
                     
-                    <p className="text-sm text-gray-400 mt-2">{post.date}</p>
+                    <p className="text-sm text-[#767676] font-semibold mt-2">{post.date}</p>
                   </div>
                 ))}
               </TabPanel>

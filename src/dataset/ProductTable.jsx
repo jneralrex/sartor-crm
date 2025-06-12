@@ -50,7 +50,7 @@ const products = [
 export default function ProductTable() {
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm w-full">
-      <h2 className="text-[14px] sm:text-[16px] md:text-[20px] font-semibold mb-4 text-center md:text-start">Your Top Products</h2>
+      <h2 className="text-[14px] sm:text-[16px] md:text-[20px] font-semibold mb-4 text-center md:text-start font-[sfpro]">Your Top Products</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left">
           <thead className="border-b">

@@ -48,14 +48,14 @@ const EmployeeTable = ({ activeTab }) => {
         />
        </div>
         <div className="flex gap-2">
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2"><span><Plus/></span><span>Add Employee</span></button>
-         <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[14px] font-[sfpro]'>Download csv</span></buttton>
+          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans"><span><Plus/></span><span>Add Employee</span></button>
+         <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
         </div>
       </div>
 
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full text-left text-sm bg-primary_white">
-          <thead className=" border-b text-primary_blue font-medium">
+          <thead className=" border-b text-primary_blue font-semibold md:text-[14px] ">
             <tr className=''>
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
@@ -68,7 +68,7 @@ const EmployeeTable = ({ activeTab }) => {
           <tbody>
             {filteredEmployees.map((emp) => (
               <tr key={emp.id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3">{emp.id}</td>
+                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.id}</td>
                 <td className="px-4 py-3 flex items-center gap-2">
                   <img
                     src={emp.avatar}
@@ -76,13 +76,13 @@ const EmployeeTable = ({ activeTab }) => {
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div>
-                    <div className="font-medium">{emp.name}</div>
-                    <div className="text-xs text-gray-500">{emp.email}</div>
+                    <div className=" text-[#484848] md:text-[14px] font-medium">{emp.name}</div>
+                    <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
                   </div>
                 </td>
-                <td className="px-4 py-3 ">{emp.position}</td>
-                <td className="px-4 py-3">{emp.date}</td>
-                <td className="px-4 py-3">{emp.phone}</td>
+                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.position}</td>
+                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.date}</td>
+                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
                 <td className="px-4 py-3 ">
                   <button className="text-gray-500 hover:text-gray-700"><Ellipsis/></button>
                 </td>

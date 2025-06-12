@@ -29,10 +29,11 @@ const Drawer = () => {
         className={`
           fixed top-0 left-0 h-full bg-white text-black flex flex-col p-6 z-40 transform transition-transform duration-300 ease-in-out
           w-64 md:w-[30%] lg:w-[20%] xl:w-[20%]
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${isOpen ? 'translate-x-0'  : '-translate-x-full'}
           md:translate-x-0 md:relative md:flex
         `}
       >
+        
         <div className="flex items-center mb-8 justify-evenly">
           <img src={logo} alt="Logo" />
           <div className="font-[sfpro] bg-primary_grey text-primary_blue px-3 rounded-md text-[14px] font-semibold max-w-[103px] text-center">
@@ -46,6 +47,9 @@ const Drawer = () => {
             </li>
              <li className="mb-4">
               <Link to="task-manager" className="hover:text-gray-600">Task Manager</Link>
+            </li>
+             <li className="mb-4">
+              <Link to="employees" className="hover:text-gray-600">Employees</Link>
             </li>
             <li className="mb-4">
               <Link to="lpos" className="hover:text-gray-600">LPOs</Link>

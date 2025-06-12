@@ -120,14 +120,14 @@ const InvoiceTable = ({ activeTab }) => {
                     />
                 </div>
                 <div className="flex gap-2">
-                    <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2"><span><Plus /></span><span>Add Leads</span></button>
-                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[14px] font-[sfpro]'>Download csv</span></buttton>
+                    <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans"><span><Plus /></span><span>Add Leads</span></button>
+                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
                 </div>
             </div>
 
             <div className="overflow-x-auto rounded-lg border">
                 <table className="w-full text-left text-sm bg-primary_white">
-                    <thead className=" border-b text-primary_blue font-medium">
+                    <thead className=" border-b text-primary_blue font-semibold text-xs md:text-[14px]">
                         <tr className=''>
                             <th className="px-4 py-2">ID</th>
                             <th className="px-4 py-2">Customer Name</th>
@@ -142,15 +142,15 @@ const InvoiceTable = ({ activeTab }) => {
                     <tbody>
                         {filteredEmployees.map((emp) => (
                             <tr key={emp.id} className="border-b hover:bg-gray-50 text-start">
-                                <td className="px-4 py-3">{emp.id}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.id}</td>
                                 <td className="px-4 py-3 flex items-center gap-2">
 
                                     <div>
-                                        <div className="font-medium">{emp.name}</div>
+                                        <div className="text-xs md:text-[14px] font-medium text-[#484848]">{emp.name}</div>
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 ">{emp.products}</td>
-                                <td className={`px-4 py-3   ${emp.status === 'Paid'
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.products}</td>
+                                <td className={`px-4 py-3 text-xs md:text-[14px] font-normal ${emp.status === 'Paid'
                                     ? ' text-[#33DF69]'
                                     : emp.status === 'Cancelled'
                                         ? ' text-[#FF6259]'
@@ -164,9 +164,9 @@ const InvoiceTable = ({ activeTab }) => {
                                     }
       `}>{emp.status}</td>
 
-                                <td className="px-4 py-3">{emp.date}</td>
-                                <td className="px-4 py-3">{emp.totalAmount}</td>
-                                <td className="px-4 py-3">{emp.totalQty}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.date}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.totalAmount}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.totalQty}</td>
                                 <td className="px-4 py-3 ">
                                     <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
                                 </td>

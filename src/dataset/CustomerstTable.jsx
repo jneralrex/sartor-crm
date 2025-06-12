@@ -130,13 +130,13 @@ const CustomerstTable = ({ activeTab }) => {
                     />
                 </div>
                 <div className="flex gap-2">
-                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[14px] font-[sfpro]'>Download csv</span></buttton>
+                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px]'>Download csv</span></buttton>
                 </div>
             </div>
 
             <div className="overflow-x-auto rounded-lg border">
                 <table className="w-full text-left text-sm bg-primary_white">
-                    <thead className=" border-b text-primary_blue font-medium">
+                    <thead className=" border-b text-primary_blue font-semibold text-xs md:text-[14px]">
                         <tr className=''>
                             <th className="px-4 py-2">ID</th>
                             <th className="px-4 py-2">Name</th>
@@ -150,16 +150,16 @@ const CustomerstTable = ({ activeTab }) => {
                     <tbody>
                         {filteredEmployees.map((emp) => (
                             <tr key={emp.id} className="border-b hover:bg-gray-50 text-start">
-                                <td className="px-4 py-3">{emp.id}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.id}</td>
                                 <td className="px-4 py-3 flex items-center gap-2">
 
                                     <div>
-                                        <div className="font-medium">{emp.name}</div>
-                                        <div className="text-xs text-gray-500">{emp.email}</div>
+                                        <div className="font-medium text-[#484848] text-xs md:text-[14px]">{emp.name}</div>
+                                        <div className="text-xs font-medium text-[#A3A3A3]">{emp.email}</div>
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 ">{emp.location}</td>
-                                <td className={`px-4 py-3   ${emp.status === 'Active'
+                                <td className="px-4 py-3  font-normal text-[#484848] text-xs md:text-[14px]">{emp.location}</td>
+                                <td className={`px-4 py-3  font-normal text-xs md:text-[14px] ${emp.status === 'Active'
                                     ? ' text-[#00D743]'
                                     : emp.status === 'In-active'
                                         ? ' text-[#FF3B30]'
@@ -167,8 +167,8 @@ const CustomerstTable = ({ activeTab }) => {
                                     }
       `}>{emp.status}</td>
 
-                                <td className="px-4 py-3">{emp.date}</td>
-                                <td className="px-4 py-3">{emp.phone}</td>
+                                <td className="px-4 py-3 font-normal text-[#484848] text-xs md:text-[14px]">{emp.date}</td>
+                                <td className="px-4 py-3 font-normal text-[#484848] text-xs md:text-[14px]">{emp.phone}</td>
                                 <td className="px-4 py-3 ">
                                     <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
                                 </td>

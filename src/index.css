@@ -8,6 +8,13 @@
   font-weight: normal;
   font-style: normal;
 }
+
+.public-sans {
+  font-family: "Public Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
 :root {
   --primary-grey-color: #F7F7F7;
   --primary-blue-color: #000068;
@@ -24,6 +31,15 @@ body {
 }
 .outlet-title {
   @apply text-primary_blue text-[24px] font-[sfpro] font-semibold hidden md:block;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
 }
 
 /* calendar.css */
