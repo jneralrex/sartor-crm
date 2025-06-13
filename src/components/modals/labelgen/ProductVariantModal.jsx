@@ -2,7 +2,7 @@ import { X } from 'lucide-react';
 import React, { useState } from 'react';
 import ProductLabelModal from './ProductLabelModal';
 
-const ProductDetailsModal = ({ onClose }) => {
+const ProductVariantModal = ({ onClose }) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -76,4 +76,5 @@ const ProductDetailsModal = ({ onClose }) => {
   );
 };
 
-export default ProductDetailsModal;
+export default ProductVariantModal;
+

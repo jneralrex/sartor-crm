@@ -58,7 +58,7 @@ const Overview = () => {
                         className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black"
                     >
                         <div className="flex text-left items-center">
-                            <div className='flex gap-1 items-center bg-primary_white h-[40px] w-[156px] justify-center'><Calendar className='text-[#A3A3A3] h-[16.67px]' /><span className='text-[#1A1A1A] text-[14px]'>Show Yearly</span>                         <ChevronDownIcon className="text- h-5 text-[#A3A3A3] " />
+                            <div className='flex gap-1 items-center bg-primary_white h-[40px] w-[156px] justify-center'><Calendar className='text-[#A3A3A3] h-[16.67px]' /><span className='text-[#1A1A1A] public-sans text-[14px]'>Show Yearly</span>                         <ChevronDownIcon className="text- h-5 text-[#A3A3A3] " />
                             </div>
                         </div>
                     </button>
@@ -71,7 +71,7 @@ const Overview = () => {
                 </div>
 
                 <div className="flex flex-col text-left">
-                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[14px] font-[sfpro]'>Download csv</span></buttton>
+                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px] ' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
                 </div>
             </div>
 

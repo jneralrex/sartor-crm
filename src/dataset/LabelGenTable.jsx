@@ -210,6 +210,7 @@ const LabelGenTable = ({ activeTab }) => {
           <button className="px-2 py-1 border rounded">440</button>
         </div>
       </div>
+      
       {/* Modal */}
       {isModalOpen && <ProductDetailsModal onClose={handleModalToggle} />}
     </>
