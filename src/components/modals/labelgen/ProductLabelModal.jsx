@@ -1,7 +1,15 @@
 import { X } from 'lucide-react';
 import labelgen from '../../../assets/images/labelgen.png'
+import ProductVariantModal from './ProductVariantModal';
+import { useState } from 'react';
 
 const ProductLabelModal = ({ onCloseModal }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+    const handleModalToggle = () => {
+      setIsModalOpen((prev) => !prev);
+    };
+  
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
       <div className="bg-primary_white p-6 shadow-lg max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
@@ -43,10 +51,15 @@ const ProductLabelModal = ({ onCloseModal }) => {
         </div>
 
         {/* Proceed Button */}
-        <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[375px]">
+        <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[375px]" onClick={(e) => {
+              e.preventDefault();
+              handleModalToggle();
+            }} >
           Proceed with image
         </button>
       </div>
+            {/* Modal */}
+            {isModalOpen && <ProductVariantModal onClose={handleModalToggle} />}
     </div>
   );
 };

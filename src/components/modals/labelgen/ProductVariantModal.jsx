@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
-import React, { useState } from 'react';
-import ProductLabelModal from './ProductLabelModal';
+import { useState } from 'react';
+import labelgen from '../../../assets/images/labelgen.png'
+import QrCodeModal from './QrCodeModal';
 
 const ProductVariantModal = ({ onClose }) => {
 
@@ -11,67 +12,39 @@ const ProductVariantModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+   <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
       <div className="bg-primary_white p-6 shadow-lg max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
-        <div className='flex items-center justify-between'>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-sm md:text-[20px] font-semibold text-[#1A1A1A] mb-1">Product Details</h2>
-            <p className='text-xs font-semibold text-[#767676]'>The following data servers as proof of authenticity for this product</p>
+            <h2 className="text-base md:text-lg font-semibold text-[#1A1A1A]">Upload Product Label</h2>
+            <p className="text-xs text-[#767676]">Upload formats: png, jpg or pdf</p>
           </div>
-          <button
-            onClick={onClose}
-            className=""
-          >
-            <X />
+          <button onClick={onClose}>
+            <X className="text-gray-500 hover:text-black" />
           </button>
         </div>
-        <div className='flex  flex-col mt-5 mb-5 gap-1'>
-          <span className='text-[#A3A3A3] text-[14px] font-medium'>
-            Batch ID
-          </span>
-          <span className='text-[#484848] text-[16px] font-medium'>
-            BAR121-10
-          </span>
-        </div>
-        <div>
 
-          <form action="" className='flex flex-col gap-5'>
-            <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
-              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                <input type="text" placeholder='Enter quantity' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
-              </div>
-            </label>
-            <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
-              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                <input type="text" placeholder='Enter quantity' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
-              </div>
-            </label>
-            <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
-              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                <input type="text" placeholder='Enter quantity' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
-              </div>
-            </label>
-            <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
-              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                <input type="text" placeholder='Enter quantity' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
-              </div>
-            </label>
-            <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
-              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                <input type="text" placeholder='Enter quantity' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
-              </div>
-            </label>
-            <button className='bg-primary_blue  text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold h-[52px]' onClick={(e) => {
-              e.preventDefault();
-              handleModalToggle();
-            }} >
-              Proceed with details
-            </button>
-          </form>
+        {/* Uploaded File Name Box */}
+        <div className='mb-4 py-4 rounded-md items-center max-w-[375px] grid grid-cols-2 gap-5'>
+          <img src={labelgen} alt="" className='rounded-md ' />
+          <img src={labelgen} alt="" className='rounded-md ' />
+          <img src={labelgen} alt="" className='rounded-md ' />
+          <img src={labelgen} alt="" className='rounded-md ' />
+          <img src={labelgen} alt="" className='rounded-md ' />
+          <img src={labelgen} alt="" className='rounded-md ' />
         </div>
+        
+        <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[375px]" onClick={(e) => {
+          e.preventDefault();
+          handleModalToggle();
+        }} >
+          Continue with Variant
+        </button>
+         {/* Proceed Button */}
       </div>
       {/* Modal */}
-      {isModalOpen && <ProductLabelModal onCloseModal={handleModalToggle} />}
+      {isModalOpen && <QrCodeModal onCloseModal={handleModalToggle} />}
     </div>
   );
 };
