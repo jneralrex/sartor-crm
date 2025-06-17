@@ -25,17 +25,15 @@ const ProductDetailsModal = ({ onClose }) => {
             <X />
           </button>
         </div>
-        <div className='flex  flex-col mt-5 mb-5 gap-1'>
-          <span className='text-[#A3A3A3] text-[14px] font-medium'>
-            Batch ID
-          </span>
-          <span className='text-[#484848] text-[16px] font-medium'>
-            BAR121-10
-          </span>
-        </div>
         <div>
 
-          <form action="" className='flex flex-col gap-5'>
+          <form action="" className='flex flex-col gap-5 mt-5'>
+             <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch ID
+              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
+                <input type="text" placeholder='Enter batch number' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
+                <button className='w-[150px] bg-primary_blue text-primary_white h-[30px] text-[12px] p-1 rounded-md '>Generate Batch No</button>
+              </div>
+            </label>
             <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
               <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
                 <input type="text" placeholder='Enter quantity' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
