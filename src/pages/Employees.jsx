@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import UserActionNav from '../components/UserActionNav';
-import EmployeeTabs from '../dataset/EmployeesTabs';
-import EmployeeTable from '../dataset/EmployeesTable';
+import EmployeeTabs from '../dataset/tables/EmployeesTabs';
+import EmployeeTable from '../dataset/tables/EmployeesTable';
 
 const Employees = () => {
   const [activeTab, setActiveTab] = useState('All Employees');

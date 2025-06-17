@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import UserActionNav from '../components/UserActionNav'
-import LeadsTable from '../dataset/LeadsTable'
+import LeadsTable from '../dataset/tables/LeadsTable'
 
 const Leads = () => {
           const [activeTab, setActiveTab] = useState('All Employees');

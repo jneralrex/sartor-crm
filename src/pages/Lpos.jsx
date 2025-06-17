@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import UserActionNav from '../components/UserActionNav'
-import LposTable from '../dataset/LposTable'
+import LposTable from '../dataset/tables/LposTable'
 
 const Lpos = () => {
       const [activeTab, setActiveTab] = useState('All Employees');

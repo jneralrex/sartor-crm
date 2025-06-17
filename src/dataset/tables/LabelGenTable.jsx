@@ -1,7 +1,7 @@
-import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
-import search from '../assets/images/search.png';
+import { Download, Ellipsis, Plus } from 'lucide-react';
+import search from '../../assets/images/search.png';
 import { useState } from 'react';
-import ProductDetailsModal from '../components/modals/labelgen/ProductDetailsModal';
+import ProductDetailsModal from '../../components/modals/labelgen/ProductDetailsModal';
 
 const allEmployees = [
   {

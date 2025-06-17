@@ -1,4 +1,4 @@
-import pics from '../assets/images/stethoscope.png';
+import pics from '../../assets/images/stethoscope.png';
 
 // components/ProductTable.jsx
 const products = [
@@ -55,10 +55,10 @@ export default function ProductTable() {
         <table className="min-w-full text-sm text-left">
           <thead className="border-b">
             <tr className="text-gray-500">
-              <th className="py-2 px-4 text-[13px] lg:text-[20px]">Product Name</th>
-              <th className="py-2 px-4 text-[13px] lg:text-[20px]">Unit Price</th>
-              <th className="py-2 px-4 text-[13px] lg:text-[20px]">Orders</th>
-              <th className="py-2 px-4 text-[13px] lg:text-[20px]">Total Paid</th>
+              <th className="py-2 px-4 text-[13px] lg:text-[16px]">Product Name</th>
+              <th className="py-2 px-4 text-[13px] lg:text-[16px]">Unit Price</th>
+              <th className="py-2 px-4 text-[13px] lg:text-[16px]">Orders</th>
+              <th className="py-2 px-4 text-[13px] lg:text-[16px]">Total Paid</th>
             </tr>
           </thead>
           <tbody>

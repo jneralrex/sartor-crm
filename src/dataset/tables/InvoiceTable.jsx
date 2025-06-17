@@ -1,119 +1,109 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
-import search from '../assets/images/search.png';
-
+import search from '../../assets/images/search.png';
 
 const allEmployees = [
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-01',
         name: 'Liam Everhart',
-        email: 'liam@example.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Paid',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-02',
         name: 'Elijah Kensington',
-        email: 'elijah@admin.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Pending',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Pending',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'In-active',
+        products: '4',
+        status: 'Partially Paid',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Paid',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Cancelled',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'In-active',
+        products: '4',
+        status: 'Partially Paid',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Cancelled',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Overdue',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'Active',
+        products: '4',
+        status: 'Pending',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
     {
-        id: 'CUS22-01',
+        id: 'SMX0221-03',
         name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'In-active',
+        products: '4',
+        status: 'Pending',
+        totalAmount: 'N10,412,320',
         date: '12, Feb 2023',
-        phone: '(847) 785-2310',
+        totalQty: '1000',
     },
-    {
-        id: 'CUS22-01',
-        name: 'Charlotte Winslow',
-        email: 'charlotte@rep.com',
-        location: 'Ikeja, Lagos',
-        status: 'In-active',
-        date: '12, Feb 2023',
-        phone: '(847) 785-2310',
-    },
+   
 ];
-
-const CustomerstTable = ({ activeTab }) => {
+const InvoiceTable = ({ activeTab }) => {
     const filteredEmployees =
         activeTab === 'All Employees'
             ? allEmployees
@@ -130,7 +120,8 @@ const CustomerstTable = ({ activeTab }) => {
                     />
                 </div>
                 <div className="flex gap-2">
-                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px]'>Download csv</span></buttton>
+                    <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans"><span><Plus /></span><span>Add Leads</span></button>
+                    <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
                 </div>
             </div>
 
@@ -139,11 +130,12 @@ const CustomerstTable = ({ activeTab }) => {
                     <thead className=" border-b text-primary_blue font-semibold text-xs md:text-[14px]">
                         <tr className=''>
                             <th className="px-4 py-2">ID</th>
-                            <th className="px-4 py-2">Name</th>
-                            <th className="px-4 py-2">Location</th>
+                            <th className="px-4 py-2">Customer Name</th>
+                            <th className="px-4 py-2">Products</th>
                             <th className="px-4 py-2">Status</th>
-                            <th className="px-4 py-2">Date Added</th>
-                            <th className="px-4 py-2">Phone Number</th>
+                            <th className="px-4 py-2">Due Date</th>
+                            <th className="px-4 py-2">Total Amount</th>
+                            <th className="px-4 py-2">Total Qty</th>
                             <th className="px-4 py-2">Action</th>
                         </tr>
                     </thead>
@@ -154,21 +146,27 @@ const CustomerstTable = ({ activeTab }) => {
                                 <td className="px-4 py-3 flex items-center gap-2">
 
                                     <div>
-                                        <div className="font-medium text-[#484848] text-xs md:text-[14px]">{emp.name}</div>
-                                        <div className="text-xs font-medium text-[#A3A3A3]">{emp.email}</div>
+                                        <div className="text-xs md:text-[14px] font-medium text-[#484848]">{emp.name}</div>
                                     </div>
                                 </td>
-                                <td className="px-4 py-3  font-normal text-[#484848] text-xs md:text-[14px]">{emp.location}</td>
-                                <td className={`px-4 py-3  font-normal text-xs md:text-[14px] ${emp.status === 'Active'
-                                    ? ' text-[#00D743]'
-                                    : emp.status === 'In-active'
-                                        ? ' text-[#FF3B30]'
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.products}</td>
+                                <td className={`px-4 py-3 text-xs md:text-[14px] font-normal ${emp.status === 'Paid'
+                                    ? ' text-[#33DF69]'
+                                    : emp.status === 'Cancelled'
+                                        ? ' text-[#FF6259]'
+                                    : emp.status === 'Overdue'
+                                        ? ' text-[#000068]'
+                                    : emp.status === 'Partially Paid'
+                                        ? ' text-[#7474E1]'
+                                    : emp.status === 'Pending'
+                                        ? ' text-[#FFB400]'
                                         : ' text-gray-500'
                                     }
       `}>{emp.status}</td>
 
-                                <td className="px-4 py-3 font-normal text-[#484848] text-xs md:text-[14px]">{emp.date}</td>
-                                <td className="px-4 py-3 font-normal text-[#484848] text-xs md:text-[14px]">{emp.phone}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.date}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.totalAmount}</td>
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.totalQty}</td>
                                 <td className="px-4 py-3 ">
                                     <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
                                 </td>
@@ -190,6 +188,6 @@ const CustomerstTable = ({ activeTab }) => {
             </div>
         </>
     );
-};
+}
 
-export default CustomerstTable
+export default InvoiceTable

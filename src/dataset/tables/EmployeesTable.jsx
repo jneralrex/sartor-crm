@@ -1,5 +1,5 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
-import search from '../assets/images/search.png';
+import search from '../../assets/images/search.png';
 
 const allEmployees = [
   {

@@ -1,6 +1,6 @@
 import React from 'react'
 import UserActionNav from '../components/UserActionNav'
-import InvoiceTable from '../dataset/InvoiceTable'
+import InvoiceTable from '../dataset/tables/InvoiceTable'
 
 const Invoices = () => {
     return (

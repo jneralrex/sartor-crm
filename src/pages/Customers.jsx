@@ -1,6 +1,6 @@
 import React from 'react'
 import UserActionNav from '../components/UserActionNav'
-import CustomerstTable from '../dataset/CustomerstTable'
+import CustomerstTable from '../dataset/tables/CustomerstTable'
 
 const Customers = () => {
     return (

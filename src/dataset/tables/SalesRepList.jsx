@@ -1,4 +1,4 @@
-import salesrep from '../assets/images/salesrep.png';
+import salesrep from '../../assets/images/salesrep.png';
 
 // components/SalesRepList.jsx
 const reps = [

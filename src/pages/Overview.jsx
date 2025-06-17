@@ -21,8 +21,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import ProductTable from '../dataset/ProductTable'
-import SalesRepList from '../dataset/SalesRepList'
+import ProductTable from '../dataset/tables/ProductTable'
+import SalesRepList from '../dataset/tables/SalesRepList'
+import TotalCustomersChart from '../dataset/charts/TotalCustomersChart'
+import TotalRevenueChart from '../dataset/charts/TotalRevenueChart'
+import TopSalesRegions from '../dataset/charts/TopSalesRegion'
 
 
 const Overview = () => {
@@ -105,9 +108,31 @@ const Overview = () => {
                     </div>
                 </div>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 mt-10">
+                <div className="bg-white p-4 rounded-md shadow-sm">
+                    <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Customers</h2>
+                    <TotalCustomersChart />
+                </div>
 
-            <div className="p-6 bg-gray-100 min-h-screen">
-                <div className="flex flex-col md:justify-center  items-center lg:items-start lg:flex-row gap-6">
+                <div className="bg-white p-4 rounded-md shadow-sm">
+                    <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Revenue</h2>
+                    <TopSalesRegions />
+                </div>
+
+                <div className="bg-white p-4 rounded-md shadow-sm md:col-span-2">
+                    <div className='flex items-center justify-between'>
+                        <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Revenue</h2>
+                        <div className=' flex gap-2'>
+                            <button className='w-[74px] h-[28px]  rounded-md text-[12px]'>Sales</button><button className='w-[74px] h-[28px] bg-primary_blue rounded-md text-[12px] text-primary_white'>Revenue</button>
+                        </div>
+
+                    </div>
+                    <TotalRevenueChart className='' />
+                </div>
+            </div>
+
+            <div className="p-6 min-h-screen">
+                <div className="flex flex-col md:justify-center items-center lg:items-start lg:flex-row gap-6">
                     <ProductTable />
                     <SalesRepList />
                 </div>

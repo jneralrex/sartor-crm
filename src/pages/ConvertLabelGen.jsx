@@ -1,6 +1,6 @@
 import React from 'react'
 import UserActionNav from '../components/UserActionNav'
-import LabelGenTable from '../dataset/LabelGenTable'
+import LabelGenTable from '../dataset/tables/LabelGenTable'
 
 const ConvertLabelGen = () => {
      return (
