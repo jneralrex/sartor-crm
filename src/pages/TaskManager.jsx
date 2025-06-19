@@ -8,6 +8,9 @@ import {
 } from "@headlessui/react";
 import classNames from "classnames";
 import task from "../assets/images/task.png";
+import { useState } from "react";
+import AssignTaskModal from "../components/modals/taskManager/AssignTaskModal";
+import TaskDetailsModal from "../components/modals/taskManager/TaskDetailsModal";
 
 const stats = [
   { label: "To-Do", count: 23 },
@@ -210,6 +213,17 @@ const categories = [
 ];
 
 const TaskManager = () => {
+   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+    
+      const handleModalToggle = () => {
+        setIsModalOpen((prev) => !prev);
+      };
+    
+      const handleStatusModalToggle = () => {
+        setIsStatusModalOpen((prev) => !prev);
+      };
+
   return (
     <>
       <nav className="outlet-frame">
@@ -239,7 +253,10 @@ const TaskManager = () => {
                 </Tab>
               ))}
             </TabList>
-            <button className="bg-[#1F1F8F] text-white text-[12px] p-1 md:px-4 md:py-2 rounded-md md:text-sm">
+            <button className="bg-primary_blue text-white text-[12px] p-1 md:px-4 md:py-2 rounded-md md:text-sm" onClick={(e) => {
+          e.preventDefault();
+          handleModalToggle();
+        }} >
               Assign Task
             </button>
           </div>
@@ -268,7 +285,8 @@ const TaskManager = () => {
                 {posts.map((post) => (
                   <div
                     key={post.id}
-                    className="bg-primary_white p-5 rounded-md shadow-sm border border-primary_grey md:max-w-[359px]"
+                    className="bg-primary_white p-5 rounded-md shadow-sm border border-primary_grey md:max-w-[359px] cursor-pointer"
+                    onClick={handleStatusModalToggle}
                   >
                       <div className="flex items-center ">
                        <h3 className="font-semibold underline text-[#484848] text-[18px]">
@@ -298,6 +316,9 @@ const TaskManager = () => {
           </TabPanels>
         </TabGroup>
       </div>
+      {/* Modals */}
+      {isModalOpen && <AssignTaskModal onClose={handleModalToggle}/>}
+    {isStatusModalOpen && <TaskDetailsModal onClose={handleStatusModalToggle}/>}    
     </>
   );
 };

@@ -4,8 +4,29 @@ import {
   ChevronDownIcon,
 
 } from '@heroicons/react/16/solid'
+import NotificationModal from "./modals/userAction/NotificationModal";
+import { Bell } from "lucide-react";
+import { useState } from "react";
+import EditPersonalInfoModal from "./modals/userAction/EditPersonalInfoModal";
+import SystemSettingModal from "./modals/userAction/SystemSettingModal";
 
 const UserActionNav = () => {
+
+    const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const [isSystemSettingModalOpen, setSystemSettingModalOpen] = useState(false);
+
+  const handleModalToggle = () => {
+    setNotificationModalOpen((prev) => !prev);
+  };
+
+  const handleEditModalToggle = () => {
+        setEditModalOpen((prev) => !prev);
+  };
+  const handleSystemSettingModalToggle = () => {
+        setSystemSettingModalOpen((prev) => !prev);
+  };
+
   return (
     <div className="max-w-[300px] md:max-w-[400px] md:gap-2 flex items-center justify-end md:justify-between absolute right-0 top-3 md:top-0 md:relative  ">
       {/* Avatar */}
@@ -32,6 +53,7 @@ const UserActionNav = () => {
                     className={`${
                       active ? 'bg-gray-100' : ''
                     } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                    onClick={handleEditModalToggle}
                   >
                     Personal Info
                   </button>
@@ -44,6 +66,7 @@ const UserActionNav = () => {
                     className={`${
                       active ? 'bg-gray-100' : ''
                     } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                    onClick={handleSystemSettingModalToggle}
                   >
                     System settings
                   </button>
@@ -67,14 +90,14 @@ const UserActionNav = () => {
       </div>
 
       {/* Bell with Dot */}
-      <div className="flex rounded-full size-9 bg-[#D9D9D9] bg-repeat justify-center relative items-center hidden md:block" >
-        <img src={bell} alt="bell" className="h-5 "/>
-        {/* <img
-          src={belldot}
-          alt="notification"
-          className="right-[1px] top-[-px] relative"
-        /> */}
+      <div className="flex rounded-full size-9 bg-[#D9D9D9] bg-repeat justify-center relative items-center hidden md:block" onClick={handleModalToggle}>
+       <Bell/>
       </div>
+        {/* Modal */}
+      {isNotificationModalOpen && <NotificationModal onClose={handleModalToggle} />}
+      {isEditModalOpen && <EditPersonalInfoModal onClose={handleEditModalToggle} />}
+      {isSystemSettingModalOpen && <SystemSettingModal onClose={handleSystemSettingModalToggle} />}
+
     </div>
   );
 };
