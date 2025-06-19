@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import React, { useState } from 'react'
-import SearchableSelect from '../../SearchAbleSelect';
+import SearchableSelect from '../../SearchableSelect';
 
 const AssignTaskModal = ({ onClose }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
