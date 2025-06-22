@@ -90,8 +90,8 @@ const UserActionNav = () => {
       </div>
 
       {/* Bell with Dot */}
-      <div className="flex rounded-full size-9 bg-[#D9D9D9] bg-repeat justify-center relative items-center hidden md:block" onClick={handleModalToggle}>
-       <Bell/>
+      <div className="flex relative rounded-full h-[30px] w-[30px] text-center bg-[#D9D9D9] justify-center cursor-pointer items-center hidden md:block" onClick={handleModalToggle}>
+       <Bell fill="#000068" strokeWidth={0} size={20} className="mt-1 ml-1"/>
       </div>
         {/* Modal */}
       {isNotificationModalOpen && <NotificationModal onClose={handleModalToggle} />}

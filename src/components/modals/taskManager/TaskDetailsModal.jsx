@@ -1,26 +1,37 @@
 import { X } from 'lucide-react';
  import { useState } from 'react'
- import QrCodeModal from '../labelgen/QrCodeModal';
- import BarCodeModal from '../labelgen/BarCodeModal'
+import TaskNotesModal from './TaskNotesModal';
+import AssignToNewEmployee from './AssignToNewEmployee';
+import ReassignTaskModal from './ReassignTaskModal';
+import InvoiceModal from './InvoiceModal';
 
 
 const TaskDetailsModal = ({onClose}) => {
       const [isModalOpen, setIsModalOpen] = useState(false);
-     const [isBarModalOpen, setIsBarModalOpen] = useState(false);
+      const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+      const [isReAssignModalOpen, setIsReAssignModalOpen] = useState(false);
+      const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
 
     const handleModalToggle = () => {
         setIsModalOpen((prev) => !prev);
     };
-
-    const handleBarModalToggle = () => {
-        setIsBarModalOpen((prev) => !prev);
+    const handleAssignModalToggle = () => {
+        setIsAssignModalOpen((prev) => !prev);
     };
+    const handleReAssignModalToggle = () => {
+        setIsReAssignModalOpen((prev) => !prev);
+    };
+    const handleInvoiceModalToggle = () => {
+        setIsInvoiceModalOpen((prev) => !prev);
+    };
+   
+
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
                 <div className='flex items-center justify-between'>
-                    <span className='text[#1A1A1A] font-semibold text-[20px] text-start w-full'>QR Code </span>
+                    <span className='text[#1A1A1A] font-semibold text-[20px] text-start w-full'>Task Details </span>
                     <button onClick={onClose}>
                         <X className="text-gray-500 hover:text-black" />
                     </button>
@@ -79,18 +90,41 @@ const TaskDetailsModal = ({onClose}) => {
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                        Assigned
+                        Status
 
                         <span className='underline text-primary_blue mt-2 cursor-pointer' onClick={(e) => {
                             e.preventDefault();
-                            // handleModalToggle();
+                            handleModalToggle();
                         }}>
-                            View
+                            Assigned
                         </span>
                     </label>
                    
                    
-                  
+                    <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                       Invoice
+
+                        <span className='text-[#484848] underline mt-2' onClick={(e) => {
+                            e.preventDefault();
+                            handleInvoiceModalToggle();
+                        }}>
+                           View Invoice
+                        </span>
+                    </label>
+                    <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                       Payment Doc
+
+                        <span className='text-[#484848] underline mt-2'>
+                           View Doc
+                        </span>
+                    </label>
+                    <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                       Payment Terms
+
+                        <span className='text-[#484848] mt-2'>
+                           Payment On Delivery
+                        </span>
+                    </label>
                 </div>
                  <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                        Description 
@@ -108,12 +142,31 @@ const TaskDetailsModal = ({onClose}) => {
                         </span>
                     </label>
 
+                      <div className='flex gap-2'>
 
+        <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" 
+        onClick={(e) => {
+          e.preventDefault();
+          handleReAssignModalToggle();
+        }} 
+        >
+          Reassign
+        </button>
+        <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
+          e.preventDefault();
+          handleAssignModalToggle();
+        }} >
+          Assign to Employee
+        </button>
+        </div>
                
             </div>
             {/* Modal */}
-            {isModalOpen && <QrCodeModal onCloseModal={handleModalToggle}/>}
-            {isBarModalOpen && <BarCodeModal onCloseModal={handleBarModalToggle} />}
+            {isModalOpen && <TaskNotesModal onCloseModal={handleModalToggle}/>}
+            {isAssignModalOpen && <AssignToNewEmployee onClose={handleAssignModalToggle}/>}
+            {isReAssignModalOpen && <ReassignTaskModal onClose={handleReAssignModalToggle}/>}
+            {isInvoiceModalOpen && <InvoiceModal onClose={handleInvoiceModalToggle}/>}
+
         </div>
     )
 }
