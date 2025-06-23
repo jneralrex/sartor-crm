@@ -1,4 +1,3 @@
-import bell from "../assets/images/bell.png";
 import { Menu } from '@headlessui/react'
 import {
   ChevronDownIcon,
@@ -12,19 +11,19 @@ import SystemSettingModal from "./modals/userAction/SystemSettingModal";
 
 const UserActionNav = () => {
 
-    const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-    const [isEditModalOpen, setEditModalOpen] = useState(false);
-    const [isSystemSettingModalOpen, setSystemSettingModalOpen] = useState(false);
+  const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isSystemSettingModalOpen, setSystemSettingModalOpen] = useState(false);
 
   const handleModalToggle = () => {
     setNotificationModalOpen((prev) => !prev);
   };
 
   const handleEditModalToggle = () => {
-        setEditModalOpen((prev) => !prev);
+    setEditModalOpen((prev) => !prev);
   };
   const handleSystemSettingModalToggle = () => {
-        setSystemSettingModalOpen((prev) => !prev);
+    setSystemSettingModalOpen((prev) => !prev);
   };
 
   return (
@@ -50,9 +49,8 @@ const UserActionNav = () => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    className={`${
-                      active ? 'bg-gray-100' : ''
-                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                    className={`${active ? 'bg-gray-100' : ''
+                      } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
                     onClick={handleEditModalToggle}
                   >
                     Personal Info
@@ -63,9 +61,8 @@ const UserActionNav = () => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    className={`${
-                      active ? 'bg-gray-100' : ''
-                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                    className={`${active ? 'bg-gray-100' : ''
+                      } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
                     onClick={handleSystemSettingModalToggle}
                   >
                     System settings
@@ -76,9 +73,8 @@ const UserActionNav = () => {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    className={`${
-                      active ? 'bg-red-100 text-red-700' : 'text-red-500'
-                    } group flex items-center w-full gap-2 px-4 py-2 text-sm`}
+                    className={`${active ? 'bg-red-100 text-red-700' : 'text-red-500'
+                      } group flex items-center w-full gap-2 px-4 py-2 text-sm`}
                   >
                     Logout
                   </button>
@@ -91,9 +87,9 @@ const UserActionNav = () => {
 
       {/* Bell with Dot */}
       <div className="flex relative rounded-full h-[30px] w-[30px] text-center bg-[#D9D9D9] justify-center cursor-pointer items-center hidden md:block" onClick={handleModalToggle}>
-       <Bell fill="#000068" strokeWidth={0} size={20} className="mt-1 ml-1"/>
+        <Bell fill="#000068" strokeWidth={0} size={20} className="mt-1 ml-1" />
       </div>
-        {/* Modal */}
+      {/* Modal */}
       {isNotificationModalOpen && <NotificationModal onClose={handleModalToggle} />}
       {isEditModalOpen && <EditPersonalInfoModal onClose={handleEditModalToggle} />}
       {isSystemSettingModalOpen && <SystemSettingModal onClose={handleSystemSettingModalToggle} />}
