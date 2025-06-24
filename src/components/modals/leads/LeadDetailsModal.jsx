@@ -1,0 +1,222 @@
+import { useState } from 'react';
+import { X, Plus } from 'lucide-react';
+import SearchableSelect from '../../SearchableSelect';
+
+const LeadDetailsModal = ({ onClose }) => {
+    const [activeTab, setActiveTab] = useState('basic');
+    const handleSelect = (e) => {
+        e.preventDefault()
+        // console.log('Selected:', value);
+    };
+    return (
+        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+            <div className="bg-white w-[90%] max-w-[455px] h-[95vh] rounded-xl shadow-lg overflow-y-auto hide-scrollbar">
+                <div className="flex items-center justify-between px-6 pt-6">
+                    <h2 className="text-[18px] md:text-[20px] font-semibold text-[#1A1A1A]">Add A New Lead</h2>
+                    <button onClick={onClose}><X /></button>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex px-6 mt-4">
+                    <button
+                        className={`pb-2 mr-6 font-medium ${activeTab === 'basic' ? 'text-[#1A1A1A]' : 'text-gray-400'}`}
+                        onClick={() => setActiveTab('basic')}
+                    >
+                        Basic Info
+                    </button>
+                    <button
+                        className={`pb-2 font-medium ${activeTab === 'contact' ? 'text-[#1A1A1A]' : 'text-gray-400'}`}
+                        onClick={() => setActiveTab('contact')}
+                    >
+                        Contact Person
+                    </button>
+                </div>
+
+                {/* Form Body */}
+                <form className="px-6 py-4 space-y-4">
+                    {activeTab === 'basic' && (
+                        <>
+                            <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
+
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Company Name
+
+                                    <span className='text-[#484848] mt-2 w-[150px]'>
+                                        Transcorp Ltd
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    ID
+
+                                    <span className='text-[#484848] mt-2'>
+                                        SMO2231-12
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Email address
+
+                                    <span className='text-[#484848] mt-2'>
+                                        karekal23@gmail.com
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Company State
+
+                                    <span className='text-[#484848] mt-2'>
+                                        Lagos, State
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Company Type
+
+                                    <span className='text-[#484848] mt-2'>
+                                        Pharmacy Store
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Date Created
+
+                                    <span className='text-[#484848] mt-2'>
+                                        12, Feb 2023
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Number Of Stores
+
+                                    <span className='text-[#484848] mt-2'>
+                                        24
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Potential Deal size (N)
+
+                                    <span className='text-[#484848] mt-2'>
+                                        N120,002,101
+                                    </span>
+                                </label>
+
+
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Phone No
+
+                                    <span className='text-[#484848] mt-2'>
+                                        (232) 232 132
+                                    </span>
+                                </label>
+                                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                    Status
+
+                                    <span className='text-[#484848] mt-2'>
+                                        In-progress
+                                    </span>
+                                </label>
+                            </div>
+                            <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                Select Status
+
+                                <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
+                                    <SearchableSelect
+                                        options={['Peak Milk Powdered', 'Matty Minny', 'Josh Sam', 'Abby Micheal', 'Lisa Tran']}
+                                        onChange={handleSelect}
+                                    />
+                                </div>
+                            </label>
+                            <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                                Company Address (Head Office)
+
+                                <span className='text-[#484848] mt-2'>
+                                    12, Jakande Street Lagos
+                                </span>
+                            </label>
+                            <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                               
+
+                                <span className='text-[#484848] underline mt-2'>
+                                    Notes From Sales Rep
+                                </span>
+                            </label>
+                             <div className='flex gap-2'>
+
+                    <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleReAssignModalToggle();
+                        }}
+                    >
+                        Update Status
+                    </button>
+                    <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
+                        e.preventDefault();
+                        handleAssignModalToggle();
+                    }} >
+                        Visited
+                    </button>
+                </div>
+                        </>
+                    )}
+
+                    {activeTab === 'contact' && (
+                        <>
+                            {/* <Input label="Contact Person" placeholder="Full Name" />
+              <Input label="Contact Person Email" placeholder="Email" />
+              <Input label="Contact Person Phone Number" placeholder="Phone Number" />
+              <Select label="Contact Person Role" options={['Manager', 'Owner', 'Sales Rep']} />
+              <div className="text-[#A3A3A3] flex justify-center items-center gap-2 text-sm cursor-pointer">
+                <Plus size={16} />
+                <span>Add Contact Person 2</span>
+              </div>
+                <button
+                type="submit"
+                className="w-full py-3 bg-primary_blue text-white font-semibold rounded-lg"
+              >
+                Add Lead
+              </button> */}
+                            <p>Hello</p>
+                        </>
+                    )}
+                </form>
+            </div>
+        </div>
+    );
+};
+
+// Reusable Input Component
+// const Input = ({ label, placeholder }) => (
+//   <label className="block text-sm font-medium text-[#1A1A1A]">
+//     {label}
+//     <div className="mt-1 bg-[#F5F5F5] rounded-lg h-[48px] flex items-center px-4">
+//       <input
+//         type="text"
+//         placeholder={placeholder}
+//         className="w-full bg-transparent outline-none text-sm placeholder:text-[#484848]"
+//       />
+//     </div>
+//   </label>
+// );
+
+// Reusable Select Component
+// const Select = ({ label, options = [] }) => (
+//   <label className="block text-sm font-medium text-[#1A1A1A]">
+//     {label}
+//     <select className="mt-1 w-full h-[48px] bg-[#F5F5F5] rounded-lg px-4 text-sm text-[#484848] outline-none">
+//       <option>Select {label}</option>
+//       {options.map((opt, idx) => (
+//         <option key={idx}>{opt}</option>
+//       ))}
+//     </select>
+//   </label>
+// );
+
+// Reusable Textarea
+const Textarea = ({ label, placeholder }) => (
+    <label className="block text-sm font-medium text-[#1A1A1A]">
+        {label}
+        <textarea
+            rows={3}
+            placeholder={placeholder}
+            className="mt-1 w-full bg-[#F5F5F5] rounded-lg px-4 py-2 text-sm text-[#484848] outline-none"
+        />
+    </label>
+);
+
+export default LeadDetailsModal;

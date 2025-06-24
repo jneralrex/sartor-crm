@@ -25,6 +25,9 @@ const TaskNotesModal = ({ onCloseModal }) => {
 
                 </div>
 
+                <div>
+                    
+                </div>
             </div>
             {/* Modal */}
             {/* {isModalOpen && <QrCodeModal onCloseModal={handleModalToggle}/>}

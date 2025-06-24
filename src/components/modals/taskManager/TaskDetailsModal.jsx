@@ -1,16 +1,16 @@
 import { X } from 'lucide-react';
- import { useState } from 'react'
+import { useState } from 'react'
 import TaskNotesModal from './TaskNotesModal';
 import AssignToNewEmployee from './AssignToNewEmployee';
 import ReassignTaskModal from './ReassignTaskModal';
 import InvoiceModal from './InvoiceModal';
 
 
-const TaskDetailsModal = ({onClose}) => {
-      const [isModalOpen, setIsModalOpen] = useState(false);
-      const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
-      const [isReAssignModalOpen, setIsReAssignModalOpen] = useState(false);
-      const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+const TaskDetailsModal = ({ onClose }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+    const [isReAssignModalOpen, setIsReAssignModalOpen] = useState(false);
+    const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
 
 
     const handleModalToggle = () => {
@@ -25,7 +25,7 @@ const TaskDetailsModal = ({onClose}) => {
     const handleInvoiceModalToggle = () => {
         setIsInvoiceModalOpen((prev) => !prev);
     };
-   
+
 
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
@@ -41,28 +41,28 @@ const TaskDetailsModal = ({onClose}) => {
                 <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
 
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Tittle
+                        Tittle
 
                         <span className='text-[#484848] mt-2 w-[150px]'>
-                           Follow up on this Client: Tamsy Tech
+                            Follow up on this Client: Tamsy Tech
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Phone Number
 
                         <span className='text-[#484848] mt-2'>
-                          (847) 785-2310
+                            (847) 785-2310
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Employee's Name
+                        Employee's Name
 
                         <span className='text-[#484848] mt-2'>
-                           Liam Carter
+                            Liam Carter
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                         Date Created
+                        Date Created
 
                         <span className='text-[#484848] mt-2'>
                             12, Feb 2023
@@ -72,21 +72,21 @@ const TaskDetailsModal = ({onClose}) => {
                         Email Address
 
                         <span className='text-[#484848] mt-2'>
-                           karekal23@gmail.com
+                            karekal23@gmail.com
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Role
 
                         <span className='text-[#484848] mt-2'>
-                           Admin
+                            Admin
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Due On
+                        Due On
 
                         <span className='text-[#484848] mt-2'>
-                           14, Feb 2023
+                            14, Feb 2023
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -99,73 +99,73 @@ const TaskDetailsModal = ({onClose}) => {
                             Assigned
                         </span>
                     </label>
-                   
-                   
+
+
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Invoice
+                        Invoice
 
                         <span className='text-[#484848] underline mt-2' onClick={(e) => {
                             e.preventDefault();
                             handleInvoiceModalToggle();
                         }}>
-                           View Invoice
+                            View Invoice
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Payment Doc
+                        Payment Doc
 
                         <span className='text-[#484848] underline mt-2'>
-                           View Doc
+                            View Doc
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Payment Terms
+                        Payment Terms
 
                         <span className='text-[#484848] mt-2'>
-                           Payment On Delivery
+                            Payment On Delivery
                         </span>
                     </label>
                 </div>
-                 <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Description 
+                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                    Description
 
-                        <span className='text-[#484848] mt-2'>
-                           Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro explicabo ipsa ipsum adipisci! Quisquam, eaque.
-                        </span>
-                    </label>
+                    <span className='text-[#484848] mt-2'>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro explicabo ipsa ipsum adipisci! Quisquam, eaque.
+                    </span>
+                </label>
 
-                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       Notes from Employee
+                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                    Notes from Employee
 
-                        <span className='text-[#484848] mt-2'>
+                    <span className='text-[#484848] mt-2'>
                         N/A
-                        </span>
-                    </label>
+                    </span>
+                </label>
 
-                      <div className='flex gap-2'>
+                <div className='flex gap-2'>
 
-        <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" 
-        onClick={(e) => {
-          e.preventDefault();
-          handleReAssignModalToggle();
-        }} 
-        >
-          Reassign
-        </button>
-        <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
-          e.preventDefault();
-          handleAssignModalToggle();
-        }} >
-          Assign to Employee
-        </button>
-        </div>
-               
+                    <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleReAssignModalToggle();
+                        }}
+                    >
+                        Reassign
+                    </button>
+                    <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
+                        e.preventDefault();
+                        handleAssignModalToggle();
+                    }} >
+                        Assign to Employee
+                    </button>
+                </div>
+
             </div>
             {/* Modal */}
-            {isModalOpen && <TaskNotesModal onCloseModal={handleModalToggle}/>}
-            {isAssignModalOpen && <AssignToNewEmployee onClose={handleAssignModalToggle}/>}
-            {isReAssignModalOpen && <ReassignTaskModal onClose={handleReAssignModalToggle}/>}
-            {isInvoiceModalOpen && <InvoiceModal onClose={handleInvoiceModalToggle}/>}
+            {isModalOpen && <TaskNotesModal onCloseModal={handleModalToggle} />}
+            {isAssignModalOpen && <AssignToNewEmployee onClose={handleAssignModalToggle} />}
+            {isReAssignModalOpen && <ReassignTaskModal onClose={handleReAssignModalToggle} />}
+            {isInvoiceModalOpen && <InvoiceModal onClose={handleInvoiceModalToggle} />}
 
         </div>
     )

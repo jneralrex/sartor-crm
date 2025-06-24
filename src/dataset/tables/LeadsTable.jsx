@@ -1,5 +1,9 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
 import search from '../../assets/images/search.png';
+import { useState } from 'react';
+import AddLeadModal from '../../components/modals/leads/AddLeadModal';
+import { Menu } from '@headlessui/react'
+import LeadDetailsModal from '../../components/modals/leads/LeadDetailsModal';
 
 const allEmployees = [
   {
@@ -112,10 +116,19 @@ const allEmployees = [
   },
 ];
 const LeadsTable = ({ activeTab }) => {
+  const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false)
+  const [isLeadDetailsModalOpen, setLeadDetailsModalOpen] = useState(false)
   const filteredEmployees =
     activeTab === 'All Employees'
       ? allEmployees
       : allEmployees.filter((emp) => emp.position === activeTab);
+
+  const handleLeadModalToggle = () => {
+    setAddLeadModalOpen((prev => !prev))
+  }
+  const handleLeadDetailsModalToggle = () => {
+    setLeadDetailsModalOpen((prev => !prev))
+  }
   return (
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
@@ -128,7 +141,7 @@ const LeadsTable = ({ activeTab }) => {
           />
         </div>
         <div className="flex gap-2">
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans"><span><Plus /></span><span>Add Leads</span></button>
+          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans" onClick={handleLeadModalToggle}><span><Plus /></span><span>Add Leads</span></button>
           <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[14px] font-[sfpro]'>Download csv</span></buttton>
         </div>
       </div>
@@ -188,9 +201,30 @@ const LeadsTable = ({ activeTab }) => {
 
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.date}</td>
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
-                <td className="px-4 py-3 ">
-                  <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
-                </td>
+                <div className="relative">
+                  <Menu as="div" className="relative inline-block text-left">
+                    <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+                      <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
+
+                    </Menu.Button>
+
+                    <Menu.Items className="absolute p-4 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                      <div className="py-1">
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              className={`${active ? 'bg-gray-100' : ''
+                                } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                              onClick={handleLeadDetailsModalToggle}
+                            >
+                              View Details
+                            </button>
+                          )}
+                        </Menu.Item>
+                      </div>
+                    </Menu.Items>
+                  </Menu>
+                </div>
               </tr>
             ))}
           </tbody>
@@ -207,6 +241,9 @@ const LeadsTable = ({ activeTab }) => {
           <button className="px-2 py-1 border rounded">440</button>
         </div>
       </div>
+      {/* Modal */}
+      {isAddLeadModalOpen && <AddLeadModal onClose={handleLeadModalToggle} />}
+      {isLeadDetailsModalOpen && <LeadDetailsModal onClose={handleLeadDetailsModalToggle} />}
     </>
   );
 };
