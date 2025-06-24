@@ -1,13 +1,10 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { Menu } from '@headlessui/react'
-import {
-  ChevronDownIcon,
-
-} from '@heroicons/react/16/solid'
 import { useState } from 'react';
 import AssignEmployeeTask from '../../components/modals/employees/AssignEmployeeTask';
 import EmployeeDetails from '../../components/modals/employees/EmployeeDetails';
+import AddNewEmployeeModal from '../../components/modals/employees/AddNewEmployeeModal';
 
 const allEmployees = [
   {
@@ -46,15 +43,15 @@ const EmployeeTable = ({ activeTab }) => {
       : allEmployees.filter((emp) => emp.position === activeTab);
 
   const [isAssignTaskModalOpen, setAssignTaskModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [isAssignEmployeeModalOpen, setAssignEmployeeModalOpen] = useState(false);
   const [isEmployeeDetailsModalOpen, setEmployeeDetailsModalOpen] = useState(false);
 
   const handleAssignTaskModalToggle = () => {
     setAssignTaskModalOpen((prev) => !prev);
   };
 
-  const handleEditModalToggle = () => {
-    setEditModalOpen((prev) => !prev);
+  const handleAddEmployee = () => {
+    setAssignEmployeeModalOpen((prev) => !prev);
   };
   const handleEmployeeDetailsModalToggle = () => {
     setEmployeeDetailsModalOpen((prev) => !prev);
@@ -72,7 +69,7 @@ const EmployeeTable = ({ activeTab }) => {
           />
         </div>
         <div className="flex gap-2">
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans"><span><Plus /></span><span>Add Employee</span></button>
+          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans" onClick={handleAddEmployee}><span><Plus /></span><span>Add Employee</span></button>
           <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
         </div>
       </div>
@@ -176,6 +173,7 @@ const EmployeeTable = ({ activeTab }) => {
 {/* modals */}
 { isAssignTaskModalOpen && <AssignEmployeeTask onClose={handleAssignTaskModalToggle}/> }
 { isEmployeeDetailsModalOpen && <EmployeeDetails onClose={handleEmployeeDetailsModalToggle}/> }
+{isAssignEmployeeModalOpen && <AddNewEmployeeModal onClose={handleAddEmployee}/>}
     </>
   );
 };

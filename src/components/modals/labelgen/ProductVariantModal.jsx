@@ -13,7 +13,7 @@ const ProductVariantModal = ({ onClose }) => {
 
   return (
    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-      <div className="bg-primary_white p-6 shadow-lg max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
+      <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -26,7 +26,7 @@ const ProductVariantModal = ({ onClose }) => {
         </div>
 
         {/* Uploaded File Name Box */}
-        <div className='mb-4 py-4 rounded-md items-center max-w-[375px] grid grid-cols-2 gap-5'>
+        <div className='mb-4 py-4 rounded-md items-center max-w-[375px] grid grid-cols-2 gap-5 m-auto'>
           <img src={labelgen} alt="" className='rounded-md ' />
           <img src={labelgen} alt="" className='rounded-md ' />
           <img src={labelgen} alt="" className='rounded-md ' />
@@ -34,14 +34,15 @@ const ProductVariantModal = ({ onClose }) => {
           <img src={labelgen} alt="" className='rounded-md ' />
           <img src={labelgen} alt="" className='rounded-md ' />
         </div>
-        
+              <div className='m-auto w-full max-w-[375px]'>
+
         <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[375px]" onClick={(e) => {
           e.preventDefault();
           handleModalToggle();
         }} >
           Continue with Variant
         </button>
-         {/* Proceed Button */}
+      </div>
       </div>
       {/* Modal */}
       {isModalOpen && <QrCodeModal onCloseModal={handleModalToggle} />}

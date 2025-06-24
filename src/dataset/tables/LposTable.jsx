@@ -1,5 +1,9 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
 import search from '../../assets/images/search.png';
+import { Menu } from '@headlessui/react'
+import { useState } from 'react';
+import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
+import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
 
 const allLPOs = [
   {
@@ -54,6 +58,18 @@ const LposTable = ({ activeTab }) => {
     activeTab === 'All Employees'
       ? allLPOs
       : allLPOs.filter((lpo) => lpo.position === activeTab);
+
+  const [isViewLpoModalOpen, setViewLpoModalOpen] = useState(false);
+  const [isCreateLopModalOpen, setCreateLpoModal] = useState(false)
+
+  const handleViewLpoModalToggle = () => {
+    setViewLpoModalOpen((prev) => !prev);
+  };
+
+ const handleCreateLpoModal = () => {
+  setCreateLpoModal((prev => !prev))
+ }
+
   return (
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20 ">
@@ -66,7 +82,7 @@ const LposTable = ({ activeTab }) => {
           />
         </div>
         <div className="flex gap-2">
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans"><span><Plus /></span><span>Create LPO</span></button>
+          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans" onClick={handleCreateLpoModal}><span><Plus /></span><span>Create LPO</span></button>
           <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px] text-[12px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
         </div>
       </div>
@@ -128,7 +144,32 @@ const LposTable = ({ activeTab }) => {
                 <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">{emp.date}</td>
                 <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">{emp.amount}</td>
                 <td className="px-4 py-3 ">
-                  <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
+                  {/* Menu Dropdown */}
+                  <div className="relative">
+                    <Menu as="div" className="relative inline-block text-left">
+                      <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+                        <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
+
+                      </Menu.Button>
+
+                      <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                        <div className="py-1">
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''
+                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={handleViewLpoModalToggle}
+                              >
+                                View Details
+                              </button>
+                            )}
+                          </Menu.Item>
+
+                        </div>
+                      </Menu.Items>
+                    </Menu>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -146,6 +187,8 @@ const LposTable = ({ activeTab }) => {
           <button className="px-2 py-1 border rounded">440</button>
         </div>
       </div>
+      {isViewLpoModalOpen && <LpoDetailsModal onClose={handleViewLpoModalToggle}/>}
+      {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal}/> }
     </>
   );
 };

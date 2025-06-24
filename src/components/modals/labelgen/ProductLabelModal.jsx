@@ -12,7 +12,7 @@ const ProductLabelModal = ({ onCloseModal }) => {
   
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-      <div className="bg-primary_white p-6 shadow-lg max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
+      <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar ">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -25,7 +25,7 @@ const ProductLabelModal = ({ onCloseModal }) => {
         </div>
 
         {/* Uploaded File Name Box */}
-        <div className='flex flex-col justify-center bg-[#F5F5F5] mb-4 py-4 rounded-md items-center h-[143px] max-w-[375px]'>
+        <div className='flex flex-col justify-center bg-[#F5F5F5] mb-4 py-4 rounded-md items-center h-[143px] max-w-[375px] m-auto'>
           <div className=" text-sm text-center text-[#767676] font-medium ">
             Sator_label.png
 
@@ -41,7 +41,7 @@ const ProductLabelModal = ({ onCloseModal }) => {
         </div>
 
         {/* Image Preview Section */}
-        <div className="bg-[#4B4B4B] rounded-md mb-4 justify-center max-w-[375px]">
+        <div className="bg-[#4B4B4B] rounded-md mb-4 justify-center max-w-[375px] m-auto">
           {/* <p className="text-white text-sm font-medium mb-2">Sartor Instant Hand Sanitizer</p> */}
           <img
             src={labelgen} 
@@ -50,13 +50,16 @@ const ProductLabelModal = ({ onCloseModal }) => {
           />
         </div>
 
+      <div className='m-auto w-full max-w-[375px]'>
+
         {/* Proceed Button */}
-        <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[375px]" onClick={(e) => {
+        <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold  " onClick={(e) => {
               e.preventDefault();
               handleModalToggle();
             }} >
           Proceed with image
         </button>
+      </div>
       </div>
             {/* Modal */}
             {isModalOpen && <ProductVariantModal onClose={handleModalToggle} />}

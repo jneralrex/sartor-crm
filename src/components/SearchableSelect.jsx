@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { ChevronDown, SearchIcon } from 'lucide-react';
 
-const SearchableSelect = ({ options, placeholder = 'Select an option', onChange }) => {
+const SearchableSelect = ({ options, placeholder = 'Select Employee here', onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(null);
+  const dropdownRef = useRef();
 
   const filteredOptions = options.filter((option) =>
     option.toLowerCase().includes(query.toLowerCase())
@@ -11,51 +13,58 @@ const SearchableSelect = ({ options, placeholder = 'Select an option', onChange 
 
   const handleSelect = (option) => {
     setSelected(option);
-    onChange && onChange(option);
-    setIsOpen(false);
     setQuery('');
+    setIsOpen(false);
+    onChange && onChange(option);
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
   return (
-    <div className="relative w-full max-w-xs"
-     onClick={(e) => e.stopPropagation()}>
-      {/* Selected button */}
+    <div className="relative w-full" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full border border-gray-300 bg-white rounded-md px-4 py-2 text-left text-sm text-gray-800 shadow-sm focus:outline-none"
+        type="button"
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="w-full flex justify-between items-center text-[#484848] text-sm font-medium h-12 px-4 rounded-md focus:outline-none"
       >
         {selected || placeholder}
+        <ChevronDown size={18} />
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-          {/* Search Input */}
+        <div className="absolute w-full mt-2 bg-white shadow-lg p-5 rounded-md">
+          <div className='flex items-center bg-primary_grey w-full p-2 rounded-md'>
+             <SearchIcon/>
           <input
             type="text"
-            className="w-full px-3 py-2 text-sm border-b border-gray-200 focus:outline-none"
-            placeholder="Search..."
+            placeholder="Search Employee Name or email address"
+            className="w-full p-3 text-sm outline-none focus:outline-none bg-transparent"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-
-          {/* Options */}
-          <ul className="max-h-48 overflow-y-auto">
+          </div>
+         
+          <ul className="max-h-60 overflow-y-auto mt-5">
             {filteredOptions.length > 0 ? (
-              filteredOptions.map((option, idx) => (
+              filteredOptions.map((option, index) => (
                 <li
-                  key={idx}
-                //   onClick={() => handleSelect(option)}
-                  onClick={(e) => {
-          e.preventDefault();
-          handleSelect(option);
-        }} 
-                  className="px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 cursor-pointer"
+                  key={index}
+                  className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer rounded-md"
+                  onClick={() => handleSelect(option)}
                 >
                   {option}
                 </li>
               ))
             ) : (
-              <li className="px-4 py-2 text-sm text-gray-500">No results found</li>
+              <li className="px-4 py-2 text-sm text-gray-400">No results found</li>
             )}
           </ul>
         </div>

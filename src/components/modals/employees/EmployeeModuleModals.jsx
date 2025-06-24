@@ -1,19 +1,13 @@
-import { X } from 'lucide-react';
-import React, { useState } from 'react';
-import EmployeeModuleModals from './EmployeeModuleModals';
+import { X } from 'lucide-react'
+import React from 'react'
 
-const AddNewEmployeeModal = ({ onClose }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const handleModalToggle = () => {
-        setIsModalOpen((prev) => !prev);
-    };
-    return (
-        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+const EmployeeModuleModals = ({onClose}) => {
+  return (
+     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
                 <div className='flex items-center justify-between'>
                     <div>
-                        <h2 className="text-sm md:text-[20px] font-semibold text-[#1A1A1A] mb-1">Add A New Employee</h2>
+                        <h2 className="text-sm md:text-[20px] font-semibold text-[#1A1A1A] mb-1">Modules</h2>
                     </div>
                     <button
                         onClick={onClose}
@@ -24,7 +18,7 @@ const AddNewEmployeeModal = ({ onClose }) => {
                 </div>
                 <div>
 
-                    <form action="" className='flex flex-col gap-5 mt-5'>
+                    {/* <form action="" className='flex flex-col gap-5 mt-5'>
                         <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Full Name
                             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
                                 <input type="text" placeholder='Full Name' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
@@ -56,13 +50,16 @@ const AddNewEmployeeModal = ({ onClose }) => {
                         }} >
                             Set up module
                         </button>
-                    </form>
+                    </form> */}
+                    <div>
+                        coming soon
+                    </div>
                 </div>
             </div>
             {/* Modal */}
-            {isModalOpen && <EmployeeModuleModals onClose={handleModalToggle} />}
+            {/* {isModalOpen && <ProductLabelModal onCloseModal={handleModalToggle} />} */}
         </div>
-    )
+  )
 }
 
-export default AddNewEmployeeModal
+export default EmployeeModuleModals

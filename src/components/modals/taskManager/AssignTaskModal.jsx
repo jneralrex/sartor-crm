@@ -34,7 +34,7 @@ const AssignTaskModal = ({ onClose }) => {
                         <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
                             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
                                 <SearchableSelect
-                                    options={['Lagos', 'Abuja', 'Kano', 'Ibadan', 'Port Harcourt']}
+                                    options={['James John', 'Matty Minny', 'Josh Sam', 'Abby Micheal', 'Lisa Tran']}
                                     onChange={handleSelect}
                                 />              </div>
                         </label>
