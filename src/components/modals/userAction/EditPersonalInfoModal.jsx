@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Pencil, X } from 'lucide-react';
-// import defaultAvatar from '../assets/images/default-avatar.png'; // optional
 
 const EditPersonalInfoModal = ({ onClose }) => {
     const [fullName, setFullName] = useState('');
@@ -17,7 +16,6 @@ const EditPersonalInfoModal = ({ onClose }) => {
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-[99]">
             <div className="bg-white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] md:h-[480px] rounded-xl overflow-y-auto hide-scrollbar relative">
 
-                {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-[20px] font-semibold text-[#333843]">Edit Personal Info</h2>
                     <button onClick={onClose}>
@@ -51,30 +49,28 @@ const EditPersonalInfoModal = ({ onClose }) => {
 
 
                 <div className='h-full flex flex-col justify-between'>
-                     {/* Full Name Input */}
 
-                <div className="mb-8">
-                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
-                    </label>
-                    <input
-                        id="fullName"
-                        type="text"
-                        placeholder="Full name"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 outline-none"
-                    />
+                    <div className="mb-8">
+                        <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-2">
+                            Full Name
+                        </label>
+                        <input
+                            id="fullName"
+                            type="text"
+                            placeholder="Full name"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="w-full px-4 py-2 rounded-md bg-gray-100 text-gray-800 outline-none"
+                        />
+                    </div>
+
+                    <button
+                        className=" w-full py-3 bg-primary_blue text-white rounded-md text-sm font-semibold hover:opacity-90 transition"
+                    >
+                        Confirm Changes
+                    </button>
                 </div>
 
-                {/* Confirm Button */}
-                <button
-                    className=" w-full py-3 bg-primary_blue text-white rounded-md text-sm font-semibold hover:opacity-90 transition"
-                >
-                    Confirm Changes
-                </button>
-                </div>
-               
             </div>
 
 

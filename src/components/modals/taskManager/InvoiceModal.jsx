@@ -2,10 +2,10 @@ import { ArrowLeft } from 'lucide-react';
 import ProductDetails from './ProductDetails';
 import { useState } from 'react';
 
-const InvoiceModal = ({onClose}) => {
-       const [isProductDetailsModalOpen, setProductDetailsModalOpen] = useState(false);
+const InvoiceModal = ({ onClose }) => {
+    const [isProductDetailsModalOpen, setProductDetailsModalOpen] = useState(false);
 
-     const handleProductDetailsModalToggle = () => {
+    const handleProductDetailsModalToggle = () => {
         setProductDetailsModalOpen((prev) => !prev);
     };
     return (
@@ -24,7 +24,6 @@ const InvoiceModal = ({onClose}) => {
                     </div>
                 </div>
 
-                {/* Uploaded File Name Box */}
                 <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
 
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -35,7 +34,7 @@ const InvoiceModal = ({onClose}) => {
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                       ID
+                        ID
 
                         <span className='text-[#484848] mt-2'>
                             INV2231-12
@@ -59,7 +58,7 @@ const InvoiceModal = ({onClose}) => {
                         Amount To Pay
 
                         <span className='text-[#484848] mt-2'>
-                           NGN12,322,000
+                            NGN12,322,000
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -77,7 +76,7 @@ const InvoiceModal = ({onClose}) => {
                         </span>
                     </label>
 
-                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                    <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Due On
 
                         <span className='text-[#484848] mt-2'>
@@ -102,30 +101,30 @@ const InvoiceModal = ({onClose}) => {
                         Address
 
                         <span className='text-[#484848] mt-2'>
-                           12 Jakande Street Lagos
+                            12 Jakande Street Lagos
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                    Payment Terms 
+                        Payment Terms
 
-                    <span className='text-[#484848] mt-2'>
-                    Payment on delivery
-                    </span>
-                </label>
+                        <span className='text-[#484848] mt-2'>
+                            Payment on delivery
+                        </span>
+                    </label>
                 </div>
 
                 <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                    Product(s) 
+                    Product(s)
 
                     <span className='text-[#484848] mt-2 flex flex-row items-center'>
-                   <ul className='grid grid-cols-2 list-disc gap-x-10'>
-                    <li>Bag of cement x 2</li>
-                    <li>Bag of corn x 4</li>
-                    <li>Bag of corn x 4</li>
-                    <li>Bag of corn x 4</li>
-                   </ul>
+                        <ul className='grid grid-cols-2 list-disc gap-x-10'>
+                            <li>Bag of cement x 2</li>
+                            <li>Bag of corn x 4</li>
+                            <li>Bag of corn x 4</li>
+                            <li>Bag of corn x 4</li>
+                        </ul>
 
-                   <div className='underline text-primary_blue'onClick={(e) => {
+                        <div className='underline text-primary_blue' onClick={(e) => {
                             e.preventDefault();
                             handleProductDetailsModalToggle();
                         }}>View More </div>
@@ -137,13 +136,12 @@ const InvoiceModal = ({onClose}) => {
                     e.preventDefault();
                     // handleModalToggle();
                 }} >
-                   Download Invoice
+                    Download Invoice
                 </button>
 
             </div>
             {/* Modal */}
-            {/* {isModalOpen && <TaskNotesModal onCloseModal={handleModalToggle} />} */}
-            {isProductDetailsModalOpen && <ProductDetails onClose={handleProductDetailsModalToggle}/>}
+            {isProductDetailsModalOpen && <ProductDetails onClose={handleProductDetailsModalToggle} />}
 
         </div>
     )

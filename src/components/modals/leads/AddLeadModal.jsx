@@ -60,7 +60,7 @@ const AddLeadModal = ({ onClose }) => {
                 <Plus size={16} />
                 <span>Add Contact Person 2</span>
               </div>
-                <button
+              <button
                 type="submit"
                 className="w-full py-3 bg-primary_blue text-white font-semibold rounded-lg"
               >

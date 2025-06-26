@@ -11,7 +11,6 @@ const AssignTaskModal = ({ onClose }) => {
 
     const handleSelect = (e) => {
         e.preventDefault()
-        // console.log('Selected:', value);
     };
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
@@ -31,14 +30,14 @@ const AssignTaskModal = ({ onClose }) => {
 
                     <form action="" className='flex flex-col gap-5 mt-5'>
 
-                        <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
+                        <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Select Employee
                             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
                                 <SearchableSelect
                                     options={['James John', 'Matty Minny', 'Josh Sam', 'Abby Micheal', 'Lisa Tran']}
                                     onChange={handleSelect}
                                 />              </div>
                         </label>
-                        
+
                         <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Title of Task
                             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
                                 <input type="text" placeholder='Title of Task' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
@@ -46,7 +45,7 @@ const AssignTaskModal = ({ onClose }) => {
                         </label>
                         <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Description
                             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                                <input type="text" placeholder='Description' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
+                                <textarea type="text" placeholder='Description' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full'></textarea>
                             </div>
                         </label>
                         <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Due Date

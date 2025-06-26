@@ -26,7 +26,6 @@ const QrCodeDetailsModal = ({ onCloseModal }) => {
                     </button>
                 </div>
 
-                {/* Uploaded File Name Box */}
                 <div className="mb-4 py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
 
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -98,7 +97,7 @@ const QrCodeDetailsModal = ({ onCloseModal }) => {
                             View Document
                         </span>
                     </label>
-                  
+
                 </div>
 
                 {/* Proceed Button */}

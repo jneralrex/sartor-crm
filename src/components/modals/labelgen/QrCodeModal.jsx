@@ -1,7 +1,6 @@
 import { X } from 'lucide-react';
 import { useState } from 'react';
 import lqrcode from '../../../assets/images/qrcode.png'
-import ProductLabelModal from './ProductLabelModal'
 import QrCodeDetailsModal from './QrCodeDetailsModal';
 
 
@@ -23,7 +22,6 @@ const [isModalOpen, setIsModalOpen] = useState(false);
           </button>
       </div>
 
-        {/* Uploaded File Name Box */}
         <div className='mb-4 py-4 rounded-md items-center max-w-[375px] gap-5 flex justify-center'>
             <img src={lqrcode} alt="" srcset="" />
         </div>

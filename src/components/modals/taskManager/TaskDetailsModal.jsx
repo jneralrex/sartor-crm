@@ -37,7 +37,6 @@ const TaskDetailsModal = ({ onClose }) => {
                     </button>
                 </div>
 
-                {/* Uploaded File Name Box */}
                 <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
 
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">

@@ -2,9 +2,9 @@ import {
   Route,
   createBrowserRouter,
   createRoutesFromElements,
-  RouterProvider
+  RouterProvider,
+  Navigate
 } from 'react-router-dom'
-// import Login from './authentication/Login'
 import Drawer from './components/Drawer'
 import Overview from './pages/Overview'
 import TaskManager from './pages/TaskManager'
@@ -14,35 +14,35 @@ import Leads from './pages/Leads'
 import Customers from './pages/Customers'
 import Invoices from './pages/Invoices'
 import ConvertLabelGen from './pages/ConvertLabelGen'
+import LoginPage from './pages/auth/LoginPage'
+import ForgotPassword from './pages/auth/ForgotPassword'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
+      {/* Redirect root to login */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
       {/* Public Routes */}
-      {/* <Route path='/' element={<Login />} /> */}
+      <Route path="login" element={<LoginPage />} />
+      <Route path="forgot-password" element={<ForgotPassword />} />
 
       {/* Protected Routes */}
-        <Route path='' element={<Drawer />}>
-        <Route path='/' element={<Overview/>} />
-        <Route path='task-manager' element={<TaskManager />} />
-        <Route path='employees' element={<Employees />} />
-        <Route path='lpos' element={<Lpos />} />
-        <Route path='leads' element={<Leads />} />
-        <Route path='customers' element={<Customers />} />
-        <Route path='invoices' element={<Invoices />} />
-        <Route path='label-gen' element={<ConvertLabelGen />} />
-        {/* <Route path='logout' element={<Logout />} /> */}
-        {/* <Route path='*' element={<NotFound />} /> */}
-        </Route>
-
+      <Route path="" element={<Drawer />}>
+        <Route path="overview" element={<Overview />} />
+        <Route path="task-manager" element={<TaskManager />} />
+        <Route path="employees" element={<Employees />} />
+        <Route path="lpos" element={<Lpos />} />
+        <Route path="leads" element={<Leads />} />
+        <Route path="customers" element={<Customers />} />
+        <Route path="invoices" element={<Invoices />} />
+        <Route path="label-gen" element={<ConvertLabelGen />} />
+      </Route>
     </Route>
   )
 )
- 
 
 const App = () => {
   return <RouterProvider router={router} />
 }
-
 
 export default App

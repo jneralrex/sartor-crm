@@ -4,23 +4,13 @@ import { X } from 'lucide-react';
 
 const EmployeeDetails = ({onClose}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
-    const [isReAssignModalOpen, setIsReAssignModalOpen] = useState(false);
-    const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  
 
 
     const handleModalToggle = () => {
         setIsModalOpen((prev) => !prev);
     };
-    const handleAssignModalToggle = () => {
-        setIsAssignModalOpen((prev) => !prev);
-    };
-    const handleReAssignModalToggle = () => {
-        setIsReAssignModalOpen((prev) => !prev);
-    };
-    const handleInvoiceModalToggle = () => {
-        setIsInvoiceModalOpen((prev) => !prev);
-    };
+   
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
@@ -31,7 +21,6 @@ const EmployeeDetails = ({onClose}) => {
                     </button>
                 </div>
 
-                {/* Uploaded File Name Box */}
                 <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
 
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">

@@ -4,10 +4,7 @@ import SearchableSelect from '../../SearchableSelect';
 
 const LeadDetailsModal = ({ onClose }) => {
     const [activeTab, setActiveTab] = useState('basic');
-    const handleSelect = (e) => {
-        e.preventDefault()
-        // console.log('Selected:', value);
-    };
+   
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-white w-[90%] max-w-[455px] h-[95vh] rounded-xl shadow-lg overflow-y-auto hide-scrollbar">
@@ -111,16 +108,12 @@ const LeadDetailsModal = ({ onClose }) => {
                                     </span>
                                 </label>
                             </div>
-                            <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                                Select Status
+                            <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Select Status
+                            <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
+                                <Select options={['Status1', 'Status2']} />
 
-                                <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                                    <SearchableSelect
-                                        options={['Peak Milk Powdered', 'Matty Minny', 'Josh Sam', 'Abby Micheal', 'Lisa Tran']}
-                                        onChange={handleSelect}
-                                    />
-                                </div>
-                            </label>
+                            </div>
+                        </label>
                             <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                                 Company Address (Head Office)
 
@@ -129,29 +122,29 @@ const LeadDetailsModal = ({ onClose }) => {
                                 </span>
                             </label>
                             <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-                               
+
 
                                 <span className='text-[#484848] underline mt-2'>
                                     Notes From Sales Rep
                                 </span>
                             </label>
-                             <div className='flex gap-2'>
+                            <div className='flex gap-2'>
 
-                    <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleReAssignModalToggle();
-                        }}
-                    >
-                        Update Status
-                    </button>
-                    <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
-                        e.preventDefault();
-                        handleAssignModalToggle();
-                    }} >
-                        Visited
-                    </button>
-                </div>
+                                <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleReAssignModalToggle();
+                                    }}
+                                >
+                                    Update Status
+                                </button>
+                                <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
+                                    e.preventDefault();
+                                    handleAssignModalToggle();
+                                }} >
+                                    Visited
+                                </button>
+                            </div>
                         </>
                     )}
 
@@ -180,43 +173,20 @@ const LeadDetailsModal = ({ onClose }) => {
     );
 };
 
-// Reusable Input Component
-// const Input = ({ label, placeholder }) => (
-//   <label className="block text-sm font-medium text-[#1A1A1A]">
-//     {label}
-//     <div className="mt-1 bg-[#F5F5F5] rounded-lg h-[48px] flex items-center px-4">
-//       <input
-//         type="text"
-//         placeholder={placeholder}
-//         className="w-full bg-transparent outline-none text-sm placeholder:text-[#484848]"
-//       />
-//     </div>
-//   </label>
-// );
+
 
 // Reusable Select Component
-// const Select = ({ label, options = [] }) => (
-//   <label className="block text-sm font-medium text-[#1A1A1A]">
-//     {label}
-//     <select className="mt-1 w-full h-[48px] bg-[#F5F5F5] rounded-lg px-4 text-sm text-[#484848] outline-none">
-//       <option>Select {label}</option>
-//       {options.map((opt, idx) => (
-//         <option key={idx}>{opt}</option>
-//       ))}
-//     </select>
-//   </label>
-// );
-
-// Reusable Textarea
-const Textarea = ({ label, placeholder }) => (
-    <label className="block text-sm font-medium text-[#1A1A1A]">
+const Select = ({ label, options = [] }) => (
+    <label className="block text-sm font-medium text-[#1A1A1A] w-full">
         {label}
-        <textarea
-            rows={3}
-            placeholder={placeholder}
-            className="mt-1 w-full bg-[#F5F5F5] rounded-lg px-4 py-2 text-sm text-[#484848] outline-none"
-        />
+        <select className=' bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'>
+            <option>Select {label}</option>
+            {options.map((opt, idx) => (
+                <option key={idx}>{opt}</option>
+            ))}
+        </select>
     </label>
 );
+
 
 export default LeadDetailsModal;

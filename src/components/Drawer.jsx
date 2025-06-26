@@ -13,7 +13,7 @@ import lposIcon from './../assets/images/money.png'
 import logo from '../assets/images/logo.png';
 
 const menuItems = [
-  { label: 'Overview', path: '/', icon: overViewIcon, isEmoji: false },
+  { label: 'Overview', path: 'overview', icon: overViewIcon, isEmoji: false },
   { label: 'Task Manager', path: '/task-manager', icon: taskManagerIcon, isEmoji: false },
   { label: 'Employees', path: '/employees', icon: employeesIcon, isEmoji: false },
   { label: 'LPOs', path: '/lpos', icon: lposIcon, isEmoji: false },

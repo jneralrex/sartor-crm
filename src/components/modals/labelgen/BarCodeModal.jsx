@@ -21,7 +21,6 @@ return(
           </button>
       </div>
 
-        {/* Uploaded File Name Box */}
         <div className='mb-4 py-4 rounded-md items-center max-w-[375px] gap-5 flex justify-center'>
             <img src={barcode} alt="" srcset="" />
         </div>
