@@ -1,41 +1,70 @@
 import React, { useState } from 'react';
 import { Check, Eye, EyeOff, OctagonAlert } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import logo from '../../assets/images/logo.png'; // Adjust the path as necessary
+import { Link, useNavigate } from 'react-router-dom';
+import logo from '../../assets/images/logo.png';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [snackbar, setSnackbar] = useState(null); // { type: 'error' | 'success', message: string }
+  const [snackbar, setSnackbar] = useState(null);
+  const [loginDetails, setLoginDetails] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+    const { setToken } = useAuth();
 
-  const handleSubmit = (e) => {
+
+
+  const handleChange = (e) => {
+    setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Fake validation
-    const isValid = !false;
+    try {
+      const res = await axios.post( VITE_API_URL + 'auth/login', loginDetails);
+        console.log(`API URL: ${VITE_API_URL}`);
+        console.log(res)
 
-      if (isValid) {
-      setSnackbar({ type: 'success', 
-        message: (
+      if (res.status === 200) {
+       setToken(res.data.data.token); 
+        setSnackbar({
+          type: 'success',
+          message: (
             <span className="flex items-center gap-2">
-                <Check className="w-4 h-4"/>
-                Login successful!
+              <Check className="w-4 h-4" />
+              Login successful!
             </span>
-        ) ,
-    });
-
-    } else {
+          ),
+        });
+        setTimeout(() => {
+          setSnackbar(null);
+          navigate('/overview');
+        }, 1500);
+      } else {
+        setSnackbar({
+          type: 'error',
+          message: (
+            <span className="flex items-center gap-2">
+              <OctagonAlert className="w-4 h-4" />
+              {res.data.message || 'Login failed. An Error occurred.'}
+            </span>
+          ),
+        });
+      }
+    } catch (error) {
       setSnackbar({
         type: 'error',
         message: (
           <span className="flex items-center gap-2">
             <OctagonAlert className="w-4 h-4" />
-            Invalid email or password. Please try again.
+            {error.response?.data?.message || 'Login failed. An Error occurred.'}
           </span>
         ),
       });
     }
 
-    // Hide snackbar after 5 seconds
     setTimeout(() => setSnackbar(null), 5000);
   };
 
@@ -49,9 +78,9 @@ const LoginPage = () => {
           {snackbar.message}
         </div>
       )}
-        <div className='w-full max-w-sm text-center mb-8 flex flex-col items-center'>
-            <img src={logo} alt="Logo" className="w-24 mx-auto mb-6" />
-        </div>
+      <div className='w-full max-w-sm text-center mb-8 flex flex-col items-center'>
+        <img src={logo} alt="Logo" className="w-24 mx-auto mb-6" />
+      </div>
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-sm">
         <div className="text-center mb-6">
           <h1 className="text-[22px] font-semibold text-[#1A1A1A]">Log In</h1>
@@ -63,7 +92,10 @@ const LoginPage = () => {
             <label htmlFor="email" className="text-sm font-semibold text-[#1A1A1A] block mb-1">Email Address</label>
             <input
               id="email"
+              name="email"
               type="email"
+              value={loginDetails.email}
+              onChange={handleChange}
               placeholder="Your email address here"
               className="w-full px-4 py-3 border border-gray-300 rounded-md placeholder:text-sm text-[#484848] focus:outline-none"
               required
@@ -75,7 +107,10 @@ const LoginPage = () => {
             <div className="relative">
               <input
                 id="password"
+                name="password"
                 type={showPassword ? 'text' : 'password'}
+                value={loginDetails.password}
+                onChange={handleChange}
                 placeholder="Your password here"
                 className="w-full px-4 py-3 border border-gray-300 rounded-md placeholder:text-sm text-[#484848] pr-10 focus:outline-none"
                 required
@@ -89,7 +124,7 @@ const LoginPage = () => {
               </button>
             </div>
             <div className="text-right mt-1">
-              <a href="forgot-password" className="text-sm text-primary_blue font-medium hover:underline">Forgot password?</a>
+              <Link to="/forgot-password" className="text-sm text-primary_blue font-medium hover:underline">Forgot password?</Link>
             </div>
           </div>
 
@@ -97,9 +132,7 @@ const LoginPage = () => {
             type="submit"
             className="bg-primary_blue text-white font-semibold py-3 rounded-md text-sm"
           >
-           <Link to="/overview">
             Log In
-           </Link>
           </button>
         </form>
       </div>

@@ -1,134 +1,54 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
 import search from '../../assets/images/search.png';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddLeadModal from '../../components/modals/leads/AddLeadModal';
 import { Menu } from '@headlessui/react'
 import LeadDetailsModal from '../../components/modals/leads/LeadDetailsModal';
+import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
 
-const allEmployees = [
-  {
-    id: 'SMX0221-01',
-    name: 'Liam Everhart',
-    email: 'liam@example.com',
-    source: 'Online',
-    status: 'New',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-02',
-    name: 'Elijah Kensington',
-    email: 'elijah@admin.com',
-    source: 'Online',
-    status: 'Contacted',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Online',
-    status: 'Order Fulfilled',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Online',
-    status: 'Follow up',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Online',
-    status: 'Qualified',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Online',
-    status: 'Interested',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Online',
-    status: 'Hold',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Manager',
-    status: 'In-Negotiation',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Sales Rep',
-    status: 'LPO Generated',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Online',
-    status: 'Closed Won',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Manager',
-    status: 'Closed Lost',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    source: 'Sales Rep',
-    status: 'Payment Confirmed',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-  },
-];
-const LeadsTable = ({ activeTab }) => {
-  const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false)
-  const [isLeadDetailsModalOpen, setLeadDetailsModalOpen] = useState(false)
-  const filteredEmployees =
-    activeTab === 'All Employees'
-      ? allEmployees
-      : allEmployees.filter((emp) => emp.position === activeTab);
+const LeadsTable = () => {
+  const { token } = useAuth();
+
+  const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false);
+  const [isLeadDetailsModalOpen, setLeadDetailsModalOpen] = useState(false);
+  const [getAllLeads, setGetAllLeads] = useState([]);
+  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
+
+
+  const filteredEmployees = getAllLeads;
+
 
   const handleLeadModalToggle = () => {
     setAddLeadModalOpen((prev => !prev))
   }
-  const handleLeadDetailsModalToggle = () => {
-    setLeadDetailsModalOpen((prev => !prev))
-  }
+
+const handleLeadDetailsModalToggle = (id) => {
+  setSelectedLeadId(id);
+  setLeadDetailsModalOpen(true);
+};
+
+
+  const allLeads = async () => {
+    try {
+      const res = await axios.get(`${VITE_API_URL}leads?page=1&limit=100`, {
+        headers: {
+          's-token': token,
+        },
+      });
+
+      setGetAllLeads(res.data.data.leads);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  useEffect(() => {
+    allLeads();
+  }, [token]);
+
   return (
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
@@ -161,51 +81,47 @@ const LeadsTable = ({ activeTab }) => {
           </thead>
           <tbody>
             {filteredEmployees.map((emp) => (
-              <tr key={emp.id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.id}</td>
-                <td className="px-4 py-3 flex items-center gap-2">
-
-                  <div>
-                    <div className="font-medium text-xs md:text-[14px] text-[#484848]">{emp.name}</div>
-                    <div className="text-xs text-[#484848]">{emp.email}</div>
-                  </div>
+              <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.userId}</td>
+                <td className="px-4 py-3">
+                  <div className="font-medium text-xs md:text-[14px] text-[#484848]">{emp.name}</div>
+                  <div className="text-xs text-[#484848]">{emp.email}</div>
                 </td>
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.source}</td>
-                <td className={`px-4 py-3  text-xs md:text-[14px] font-normal ${emp.status === 'New'
-                  ? ' text-[#000068]'
-                  : emp.status === 'Contacted'
-                    ? ' text-[#FFB400]'
-                    : emp.status === 'Order Fulfilled'
-                      ? ' text-[#FF7105]'
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.source || '---'}</td>
+                <td className={`px-4 py-3 text-xs md:text-[14px] font-normal ${emp.status === 'New'
+                    ? 'text-[#000068]'
+                    : emp.status === 'Contacted'
+                      ? 'text-[#FFB400]'
                       : emp.status === 'Closed Lost'
-                        ? ' text-[#FF3B30]'
+                        ? 'text-[#FF3B30]'
                         : emp.status === 'Qualified'
-                          ? ' text-[#6666D2]'
+                          ? 'text-[#6666D2]'
                           : emp.status === 'Interested'
-                            ? ' text-[#768B00]'
+                            ? 'text-[#768B00]'
                             : emp.status === 'Hold'
-                              ? ' text-[#FF3B30]'
+                              ? 'text-[#FF3B30]'
                               : emp.status === 'In-Negotiation'
-                                ? ' text-[#A97B0E]'
+                                ? 'text-[#A97B0E]'
                                 : emp.status === 'LPO Generated'
-                                  ? ' text-[#1A1A1A]'
+                                  ? 'text-[#1A1A1A]'
                                   : emp.status === 'Closed Won'
-                                    ? ' text-[#00D743]'
+                                    ? 'text-[#00D743]'
                                     : emp.status === 'Payment Confirmed'
-                                      ? ' text-[#D300D7]'
+                                      ? 'text-[#D300D7]'
                                       : emp.status === 'Follow up'
-                                        ? ' text-[#12D1E2]'
-                                        : ' text-gray-500'
-                  }
-      `}>{emp.status}</td>
-
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.date}</td>
+                                        ? 'text-[#12D1E2]'
+                                        : 'text-gray-500'
+                  }`}>
+                  {emp.status}
+                </td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                  {new Date(emp.creationDateTime).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
-                <div className="relative">
+                <td className="px-4 py-3">
                   <Menu as="div" className="relative inline-block text-left">
                     <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                      <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
-
+                      <Ellipsis />
                     </Menu.Button>
 
                     <Menu.Items className="absolute p-4 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
@@ -213,9 +129,8 @@ const LeadsTable = ({ activeTab }) => {
                         <Menu.Item>
                           {({ active }) => (
                             <button
-                              className={`${active ? 'bg-gray-100' : ''
-                                } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                              onClick={handleLeadDetailsModalToggle}
+                              className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                              onClick={() => handleLeadDetailsModalToggle(emp._id)}
                             >
                               View Details
                             </button>
@@ -224,10 +139,11 @@ const LeadsTable = ({ activeTab }) => {
                       </div>
                     </Menu.Items>
                   </Menu>
-                </div>
+                </td>
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
 
@@ -243,8 +159,8 @@ const LeadsTable = ({ activeTab }) => {
       </div>
       {/* Modal */}
       {isAddLeadModalOpen && <AddLeadModal onClose={handleLeadModalToggle} />}
-      {isLeadDetailsModalOpen && <LeadDetailsModal onClose={handleLeadDetailsModalToggle} />}
-    </>
+      {isLeadDetailsModalOpen && ( <LeadDetailsModal  onClose={() => setLeadDetailsModalOpen(false)}  leadId={selectedLeadId}/>)}   
+   </>
   );
 };
 

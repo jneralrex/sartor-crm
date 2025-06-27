@@ -1,10 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X, Plus } from 'lucide-react';
-import SearchableSelect from '../../SearchableSelect';
+import { useAuth } from '../../../context/AuthContext';
+import axios from 'axios';
 
-const LeadDetailsModal = ({ onClose }) => {
+const LeadDetailsModal = ({ onClose, leadId }) => {
     const [activeTab, setActiveTab] = useState('basic');
-   
+    const { token } = useAuth();
+    const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+
+    const [getSingleLeads, setSingleLeads] = useState({});
+
+
+    useEffect(() => {
+        if (!leadId) return;
+
+        const singleLeads = async () => {
+            try {
+                const res = await axios.get(`${VITE_API_URL}lead/${leadId}`, {
+                    headers: {
+                        's-token': token,
+                    },
+                });
+
+                console.log(res);
+                setSingleLeads(res.data.data.leads);
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        singleLeads();
+    }, [token, leadId]);
+
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-white w-[90%] max-w-[455px] h-[95vh] rounded-xl shadow-lg overflow-y-auto hide-scrollbar">
@@ -33,7 +61,7 @@ const LeadDetailsModal = ({ onClose }) => {
                 <form className="px-6 py-4 space-y-4">
                     {activeTab === 'basic' && (
                         <>
-                            <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
+                            {/* <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
 
                                 <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                                     Company Name
@@ -109,11 +137,11 @@ const LeadDetailsModal = ({ onClose }) => {
                                 </label>
                             </div>
                             <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Select Status
-                            <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
-                                <Select options={['Status1', 'Status2']} />
+                                <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
+                                    <Select options={['Status1', 'Status2']} />
 
-                            </div>
-                        </label>
+                                </div>
+                            </label>
                             <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                                 Company Address (Head Office)
 
@@ -144,27 +172,39 @@ const LeadDetailsModal = ({ onClose }) => {
                                 }} >
                                     Visited
                                 </button>
+                            </div> */}
+                            <div className="py-4 rounded-md grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
+                                <LabeledItem label="Company Name" value={getSingleLeads?.name} />
+                                <LabeledItem label="ID" value={getSingleLeads?.userId} />
+                                <LabeledItem label="Email address" value={getSingleLeads?.email} />
+                                <LabeledItem label="Company State" value={getSingleLeads?.state} />
+                                <LabeledItem label="Company Type" value={getSingleLeads?.type} />
+                                <LabeledItem label="Date Created" value={new Date(getSingleLeads?.creationDateTime).toLocaleDateString()} />
+                                <LabeledItem label="Number Of Stores" value={getSingleLeads?.stores} />
+                                <LabeledItem label="Potential Deal Size (N)" value={getSingleLeads?.dealSize} />
+                                <LabeledItem label="Phone No" value={getSingleLeads?.phone} />
+                                <LabeledItem label="Status" value={getSingleLeads?.status} />
                             </div>
+                            <LabeledItem label="Company Address (Head Office)" value={getSingleLeads?.address} />
+
                         </>
                     )}
 
                     {activeTab === 'contact' && (
                         <>
-                            {/* <Input label="Contact Person" placeholder="Full Name" />
-              <Input label="Contact Person Email" placeholder="Email" />
-              <Input label="Contact Person Phone Number" placeholder="Phone Number" />
-              <Select label="Contact Person Role" options={['Manager', 'Owner', 'Sales Rep']} />
-              <div className="text-[#A3A3A3] flex justify-center items-center gap-2 text-sm cursor-pointer">
-                <Plus size={16} />
-                <span>Add Contact Person 2</span>
-              </div>
-                <button
-                type="submit"
-                className="w-full py-3 bg-primary_blue text-white font-semibold rounded-lg"
-              >
-                Add Lead
-              </button> */}
-                            <p>Hello</p>
+                            {Array.isArray(getSingleLeads?.contacts) &&
+                                getSingleLeads.contacts.map((contact) => (
+                                    <div key={contact._id} className="grid grid-cols-1 gap-y-4 mb-6">
+                                        <LabeledItem label="Full Name" value={contact.name} />
+                                        <LabeledItem label="Email" value={contact.email} />
+                                        <LabeledItem label="Phone Number" value={contact.phone} />
+                                        <LabeledItem
+                                            label="Created At"
+                                            value={new Date(contact.creationDateTime).toLocaleDateString()}
+                                        />
+                                    </div>
+                                ))}
+
                         </>
                     )}
                 </form>
@@ -172,6 +212,15 @@ const LeadDetailsModal = ({ onClose }) => {
         </div>
     );
 };
+  
+const LabeledItem = ({ label, value }) => (
+  <label className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+    {label}
+    <span className="text-[#484848] mt-2">
+      {value !== undefined && value !== null && value !== '' ? value : '---'}
+    </span>
+  </label>
+);
 
 
 
