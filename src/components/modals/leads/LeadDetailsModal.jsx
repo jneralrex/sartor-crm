@@ -186,7 +186,23 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
                                 <LabeledItem label="Status" value={getSingleLeads?.status} />
                             </div>
                             <LabeledItem label="Company Address (Head Office)" value={getSingleLeads?.address} />
+                             <div className='flex gap-2'>
 
+                                <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleReAssignModalToggle();
+                                    }}
+                                >
+                                    Update Status
+                                </button>
+                                <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
+                                    e.preventDefault();
+                                    handleAssignModalToggle();
+                                }} >
+                                    Visited
+                                </button>
+                            </div>
                         </>
                     )}
 
