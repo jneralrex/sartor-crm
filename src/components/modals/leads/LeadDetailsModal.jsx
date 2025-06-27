@@ -23,7 +23,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
                 });
 
                 console.log(res);
-                setSingleLeads(res.data.data.leads);
+               setSingleLeads(res.data.data);
 
             } catch (error) {
                 console.log(error);
