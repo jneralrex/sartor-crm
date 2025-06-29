@@ -1,7 +1,35 @@
 import { X } from 'lucide-react';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useAuth } from '../../../context/AuthContext';
+import axios from 'axios';
 
-const LpoDetailsModal = ({ onClose }) => {
+const LpoDetailsModal = ({ onClose, lpoId }) => {
+    const { token } = useAuth();
+    const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+
+    const [singleLpo, setSingleLpo] = useState({});
+
+    useEffect(() => {
+        if (!lpoId) return;
+
+        const singleLpo = async () => {
+            try {
+                const res = await axios.get(`${VITE_API_URL}lpo/${lpoId}`, {
+                    headers: {
+                        's-token': token,
+                    },
+                });
+
+                console.log(res);
+                setSingleLpo(res.data.data);
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        singleLpo();
+    }, [token, lpoId]);
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
@@ -18,42 +46,49 @@ const LpoDetailsModal = ({ onClose }) => {
                         Name
 
                         <span className='text-[#484848] mt-2 w-[150px]'>
-                            Transcorp Ltd
+                            {singleLpo?.lead?.name || 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         ID
 
                         <span className='text-[#484848] mt-2'>
-                            SMO2231-12
+                            {singleLpo?.lead?.userId || 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Email address
 
                         <span className='text-[#484848] mt-2'>
-                            karekal23@gmail.com
+                            {singleLpo?.lead?.email || 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Phone Number
 
                         <span className='text-[#484848] mt-2'>
-                            (847) 785-2310
+                            {singleLpo?.lead?.phone || 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Amount
 
                         <span className='text-[#484848] mt-2'>
-                            NGN12,322,000
+                            {singleLpo?.lead?.amount || 'NA'}
+
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Date Created
 
                         <span className='text-[#484848] mt-2'>
-                            12, Fev 2023
+                            {singleLpo?.creationDateTime
+                                ? new Date(singleLpo.creationDateTime).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                })
+                                : 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -76,7 +111,7 @@ const LpoDetailsModal = ({ onClose }) => {
                         Address
 
                         <span className='text-[#484848] mt-2'>
-                            12, Jakande Street Lagos
+                            {singleLpo?.lead?.address || 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -90,7 +125,7 @@ const LpoDetailsModal = ({ onClose }) => {
                         Payment Terms
 
                         <span className='text-[#484848] mt-2'>
-                            Payment On Delivery
+                            {singleLpo?.terms || 'NA'}
                         </span>
                     </label>
                 </div>

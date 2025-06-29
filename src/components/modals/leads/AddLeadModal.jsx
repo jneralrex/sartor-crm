@@ -1,8 +1,81 @@
 import { useState } from 'react';
 import { X, Plus } from 'lucide-react';
+import axios from 'axios';
+import { useAuth } from '../../../context/AuthContext';
 
 const AddLeadModal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('basic');
+  const { token } = useAuth();
+  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+
+  const [addLeads, setAddLeads] = useState({
+    name: "",
+    address: "",
+    email: "",
+    phone: "",
+    state: "",
+    type: "",
+    stores: "",
+    dealSize: "",
+    status: "",
+    notes: "",
+    contact: [
+      {
+        name: "",
+        email: "",
+        phone: "",
+        role: "",
+      },
+    ],
+  });
+
+  const handleChange = (e) => {
+    setAddLeads({ ...addLeads, [e.target.name]: e.target.value });
+  };
+
+  const handleContactChange = (e, index) => {
+    const updatedContacts = [...addLeads.contact];
+    updatedContacts[index][e.target.name] = e.target.value;
+    setAddLeads({ ...addLeads, contact: updatedContacts });
+  };
+
+  const validateFields = () => {
+    const requiredFields = ['name', 'address', 'email', 'phone', 'state', 'type', 'stores', 'dealSize', 'status'];
+    for (let field of requiredFields) {
+      if (!addLeads[field]) return false;
+    }
+
+    const contact = addLeads.contact[0];
+    const contactFields = ['name', 'email', 'phone', 'role'];
+    for (let field of contactFields) {
+      if (!contact[field]) return false;
+    }
+
+    return true;
+  };
+
+  const addLeadsHandler = async (e) => {
+    e.preventDefault();
+    if (!validateFields()) {
+      alert("Please fill all required fields.");
+      return;
+    }
+
+    try {
+      const res = await axios.post(`${VITE_API_URL}lead`, addLeads, {
+        headers: {
+          's-token': token,
+        },
+      });
+
+      console.log("Lead created successfully:", res.data);
+      onClose(); // close modal on success
+    } catch (error) {
+      console.error("Error creating lead:", error);
+    }
+  };
+
+  console.log(addLeads)
 
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
@@ -29,88 +102,92 @@ const AddLeadModal = ({ onClose }) => {
         </div>
 
         {/* Form Body */}
-        <form className="px-6 py-4 space-y-4">
+        <form className="px-6 py-4 space-y-4" onSubmit={addLeadsHandler}>
           {activeTab === 'basic' && (
             <>
-              <Input label="Company Name" placeholder="Company Name" />
-              <Input label="Company Address (Head Office)" placeholder="Company Address" />
-              <Input label="Company State" placeholder="Company State" />
-              <Input label="Company Email" placeholder="Company Email" />
-              <Select label="Company Type" options={['Retailer', 'Wholesaler']} />
-              <Input label="Number of Stores" placeholder="Number of Stores" />
-              <Input label="Potential Deal Size (₦)" placeholder="e.g. 1000000" />
-              <Select label="Select Status" options={['Interested', 'Negotiating', 'Closed']} />
-              <Textarea label="Notes" placeholder="Enter your notes" />
-              <button
-                type="submit"
-                className="w-full py-3 bg-primary_blue text-white font-semibold rounded-lg"
-              >
-                Add Lead
-              </button>
+              <Input label="Company Name" name="name" value={addLeads.name} onChange={handleChange} />
+              <Input label="Company Address" name="address" value={addLeads.address} onChange={handleChange} />
+              <Input label="Company State" name="state" value={addLeads.state} onChange={handleChange} />
+              <Input label="Company Email" name="email" value={addLeads.email} onChange={handleChange} />
+              <Select label="Company Type" name="type" value={addLeads.type} onChange={handleChange} options={["Pharmacy  ", "Clinic"]} />
+              <Input label="Number of Stores" name="stores" value={addLeads.stores} onChange={handleChange} />
+              <Input label="Company Phone Number" name="phone" value={addLeads.phone} onChange={handleChange} />
+              <Input label="Potential Deal Size (₦)" name="dealSize" value={addLeads.dealSize} onChange={handleChange} />
+              <Select label="Select Status" name="status" value={addLeads.status} onChange={handleChange} options={["Contacted  ", "Order Fulfilled", "Closed Lost", "Follow Up", "Qualified", "Interested", "Hold", "In-Negotiations", "LPO Generated", "Closed Won", "Payment Confirmed"]} />
+              <Textarea label="Notes" name="notes" value={addLeads.notes} onChange={handleChange} />
             </>
           )}
 
           {activeTab === 'contact' && (
             <>
-              <Input label="Contact Person" placeholder="Full Name" />
-              <Input label="Contact Person Email" placeholder="Email" />
-              <Input label="Contact Person Phone Number" placeholder="Phone Number" />
-              <Select label="Contact Person Role" options={['Manager', 'Owner', 'Sales Rep']} />
+              <Input label="Contact Person" name="name" value={addLeads.contact[0].name} onChange={(e) => handleContactChange(e, 0)} />
+              <Input label="Email" name="email" value={addLeads.contact[0].email} onChange={(e) => handleContactChange(e, 0)} />
+              <Input label="Phone Number" name="phone" value={addLeads.contact[0].phone} onChange={(e) => handleContactChange(e, 0)} />
+              <Select label="Role" name="role" value={addLeads.contact[0].role} onChange={(e) => handleContactChange(e, 0)} options={['COO', 'CEO', 'Manager']} />
               <div className="text-[#A3A3A3] flex justify-center items-center gap-2 text-sm cursor-pointer">
                 <Plus size={16} />
                 <span>Add Contact Person 2</span>
               </div>
-              <button
-                type="submit"
-                className="w-full py-3 bg-primary_blue text-white font-semibold rounded-lg"
-              >
-                Add Lead
-              </button>
             </>
           )}
+
+          <button
+            type="submit"
+            className="w-full py-3 bg-primary_blue text-white font-semibold rounded-lg"
+          >
+            Submit Lead
+          </button>
         </form>
       </div>
     </div>
   );
 };
 
-// Reusable Input Component
-const Input = ({ label, placeholder }) => (
+
+const Input = ({ label, name, value, onChange }) => (
   <label className="block text-sm font-medium text-[#1A1A1A]">
     {label}
     <div className="mt-1 bg-[#F5F5F5] rounded-lg h-[48px] flex items-center px-4">
       <input
         type="text"
-        placeholder={placeholder}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={label}
         className="w-full bg-transparent outline-none text-sm placeholder:text-[#484848]"
       />
     </div>
   </label>
 );
 
-// Reusable Select Component
-const Select = ({ label, options = [] }) => (
+const Select = ({ label, name, value, onChange, options = [] }) => (
   <label className="block text-sm font-medium text-[#1A1A1A]">
     {label}
-    <select className="mt-1 w-full h-[48px] bg-[#F5F5F5] rounded-lg px-4 text-sm text-[#484848] outline-none">
-      <option>Select {label}</option>
+    <select
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="mt-1 w-full h-[48px] bg-[#F5F5F5] rounded-lg px-4 text-sm text-[#484848] outline-none"
+    >
+      <option value="">Select {label}</option>
       {options.map((opt, idx) => (
-        <option key={idx}>{opt}</option>
+        <option key={idx} value={opt}>{opt}</option>
       ))}
     </select>
   </label>
 );
 
-// Reusable Textarea
-const Textarea = ({ label, placeholder }) => (
+const Textarea = ({ label, name, value, onChange }) => (
   <label className="block text-sm font-medium text-[#1A1A1A]">
     {label}
     <textarea
       rows={3}
-      placeholder={placeholder}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={label}
       className="mt-1 w-full bg-[#F5F5F5] rounded-lg px-4 py-2 text-sm text-[#484848] outline-none"
     />
   </label>
 );
-
 export default AddLeadModal;

@@ -9,6 +9,9 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
     const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
     const [getSingleLeads, setSingleLeads] = useState({});
+    const [updatedStatus, setUpdatedStatus] = useState({
+        status: '', 
+    });
 
 
     useEffect(() => {
@@ -32,6 +35,30 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
 
         singleLeads();
     }, [token, leadId]);
+
+    const handleChange = (e) => {
+    setUpdatedStatus({ ...updatedStatus, [e.target.name]: e.target.value });
+  };
+
+  console.log(updatedStatus)
+
+    const updateStatus = async(e)=>{
+        e.preventDefault();
+        if (!leadId) return;
+        try {
+            const res = await axios.put(`${VITE_API_URL}lead/edit/${leadId}`, updatedStatus , {
+                headers: {
+                    's-token': token,
+                },
+            });
+
+            console.log(res);
+            // Optionally, you can refresh the lead details or close the modal
+            onClose();
+        } catch (error) {
+            console.error("Error updating lead status:", error);
+        }
+    }
 
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
@@ -185,14 +212,20 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
                                 <LabeledItem label="Phone No" value={getSingleLeads?.phone} />
                                 <LabeledItem label="Status" value={getSingleLeads?.status} />
                             </div>
+                             <Select label="Select Status" name="status" value={updatedStatus.status} onChange={handleChange} options={["Contacted  ", "Order Fulfilled", "Closed Lost", "Follow Up", "Qualified", "Interested", "Hold", "In-Negotiations", "LPO Generated", "Closed Won", "Payment Confirmed"]} />
+
                             <LabeledItem label="Company Address (Head Office)" value={getSingleLeads?.address} />
+                             <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+
+                                Notes From Sales Rep
+                                <span className='text-[#484848] mt-2'>
+                                   {getSingleLeads?.notes ? getSingleLeads.notes : 'No notes available'}
+                                </span>
+                            </label>
                              <div className='flex gap-2'>
 
                                 <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleReAssignModalToggle();
-                                    }}
+                                    onClick={updateStatus}
                                 >
                                     Update Status
                                 </button>
@@ -241,16 +274,21 @@ const LabeledItem = ({ label, value }) => (
 
 
 // Reusable Select Component
-const Select = ({ label, options = [] }) => (
-    <label className="block text-sm font-medium text-[#1A1A1A] w-full">
-        {label}
-        <select className=' bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'>
-            <option>Select {label}</option>
-            {options.map((opt, idx) => (
-                <option key={idx}>{opt}</option>
-            ))}
-        </select>
-    </label>
+const Select = ({ label, name, value, onChange, options = [] }) => (
+  <label className="block text-sm font-medium text-[#1A1A1A]">
+    {label}
+    <select
+      name={name}
+      value={value}
+      onChange={onChange}
+      className="mt-1 w-full h-[48px] bg-[#F5F5F5] rounded-lg px-4 text-sm text-[#484848] outline-none"
+    >
+      <option value="">Select {label}</option>
+      {options.map((opt, idx) => (
+        <option key={idx} value={opt}>{opt}</option>
+      ))}
+    </select>
+  </label>
 );
 
 

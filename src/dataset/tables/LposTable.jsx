@@ -1,74 +1,62 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { Menu } from '@headlessui/react'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
 import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
+import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
 
-const allLPOs = [
-  {
-    id: 'LPO321-05',
-    customer: 'Harris Holdings LLC',
-    subscription: 'Paid',
-    address: 'Ikeja, Lagos',
-    status: 'Delivered',
-    date: '01, Feb 2023',
-    amount: 'N10,412,320',
-  },
-  {
-    id: 'LPO321-05',
-    customer: 'Lee Logistics Ltd.',
-    subscription: 'In-Progress',
-    address: 'Ikeja, Lagos',
-    status: 'In Transit',
-    date: '01, Feb 2023',
-    amount: 'N10,412,320',
-  },
-  {
-    id: 'LPO321-05',
-    customer: 'Martinez Media...',
-    subscription: 'Partially paid',
-    address: 'Ikeja, Lagos',
-    status: 'Processing',
-    date: '01, Feb 2023',
-    amount: 'N10,412,320',
-  },
-  {
-    id: 'LPO321-05',
-    customer: 'Taylor & Co. Inc.',
-    subscription: 'Cancelled',
-    address: 'Ikeja, Lagos',
-    status: 'Delivered',
-    date: '01, Feb 2023',
-    amount: 'N10,412,320',
-  },
-  {
-    id: 'LPO321-05',
-    customer: 'Wilson Works LLC',
-    subscription: 'Overdue',
-    address: 'Ikeja, Lagos',
-    status: 'Cancelled',
-    date: '01, Feb 2023',
-    amount: 'N10,412,320',
-  },
-];
+
 
 const LposTable = ({ activeTab }) => {
-  const filteredLpos =
-    activeTab === 'All Employees'
-      ? allLPOs
-      : allLPOs.filter((lpo) => lpo.position === activeTab);
-
+  const { token } = useAuth();
+  const [getAllLpos, setGetAllLpos] = useState([]);
   const [isViewLpoModalOpen, setViewLpoModalOpen] = useState(false);
-  const [isCreateLopModalOpen, setCreateLpoModal] = useState(false)
+  const [isCreateLopModalOpen, setCreateLpoModal] = useState(false);
+  const [selectedLpoId, setSelectedLpoId] = useState(null);
 
-  const handleViewLpoModalToggle = () => {
-    setViewLpoModalOpen((prev) => !prev);
+  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+
+  const filteredLPOs = getAllLpos;
+
+   const allLPOs = async () => {
+    try {
+      const res = await axios.get(`${VITE_API_URL}lpos?limit=all`, {
+        headers: {
+          's-token': token,
+        },
+      });
+
+      console.log(res.data);
+      setGetAllLpos(res.data.data.lpos);
+
+
+      // if(Array.isArray(res.data.data.lpos)){
+
+
+      //   setGetAllLpos(res.data.data.lpos);
+      // } else {
+      //   console.error("Data is not an array:", res.data.data.leads);
+      // }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
- const handleCreateLpoModal = () => {
-  setCreateLpoModal((prev => !prev))
- }
+
+  useEffect(() => {
+    allLPOs();
+  }, [token]);
+
+  const handleViewLpoModalToggle = (id) => {
+    setSelectedLpoId(id);
+    setViewLpoModalOpen(true);
+  };
+
+  const handleCreateLpoModal = () => {
+    setCreateLpoModal((prev => !prev))
+  }
 
   return (
     <>
@@ -101,48 +89,40 @@ const LposTable = ({ activeTab }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredLpos.map((emp) => (
-              <tr key={emp.id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 text-[#767676] font-normal text-xs md:text-[14px]">{emp.id}</td>
+            {filteredLPOs.map((lpo) => (
+              <tr key={lpo._id} className="border-b hover:bg-gray-50 text-start">
+                <td className="px-4 py-3 text-[#767676] font-normal text-xs md:text-[14px]">{lpo.lead?.userId}</td>
                 <td className="px-4 py-3 flex items-center gap-2 ">
                   <div>
-                    <div className="text-[#484848] font-medium text-xs md:text-[14px]">{emp.customer}</div>
-                    <div
-                      className={`text-xs text-start font-medium py-1 rounded 
-                           ${emp.subscription === 'Paid'
-                          ? ' text-[#00D743]'
-                          : emp.subscription === 'In-Progress'
-                            ? ' text-[#FFB400]'
-                            : emp.subscription === 'Partially paid'
-                              ? ' text-purple-700'
-                              : emp.subscription === 'Overdue'
-                                ? ' text-purple-700'
-                                : emp.subscription === 'Cancelled'
-                                  ? ' text-red-500'
-                                  : ' text-gray-500'
-                        }
-      `}
-                    >
-                      {emp.subscription}
-                    </div>                  </div>
+                    <div className="text-[#484848] font-medium text-xs md:text-[14px]">
+                      {lpo.lead?.name || 'N/A'}
+                    </div>
+                  </div>
                 </td>
-                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">{emp.address}</td>
+                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">
+                  {lpo.lead?.address || 'N/A'}
+                </td>
                 <td className={`px-4 py-3 text-xs md:text-xs md:text-[14px] 
-                 ${emp.status === 'Delivered'
+        ${lpo.status === 'Delivered'
                     ? ' text-[#00D743]'
-                    : emp.status === 'In Transit'
+                    : lpo.status === 'In Transit'
                       ? ' text-[#000068]'
-                      : emp.status === 'Processing'
+                      : lpo.status === 'Processing'
                         ? ' text-[#FFB400]'
-                        : emp.status === 'Sorted'
+                        : lpo.status === 'Sorted'
                           ? ' text-[#9191FF]'
-                          : emp.status === 'Cancelled'
+                          : lpo.status === 'Cancelled'
                             ? ' text-[#FF3B30]'
                             : ' text-gray-500'
                   }
-      `}>{emp.status}</td>
-                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">{emp.date}</td>
-                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">{emp.amount}</td>
+      `}>{lpo.status}</td>
+                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">
+                  {lpo.creationDateTime ? new Date(lpo.creationDateTime).toLocaleDateString() : 'N/A'}
+                </td>
+                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">
+                  {/* If you have an amount field, use it. Otherwise, show terms or N/A */}
+                  {lpo.amount || lpo.terms || 'N/A'}
+                </td>
                 <td className="px-4 py-3 ">
                   {/* Menu Dropdown */}
                   <div className="relative">
@@ -159,7 +139,7 @@ const LposTable = ({ activeTab }) => {
                               <button
                                 className={`${active ? 'bg-gray-100 rounded-md' : ''
                                   } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={handleViewLpoModalToggle}
+                                onClick={() => handleViewLpoModalToggle(lpo._id)}
                               >
                                 View Details
                               </button>
@@ -187,8 +167,8 @@ const LposTable = ({ activeTab }) => {
           <button className="px-2 py-1 border rounded">440</button>
         </div>
       </div>
-      {isViewLpoModalOpen && <LpoDetailsModal onClose={handleViewLpoModalToggle}/>}
-      {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal}/> }
+      {isViewLpoModalOpen && <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} />}
+      {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal} />}
     </>
   );
 };

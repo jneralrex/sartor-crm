@@ -38,6 +38,8 @@ const handleLeadDetailsModalToggle = (id) => {
         },
       });
 
+      console.log(res.data.data.leads);
+
       setGetAllLeads(res.data.data.leads);
     } catch (error) {
       console.log(error);
