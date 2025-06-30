@@ -20,7 +20,7 @@ const LposTable = ({ activeTab }) => {
 
   const filteredLPOs = getAllLpos;
 
-   const allLPOs = async () => {
+  const allLPOs = async () => {
     try {
       const res = await axios.get(`${VITE_API_URL}lpos?limit=all`, {
         headers: {

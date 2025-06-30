@@ -16,6 +16,7 @@ import Invoices from './pages/Invoices'
 import ConvertLabelGen from './pages/ConvertLabelGen'
 import LoginPage from './pages/auth/LoginPage'
 import ForgotPassword from './pages/auth/ForgotPassword'
+import ProductsTable from './dataset/tables/ProductsTable'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
         <Route path="employees" element={<Employees />} />
         <Route path="lpos" element={<Lpos />} />
         <Route path="leads" element={<Leads />} />
+        <Route path="products" element={<ProductsTable />} />
         <Route path="customers" element={<Customers />} />
         <Route path="invoices" element={<Invoices />} />
         <Route path="label-gen" element={<ConvertLabelGen />} />
