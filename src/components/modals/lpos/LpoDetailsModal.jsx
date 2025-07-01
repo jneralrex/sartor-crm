@@ -74,7 +74,7 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                         Amount
 
                         <span className='text-[#484848] mt-2'>
-                            {singleLpo?.lead?.amount || 'NA'}
+                            {singleLpo?.totalAmount || 'NA'}
 
                         </span>
                     </label>
@@ -131,13 +131,17 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                 </div>
                 <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                     Product(s)
-
                     <span className='text-[#484848] mt-2 flex flex-row items-center'>
                         <ul className='grid grid-cols-2 list-disc gap-x-10'>
-                            <li>Bag of cement x 2</li>
-                            <li>Bag of corn x 4</li>
-                            <li>Bag of corn x 4</li>
-                            <li>Bag of corn x 4</li>
+                            {Array.isArray(singleLpo.products) && singleLpo.products.length > 0 ? (
+                                singleLpo.products.map((item) => (
+                                    <li key={item._id}>
+                                        {item.product?.productName || 'Unnamed Product'} x {item.quantity}
+                                    </li>
+                                ))
+                            ) : (
+                                <li>No products</li>
+                            )}
                         </ul>
                     </span>
                 </label>

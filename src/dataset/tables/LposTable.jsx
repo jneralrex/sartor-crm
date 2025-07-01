@@ -9,7 +9,7 @@ import axios from 'axios';
 
 
 
-const LposTable = ({ activeTab }) => {
+const LposTable = ({ }) => {
   const { token } = useAuth();
   const [getAllLpos, setGetAllLpos] = useState([]);
   const [isViewLpoModalOpen, setViewLpoModalOpen] = useState(false);

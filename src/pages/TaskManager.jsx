@@ -8,9 +8,11 @@ import {
 } from "@headlessui/react";
 import classNames from "classnames";
 import task from "../assets/images/task.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AssignTaskModal from "../components/modals/taskManager/AssignTaskModal";
 import TaskDetailsModal from "../components/modals/taskManager/TaskDetailsModal";
+import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 const stats = [
   { label: "To-Do", count: 23 },
@@ -59,7 +61,7 @@ const categories = [
       },
     ],
   },
-   {
+  {
     name: "To-Do",
     posts: [
       {
@@ -89,7 +91,7 @@ const categories = [
       },
     ],
   },
-   {
+  {
     name: "Assigned",
     posts: [
       {
@@ -149,7 +151,7 @@ const categories = [
       },
     ],
   },
-{
+  {
     name: "Unconfirmed",
     posts: [
       {
@@ -212,18 +214,46 @@ const categories = [
   // Add the other categories like To-Do, Confirmed, Completed, etc.
 ];
 
-const TaskManager = () => {
-   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-    
-      const handleModalToggle = () => {
-        setIsModalOpen((prev) => !prev);
-      };
-    
-      const handleStatusModalToggle = () => {
-        setIsStatusModalOpen((prev) => !prev);
-      };
 
+
+
+const TaskManager = () => {
+  const { token } = useAuth();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [getAllTask, setGetAllTask] = useState([]);
+  const handleModalToggle = () => {
+    setIsModalOpen((prev) => !prev);
+  };
+
+  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+
+  const getTask = async () => {
+    try {
+      const res = await axios.get(`${VITE_API_URL}tasks`, {
+        headers: {
+          's-token': token,
+        },
+      });
+
+      console.log(res.data);
+      setGetAllTask(res.data);
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleStatusModalToggle = () => {
+    setIsStatusModalOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    getTask();
+  }, [token]);
+
+  console.log('task',getAllTask)
   return (
     <>
       <nav className="outlet-frame">
@@ -254,9 +284,9 @@ const TaskManager = () => {
               ))}
             </TabList>
             <button className="bg-primary_blue text-white text-[12px] p-1 md:px-4 md:py-2 rounded-md md:text-sm" onClick={(e) => {
-          e.preventDefault();
-          handleModalToggle();
-        }} >
+              e.preventDefault();
+              handleModalToggle();
+            }} >
               Assign Task
             </button>
           </div>
@@ -270,10 +300,10 @@ const TaskManager = () => {
               >
                 <img src={task} alt="" srcset="" />
                 <div className="text-center flex flex-col items-center">
-                    <span className="md:text-[22px] font-semibold text-primary_blue">
-                  {stat.count}
-                </span>
-                <span className="text-sm md:text-[16px] text-[#767676]">{stat.label}</span>
+                  <span className="md:text-[22px] font-semibold text-primary_blue">
+                    {stat.count}
+                  </span>
+                  <span className="text-sm md:text-[16px] text-[#767676]">{stat.label}</span>
                 </div>
               </div>
             ))}
@@ -288,26 +318,26 @@ const TaskManager = () => {
                     className="bg-primary_white p-5 rounded-md shadow-sm border border-primary_grey md:max-w-[359px] cursor-pointer"
                     onClick={handleStatusModalToggle}
                   >
-                      <div className="flex items-center ">
-                       <h3 className="font-semibold underline text-[#484848] text-[18px]">
-                      {post.client}
-                    </h3>
-                    <div className="flex justify-between items-center gap-1 w-[0%] m-auto">
-                      {post.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className={`ma-w-[58px] h-[17px] px-2  text-[12px] rounded-md font-semibold text-center bg-[#F8F8F8] ${statusColor[tag]}`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                    <div className="flex items-center ">
+                      <h3 className="font-semibold underline text-[#484848] text-[18px]">
+                        {post.client}
+                      </h3>
+                      <div className="flex justify-between items-center gap-1 w-[0%] m-auto">
+                        {post.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className={`ma-w-[58px] h-[17px] px-2  text-[12px] rounded-md font-semibold text-center bg-[#F8F8F8] ${statusColor[tag]}`}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    </div>
-                   
-                   
+
+
                     <p className="font-medium mt-1 text-[16px] text-[#484848]">{post.task}</p>
                     <p className="text-sm text-[#767676] mt-1 font-medium">{post.description}</p>
-                    
+
                     <p className="text-sm text-[#767676] font-semibold mt-2">{post.date}</p>
                   </div>
                 ))}
@@ -317,8 +347,8 @@ const TaskManager = () => {
         </TabGroup>
       </div>
       {/* Modals */}
-      {isModalOpen && <AssignTaskModal onClose={handleModalToggle}/>}
-    {isStatusModalOpen && <TaskDetailsModal onClose={handleStatusModalToggle}/>}    
+      {isModalOpen && <AssignTaskModal onClose={handleModalToggle} />}
+      {isStatusModalOpen && <TaskDetailsModal onClose={handleStatusModalToggle} />}
     </>
   );
 };

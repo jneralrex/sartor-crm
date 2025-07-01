@@ -1,151 +1,51 @@
 import { Download, Ellipsis, Plus } from 'lucide-react';
 import search from '../../assets/images/search.png';
-import { useState } from 'react';
-import ProductDetailsModal from '../../components/modals/labelgen/ProductDetailsModal';
+import { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react'
+import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
+import ProductDetailsModal from '../../components/modals/product/ProductDetailsModal';
 
-const allEmployees = [
-  {
-    id: 'BCH507-29',
-    productName: 'MedSupply',
-    stockQty: '120',
-    qrCode: 'view',
-    expDate: '2025-06-16',
-    supplier: 'Blue Sky Co.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-30',
-    productName: 'HealthGuard',
-    stockQty: '85',
-    qrCode: 'view',
-    expDate: '2024-11-05',
-    supplier: 'Green Leaf Ltd.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-31',
-    productName: 'CarePlus',
-    stockQty: '200',
-    qrCode: 'view',
-    expDate: '2023-12-20',
-    supplier: 'HealthFirst Inc.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-32',
-    productName: 'VitalAid',
-    stockQty: '150',
-    qrCode: 'view',
-    expDate: '2025-01-15',
-    supplier: 'Wellness Corp.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-33',
-    productName: 'MediCare Pro',
-    stockQty: '90',
-    qrCode: 'view',
-    expDate: '2024-08-30',
-    supplier: 'Pharma Solutions',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-34',
-    productName: 'HealthGuard Plus',
-    stockQty: '75',
-    qrCode: 'view',
-    expDate: '2024-05-10',
-    supplier: 'Care Essentials',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-35',
-    productName: 'MediSupply Ultra',
-    stockQty: '110',
-    qrCode: 'view',
-    expDate: '2025-03-25',
-    supplier: 'Blue Sky Co.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-36',
-    productName: 'CarePlus Advanced',
-    stockQty: '130',
-    qrCode: 'view',
-    expDate: '2024-09-18',
-    supplier: 'HealthFirst Inc.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-37',
-    productName: 'VitalAid Max',
-    stockQty: '95',
-    qrCode: 'view',
-    expDate: '2025-02-05',
-    supplier: 'Wellness Corp.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-38',
-    productName: 'MediCare Elite',
-    stockQty: '80',
-    qrCode: 'view',
-    expDate: '2024-12-12',
-    supplier: 'Pharma Solutions',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-39',
-    productName: 'HealthGuard Pro',
-    stockQty: '100',
-    qrCode: 'view',
-    expDate: '2025-04-22',
-    supplier: 'Care Essentials',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-40',
-    productName: 'MediSupply Plus',
-    stockQty: '115',
-    qrCode: 'view',
-    expDate: '2024-07-28',
-    supplier: 'Blue Sky Co.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-41',
-    productName: 'CarePlus Ultra',
-    stockQty: '105',
-    qrCode: 'view',
-    expDate: '2025-05-14',
-    supplier: 'HealthFirst Inc.',
-    manufacturer: '(847) 785-2310',
-  },
-  {
-    id: 'BCH507-42',
-    productName: 'VitalAid Pro',
-    stockQty: '90',
-    qrCode: 'view',
-    expDate: '2024-10-30',
-    supplier: 'Wellness Corp.',
-    manufacturer: '(847) 785-2310',
-  }
-];
 
-const ProductsTable = ({ activeTab }) => {
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const ProductsTable = ({ }) => {
+  const { token } = useAuth();
+  const [getAllProducts, setGetAllProducts] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [isProductDetailsMOdalOpen, setProductDetailsMOdalOpen] = useState(false);
 
-  const handleModalToggle = () => {
-    setIsModalOpen((prev) => !prev);
+
+  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+
+  const filteredProducts = getAllProducts;
+
+  const allProducts = async () => {
+    try {
+      const res = await axios.get(`${VITE_API_URL}products?limit=all`, {
+        headers: {
+          's-token': token,
+        },
+      });
+
+      console.log(res.data);
+      setGetAllProducts(res.data.data.data);
+
+    } catch (error) {
+      console.log(error);
+    }
   };
 
 
-  const filteredEmployees =
-    activeTab === 'All Employees'
-      ? allEmployees
-      : allEmployees.filter((emp) => emp.position === activeTab);
+  useEffect(() => {
+    allProducts();
+  }, [token]);
+
+
+  const handleViewProductDetailModalToggle = (id) => {
+    setSelectedProductId(id);
+    setProductDetailsMOdalOpen(true);
+  };
+
   return (
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
@@ -158,7 +58,7 @@ const ProductsTable = ({ activeTab }) => {
           />
         </div>
         <div className="flex gap-2">
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm h-[40px] flex text-center items-center gap-1 text-[#1A1A1A] public-sans" onClick={handleModalToggle} ><span><Plus /></span><span>Add Product </span></button>
+          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm h-[40px] flex text-center items-center gap-1 text-[#1A1A1A] public-sans"  ><span><Plus /></span><span>Add Product </span></button>
           <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px]'>Download csv</span></buttton>
         </div>
       </div>
@@ -178,48 +78,71 @@ const ProductsTable = ({ activeTab }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((emp) => (
-              <tr key={emp.id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.id}</td>
+            {filteredProducts.map((prod) => (
+              <tr key={prod._id} className="border-b hover:bg-gray-50 text-start">
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod._id}</td>
                 <td className="px-4 py-3 flex items-center gap-2">
-
-                  <div>
-                    <div className="text-xs md:text-[14px] font-medium text-[#484848] flex items-center gap-2">  <input type="checkbox" name="" id="" /> {emp.productName}</div>
+                  <div className="text-xs md:text-[14px] font-medium text-[#484848] flex items-center gap-2">
+                    <input type="checkbox" /> {prod.productName}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.stockQty}</td>
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.qrCode}</td>
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.expDate}</td>
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.supplier}</td>
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.manufacturer}</td>
-                 <td className="px-4 py-3 ">
-                                    {/* Menu Dropdown */}
-                                    <div className="relative">
-                                        <Menu as="div" className="relative inline-block text-left">
-                                            <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                                                <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
-
-                                            </Menu.Button>
-
-                                            <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                                                <div className="py-1">
-                                                    <Menu.Item>
-                                                        {({ active }) => (
-                                                            <button
-                                                                className={`${active ? 'bg-gray-100 rounded-md' : ''
-                                                                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                                                onClick={() => handleViewInvoiceModalToggle(invoice._id)}
-                                                            >
-                                                                View Details
-                                                            </button>
-                                                        )}
-                                                    </Menu.Item>
-
-                                                </div>
-                                            </Menu.Items>
-                                        </Menu>
-                                    </div>
-                                </td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.batch?.supplier?.name || 'N/A'}</td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.status || 'N/A'}</td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.sellingPrice}</td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                  {Array.isArray(prod.restocks) && prod.restocks.length > 0
+                    ? new Date(
+                      Math.max(...prod.restocks.map(r => r.date))
+                    ).toLocaleDateString()
+                    : prod.expiryDate
+                      ? new Date(prod.expiryDate).toLocaleDateString()
+                      : 'N/A'}
+                </td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.quantity}</td>
+                <td className="px-4 py-3 ">
+                  {/* Menu Dropdown */}
+                  <div className="relative">
+                    <Menu as="div" className="relative inline-block text-left">
+                      <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+                        <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
+                      </Menu.Button>
+                      <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                        <div className="py-1">
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => handleViewProductDetailModalToggle(prod._id)}
+                              >
+                                View Details
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                //onClick={handleModalToggle}
+                              >
+                                Add Batch
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                //onClick={handleModalToggle}
+                              >
+                                Request A Restock
+                              </button>
+                            )}
+                          </Menu.Item>
+                        </div>
+                      </Menu.Items>
+                    </Menu>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -236,10 +159,14 @@ const ProductsTable = ({ activeTab }) => {
           <button className="px-2 py-1 border rounded">440</button>
         </div>
       </div>
-      
+
       {/* Modal */}
-      {isModalOpen && <ProductDetailsModal onClose={handleModalToggle} />}
-    </>
+{isProductDetailsMOdalOpen && (
+  <ProductDetailsModal
+    onClose={() => setProductDetailsMOdalOpen(false)}
+    productId={selectedProductId}
+  />
+)}    </>
   )
 }
 
