@@ -137,8 +137,8 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
     const validate = () => {
         let newErrors = {};
         // if (!formData.productName.trim()) newErrors.productName = "Product name is required";
-        // if (!formData.barcodeNumber.trim()) newErrors.barcodeNumber = "Barcode is required";
-        if (!formData.quantity) newErrors.quantity = "Quantity is required";
+         if (!formData.barcodeNumber.trim()) newErrors.barcodeNumber = "Barcode is required";
+        // if (!formData.quantity) newErrors.quantity = "Quantity is required";
         // if (!formData.unitPrice) newErrors.unitPrice = "Unit price is required";
         // if (!formData.sellingPrice) newErrors.sellingPrice = "Selling price is required";
         // if (!formData.expiryDate) newErrors.expiryDate = "Expiry date is required";
