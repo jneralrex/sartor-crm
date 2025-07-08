@@ -31,14 +31,6 @@ const LposTable = ({ }) => {
       console.log(res.data);
       setGetAllLpos(res.data.data.lpos);
 
-
-      // if(Array.isArray(res.data.data.lpos)){
-
-
-      //   setGetAllLpos(res.data.data.lpos);
-      // } else {
-      //   console.error("Data is not an array:", res.data.data.leads);
-      // }
     } catch (error) {
       console.log(error);
     }

@@ -116,9 +116,10 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Qty
-
                         <span className='text-[#484848] mt-2'>
-                            12232
+                            {Array.isArray(singleLpo.products)
+                                ? singleLpo.products.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)
+                                : 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -164,3 +165,6 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
 }
 
 export default LpoDetailsModal
+
+
+

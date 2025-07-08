@@ -1,50 +1,49 @@
 import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { Menu } from '@headlessui/react'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AssignEmployeeTask from '../../components/modals/employees/AssignEmployeeTask';
 import EmployeeDetails from '../../components/modals/employees/EmployeeDetails';
 import AddNewEmployeeModal from '../../components/modals/employees/AddNewEmployeeModal';
+import { useAuth } from '../../context/AuthContext';
+import axios from 'axios';
 
-const allEmployees = [
-  {
-    id: 'SMX0221-01',
-    name: 'Liam Everhart',
-    email: 'liam@example.com',
-    position: 'Warehouse Manager',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-    avatar: 'https://i.pravatar.cc/40?img=1'
-  },
-  {
-    id: 'SMX0221-02',
-    name: 'Elijah Kensington',
-    email: 'elijah@admin.com',
-    position: 'Admin',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-    avatar: 'https://i.pravatar.cc/40?img=2'
-  },
-  {
-    id: 'SMX0221-03',
-    name: 'Charlotte Winslow',
-    email: 'charlotte@rep.com',
-    position: 'Sales Rep',
-    date: '12, Feb 2023',
-    phone: '(847) 785-2310',
-    avatar: 'https://i.pravatar.cc/40?img=3'
-  },
-];
 
-const EmployeeTable = ({ activeTab }) => {
-  const filteredEmployees =
-    activeTab === 'All Employees'
-      ? allEmployees
-      : allEmployees.filter((emp) => emp.position === activeTab);
+
+const EmployeeTable = ({ }) => {
+ 
+const { token } = useAuth();
 
   const [isAssignTaskModalOpen, setAssignTaskModalOpen] = useState(false);
   const [isAssignEmployeeModalOpen, setAssignEmployeeModalOpen] = useState(false);
   const [isEmployeeDetailsModalOpen, setEmployeeDetailsModalOpen] = useState(false);
+  const [getAllEmployee, setGetAllEmployee] = useState([]);
+
+   const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+  
+    const filteredEmployees = getAllEmployee;
+  
+    const allEmp = async () => {
+      try {
+        const res = await axios.get(`${VITE_API_URL}users`, {
+          headers: {
+            's-token': token,
+          },
+        });
+  
+        console.log(res.data);
+        setGetAllEmployee(res.data.data);
+  
+
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  
+  
+    useEffect(() => {
+      allEmp();
+    }, [token]);
 
   const handleAssignTaskModalToggle = () => {
     setAssignTaskModalOpen((prev) => !prev);
@@ -86,27 +85,35 @@ const EmployeeTable = ({ activeTab }) => {
               <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
-          <tbody>
-            {filteredEmployees.map((emp) => (
-              <tr key={emp.id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.id}</td>
-                <td className="px-4 py-3 flex items-center gap-2">
-                  <img
-                    src={emp.avatar}
-                    alt={emp.name}
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <div>
-                    <div className=" text-[#484848] md:text-[14px] font-medium">{emp.name}</div>
-                    <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.position}</td>
-                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.date}</td>
-                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
-                <td className="px-4 py-3 ">
-                  {/* Menu Dropdown */}
-                  <div className="relative">
+        <tbody>
+  {filteredEmployees.map((emp) => (
+    <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
+      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.userId}</td>
+      <td className="px-4 py-3 flex items-center gap-2">
+        <img
+          src={emp.image}
+          alt={emp.fullName}
+          className="w-8 h-8 rounded-full object-cover"
+        />
+        <div>
+          <div className=" text-[#484848] md:text-[14px] font-medium">{emp.fullName}</div>
+          <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
+        </div>
+      </td>
+      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.role}</td>
+      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">
+        {emp.creationDateTime
+          ? new Date(emp.creationDateTime).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })
+          : 'N/A'}
+      </td>
+      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
+      <td className="px-4 py-3 ">
+        {/* Menu Dropdown */}
+        <div className="relative">
                     <Menu as="div" className="relative inline-block text-left">
                       <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
                         <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>

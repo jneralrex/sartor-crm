@@ -5,6 +5,8 @@ import { Menu } from '@headlessui/react'
 import { useAuth } from '../../context/AuthContext';
 import axios from 'axios';
 import ProductDetailsModal from '../../components/modals/product/ProductDetailsModal';
+import CreateProductModal from '../../components/modals/product/CreateProductModal';
+import AddBatchWrapperModal from '../../components/modals/product/AddBatchModal';
 
 
 
@@ -13,6 +15,9 @@ const ProductsTable = ({ }) => {
   const [getAllProducts, setGetAllProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [isProductDetailsMOdalOpen, setProductDetailsMOdalOpen] = useState(false);
+  const [isModalCreateProductModalOpen, setIsModalCreateProductModalOpen] = useState(false);
+  const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
+  const [addBatchProductId, setAddBatchProductId] = useState(null);
 
 
   const VITE_API_URL = import.meta.env.VITE_BASE_URL;
@@ -40,10 +45,30 @@ const ProductsTable = ({ }) => {
     allProducts();
   }, [token]);
 
+  // Add this function inside ProductsTable
+  const handleCreateProduct = async (formData) => {
+    try {
+      const res = await axios.post(`${VITE_API_URL}product`, formData, {
+        headers: { 's-token': token }
+      });
+      console.log("Product created:", res);
+      setIsModalCreateProductModalOpen(false);
+      allProducts(); // Refresh product list
+      // Optionally show a success snackbar here
+    } catch (error) {
+      // Optionally show an error snackbar here
+      console.error(error);
+    }
+  };
 
   const handleViewProductDetailModalToggle = (id) => {
     setSelectedProductId(id);
     setProductDetailsMOdalOpen(true);
+  };
+
+  const handleAddBatchModalToggle = (productId) => {
+    setAddBatchProductId(productId);
+    setIsAddBatchModalOpen(true);
   };
 
   return (
@@ -58,7 +83,7 @@ const ProductsTable = ({ }) => {
           />
         </div>
         <div className="flex gap-2">
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm h-[40px] flex text-center items-center gap-1 text-[#1A1A1A] public-sans"  ><span><Plus /></span><span>Add Product </span></button>
+          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm h-[40px] flex text-center items-center gap-1 text-[#1A1A1A] public-sans" onClick={setIsModalCreateProductModalOpen} ><span><Plus /></span><span>Add Product </span></button>
           <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px]'>Download csv</span></buttton>
         </div>
       </div>
@@ -122,22 +147,13 @@ const ProductsTable = ({ }) => {
                             {({ active }) => (
                               <button
                                 className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                //onClick={handleModalToggle}
+                                onClick={() => handleAddBatchModalToggle(prod._id)}
                               >
                                 Add Batch
                               </button>
                             )}
                           </Menu.Item>
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                //onClick={handleModalToggle}
-                              >
-                                Request A Restock
-                              </button>
-                            )}
-                          </Menu.Item>
+
                         </div>
                       </Menu.Items>
                     </Menu>
@@ -161,12 +177,32 @@ const ProductsTable = ({ }) => {
       </div>
 
       {/* Modal */}
-{isProductDetailsMOdalOpen && (
-  <ProductDetailsModal
-    onClose={() => setProductDetailsMOdalOpen(false)}
-    productId={selectedProductId}
-  />
-)}    </>
+      {isProductDetailsMOdalOpen && (
+        <ProductDetailsModal
+          onClose={() => setProductDetailsMOdalOpen(false)}
+          productId={selectedProductId}
+        />
+      )}
+
+
+      {/* Create Product Modal */}
+      {isModalCreateProductModalOpen && (
+        <CreateProductModal
+          onClose={() => setIsModalCreateProductModalOpen(false)}
+          onSubmit={handleCreateProduct}
+        />
+      )}
+
+      {/* Add Batch Modal */}
+      {isAddBatchModalOpen && (
+        <AddBatchWrapperModal
+          onClose={() => setIsAddBatchModalOpen(false)}
+          productId={addBatchProductId}
+        />
+      )}
+    </>
+
+
   )
 }
 

@@ -9,11 +9,10 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
   const [loginDetails, setLoginDetails] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false); // 1. Loader state
   const navigate = useNavigate();
   const VITE_API_URL = import.meta.env.VITE_BASE_URL;
-    const { setToken } = useAuth();
-
-
+  const { setToken } = useAuth();
 
   const handleChange = (e) => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
@@ -21,14 +20,16 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true); // 2. Start loader
     try {
-      const res = await axios.post( VITE_API_URL + 'auth/login', loginDetails);
-        console.log(`API URL: ${VITE_API_URL}`);
-        console.log(res)
+      const res = await axios.post(VITE_API_URL + 'auth/login', loginDetails);
+      console.log(`API URL: ${VITE_API_URL}`);
+      console.log(res);
 
       if (res.status === 200) {
-       setToken(res.data.data.token); 
+        setToken(res.data.data.token);
+          localStorage.setItem('user', JSON.stringify(res.data.data.user));
+
         setSnackbar({
           type: 'success',
           message: (
@@ -64,7 +65,7 @@ const LoginPage = () => {
         ),
       });
     }
-
+    setLoading(false); // 3. Stop loader
     setTimeout(() => setSnackbar(null), 5000);
   };
 
@@ -78,6 +79,17 @@ const LoginPage = () => {
           {snackbar.message}
         </div>
       )}
+      {/* {loading && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-20 z-50">
+    <div className="flex flex-col items-center">
+      <svg className="animate-spin h-8 w-8 text-primary_blue mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      <span className="text-primary_blue font-medium">Logging in...</span>
+    </div>
+  </div>
+)} */}
       <div className='w-full max-w-sm text-center mb-8 flex flex-col items-center'>
         <img src={logo} alt="Logo" className="w-24 mx-auto mb-6" />
       </div>
@@ -128,12 +140,23 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="bg-primary_blue text-white font-semibold py-3 rounded-md text-sm"
-          >
-            Log In
-          </button>
+       <button
+  type="submit"
+  className="bg-primary_blue text-white font-semibold py-3 rounded-md text-sm flex items-center justify-center gap-2"
+  disabled={loading}
+>
+  {loading ? (
+    <>
+      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Logging in...
+    </>
+  ) : (
+    'Log In'
+  )}
+</button>
         </form>
       </div>
     </div>

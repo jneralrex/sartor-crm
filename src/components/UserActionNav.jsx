@@ -14,7 +14,14 @@ const UserActionNav = () => {
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isSystemSettingModalOpen, setSystemSettingModalOpen] = useState(false);
+const [user, setUser] = useState({ name: "", email: "" });
 
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
   const handleModalToggle = () => {
     setNotificationModalOpen((prev) => !prev);
   };
@@ -38,8 +45,8 @@ const UserActionNav = () => {
         <Menu as="div" className="relative inline-block text-left z-10">
           <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
             <div className="flex flex-col text-left z-10">
-              <span className="text-[14px] font-semibold">Sammy John</span>
-              <span className="text-[12px] text-gray-500">sammyjohn@gmail.com</span>
+               <span className="text-[14px] font-semibold">{user.name || "User"}</span>
+              <span className="text-[12px] text-gray-500">{user.email || ""}</span>
             </div>
             <ChevronDownIcon className="w-4 h-4 text-black/60" />
           </Menu.Button>

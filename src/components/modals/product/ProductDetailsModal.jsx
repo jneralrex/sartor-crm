@@ -37,7 +37,7 @@ const ProductDetailsModal = ({onClose, productId}) => {
      <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
                 <div className='flex items-center justify-between'>
-                    <span className='text[#1A1A1A] font-semibold text-[20px] text-start w-full'>LPO Details </span>
+                    <span className='text[#1A1A1A] font-semibold text-[20px] text-start w-full'>Product Details </span>
                     <button onClick={onClose}>
                         <X className="text-gray-500 hover:text-black" />
                     </button>
@@ -53,7 +53,7 @@ const ProductDetailsModal = ({onClose, productId}) => {
   </label>
   <label className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
     Product ID
-    <span className='text-[#484848] mt-2'>
+    <span className='text-[#484848] mt-2 w-[150px]'>
       {singleProduct?._id || 'NA'}
     </span>
   </label>
