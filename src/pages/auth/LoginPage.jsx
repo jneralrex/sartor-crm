@@ -28,8 +28,12 @@ const LoginPage = () => {
 
       if (res.status === 200) {
         setToken(res.data.data.token);
-          localStorage.setItem('user', JSON.stringify(res.data.data.user));
-
+const userForNav = {
+    name: res.data.data.fullName,
+    email: res.data.data.email,
+    image: res.data.data.image // optional, for avatar
+  };
+  localStorage.setItem('user', JSON.stringify(userForNav));
         setSnackbar({
           type: 'success',
           message: (
