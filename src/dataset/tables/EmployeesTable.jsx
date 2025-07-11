@@ -1,4 +1,4 @@
-import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
+import { Download, Ellipsis, Plus } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { Menu } from '@headlessui/react'
 import { useEffect, useState } from 'react';
@@ -6,7 +6,7 @@ import AssignEmployeeTask from '../../components/modals/employees/AssignEmployee
 import EmployeeDetails from '../../components/modals/employees/EmployeeDetails';
 import AddNewEmployeeModal from '../../components/modals/employees/AddNewEmployeeModal';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import instance from '../../utils/axiosInstance';
 
 
 
@@ -19,17 +19,12 @@ const { token } = useAuth();
   const [isEmployeeDetailsModalOpen, setEmployeeDetailsModalOpen] = useState(false);
   const [getAllEmployee, setGetAllEmployee] = useState([]);
 
-   const VITE_API_URL = import.meta.env.VITE_BASE_URL;
   
     const filteredEmployees = getAllEmployee;
   
     const allEmp = async () => {
       try {
-        const res = await axios.get(`${VITE_API_URL}users`, {
-          headers: {
-            's-token': token,
-          },
-        });
+        const res = await instance.get("users");
   
         console.log(res.data);
         setGetAllEmployee(res.data.data);

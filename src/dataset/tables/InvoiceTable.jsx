@@ -2,9 +2,9 @@ import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucid
 import search from '../../assets/images/search.png';
 import { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react'
-import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import InvoiceDetailsModal from '../../components/modals/invoice/InvoiceDetailsModal';
+import instance from '../../utils/axiosInstance';
 
 
 const InvoiceTable = ({ }) => {
@@ -14,18 +14,22 @@ const InvoiceTable = ({ }) => {
     const [isViewInvoiceModalOpen, setViewLpoModalOpen] = useState(false);
     const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
 
-    const baseUrl = import.meta.env.VITE_BASE_URL;
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const perPage = 10;
+
 
     const filteredInvoice = getInvoices;
 
-    const getAllInvoices = async () => {
+    const getAllInvoices = async (page = 1) => {
         try {
-            const res = await axios.get(`${baseUrl}invoices?limit=all`, {
-                headers: {
-                    's-token': token,
-                },
-            });
+            const res = await instance.get(`invoices?page=${page}&limit=${perPage}`);
+            const { data, totalPages } = res.data.data;
             setGetInvoices(res.data.data.invoices);
+            setTotalPages(totalPages || 1);
+
             console.log(res);
 
         } catch (error) {
@@ -35,9 +39,8 @@ const InvoiceTable = ({ }) => {
 
 
     useEffect(() => {
-        getAllInvoices();
-    }, [token]);
-
+        getAllInvoices(currentPage);
+    }, [currentPage, token]);
 
     const handleViewInvoiceModalToggle = (id) => {
         setSelectedInvoiceId(id);
@@ -152,21 +155,45 @@ const InvoiceTable = ({ }) => {
                 </table>
             </div>
 
+            {/* Pagination */}
             <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-                <span>Show 12 from 1400</span>
+                <span>Page {currentPage} of {totalPages}</span>
                 <div className="flex items-center gap-2">
-                    <button className="px-2 py-1 border rounded text-gray-500">1</button>
-                    <button className="px-2 py-1 border rounded">2</button>
-                    <button className="px-2 py-1 border rounded">3</button>
-                    <span>...</span>
-                    <button className="px-2 py-1 border rounded">440</button>
+                    <button
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+                        className="px-2 py-1 border rounded text-gray-500"
+                    >
+                        Prev
+                    </button>
+
+                    {[...Array(totalPages)].map((_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => setCurrentPage(i + 1)}
+                            className={`px-2 py-1 border rounded ${currentPage === i + 1 ? 'bg-primary_blue text-white' : ''}`}
+                        >
+                            {i + 1}
+                        </button>
+                    )).slice(0, 5)}
+
+                    <button
+                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+                        className="px-2 py-1 border rounded text-gray-500"
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
-            {isViewInvoiceModalOpen && ( <InvoiceDetailsModal onClose={() => { setViewLpoModalOpen(false);
-                        setSelectedInvoiceId(null);
-                    }}
-                    invoiceId={selectedInvoiceId}
-                />
+
+
+            {isViewInvoiceModalOpen && (<InvoiceDetailsModal onClose={() => {
+                setViewLpoModalOpen(false);
+                setSelectedInvoiceId(null);
+            }}
+                invoiceId={selectedInvoiceId}
+            />
             )}
         </>
     );

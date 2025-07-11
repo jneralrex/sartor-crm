@@ -1,8 +1,8 @@
 import { X } from 'lucide-react';
 import React, { useState } from 'react';
 import EmployeeModuleModals from './EmployeeModuleModals';
-import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
+import instance from '../../../utils/axiosInstance';
 
 // const AddNewEmployeeModal = ({ onClose }) => {
 //     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -187,7 +187,6 @@ const AddNewEmployeeModal = ({ onClose }) => {
       clg: false,
       workflow: false
     });
-    const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
     // Handle input changes
     const handleChange = (e) => {
@@ -205,11 +204,7 @@ const AddNewEmployeeModal = ({ onClose }) => {
     const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const res = await axios.post(`${VITE_API_URL}user/create`, addNewEmployeeDetails, {
-      headers: {
-        's-token': token,
-      },
-    });
+    const res = await instance.post("user/create", addNewEmployeeDetails);
 
     console.log("API response:", res);
 

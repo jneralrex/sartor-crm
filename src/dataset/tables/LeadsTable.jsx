@@ -5,7 +5,7 @@ import AddLeadModal from '../../components/modals/leads/AddLeadModal';
 import { Menu } from '@headlessui/react'
 import LeadDetailsModal from '../../components/modals/leads/LeadDetailsModal';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import instance from '../../utils/axiosInstance';
 
 const LeadsTable = () => {
   const { token } = useAuth();
@@ -13,9 +13,13 @@ const LeadsTable = () => {
   const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false);
   const [isLeadDetailsModalOpen, setLeadDetailsModalOpen] = useState(false);
   const [getAllLeads, setGetAllLeads] = useState([]);
-  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
   const [selectedLeadId, setSelectedLeadId] = useState(null);
 
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const perPage = 10;
 
   const filteredEmployees = getAllLeads;
 
@@ -30,17 +34,16 @@ const handleLeadDetailsModalToggle = (id) => {
 };
 
 
-  const allLeads = async () => {
+  const allLeads = async (page = 1) => {
     try {
-      const res = await axios.get(`${VITE_API_URL}leads?page=1&limit=100`, {
-        headers: {
-          's-token': token,
-        },
-      });
+      const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
+      const { data, totalPages } = res.data.data;
 
       console.log(res.data.data.leads);
 
       setGetAllLeads(res.data.data.leads);
+      setTotalPages(totalPages || 1);
+
     } catch (error) {
       console.log(error);
     }
@@ -48,8 +51,8 @@ const handleLeadDetailsModalToggle = (id) => {
 
 
   useEffect(() => {
-    allLeads();
-  }, [token]);
+    allLeads(currentPage);
+  }, [currentPage, token]);
 
   return (
     <>
@@ -149,16 +152,39 @@ const handleLeadDetailsModalToggle = (id) => {
         </table>
       </div>
 
+     {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-        <span>Show 12 from 1400</span>
+        <span>Page {currentPage} of {totalPages}</span>
         <div className="flex items-center gap-2">
-          <button className="px-2 py-1 border rounded text-gray-500">1</button>
-          <button className="px-2 py-1 border rounded">2</button>
-          <button className="px-2 py-1 border rounded">3</button>
-          <span>...</span>
-          <button className="px-2 py-1 border rounded">440</button>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+            className="px-2 py-1 border rounded text-gray-500"
+          >
+            Prev
+          </button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-2 py-1 border rounded ${currentPage === i + 1 ? 'bg-primary_blue text-white' : ''}`}
+            >
+              {i + 1}
+            </button>
+          )).slice(0, 5)}
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+            className="px-2 py-1 border rounded text-gray-500"
+          >
+            Next
+          </button>
         </div>
       </div>
+
+
       {/* Modal */}
       {isAddLeadModalOpen && <AddLeadModal onClose={handleLeadModalToggle} />}
       {isLeadDetailsModalOpen && ( <LeadDetailsModal  onClose={() => setLeadDetailsModalOpen(false)}  leadId={selectedLeadId}/>)}   

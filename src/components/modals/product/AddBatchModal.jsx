@@ -1,21 +1,19 @@
 import { X, Plus } from "lucide-react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import AddBatchFormModal from "./AddBatchFormModal";
-import axios from "axios";
 import { useAuth } from "../../../context/AuthContext";
+import instance from "../../../utils/axiosInstance";
 
 const AddBatchWrapperModal = ({ onClose, productId }) => {
   const { token } = useAuth();
-  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
   const [productDetails, setProductDetails] = useState(null);
+  const [getAllSuppliers, setGetAllSuppliers] = useState([]);
 
   useEffect(() => {
     if (!productId) return;
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`${VITE_API_URL}product/${productId}`, {
-          headers: { 's-token': token }
-        });
+        const res = await instance.get(`product/${productId}`);
         setProductDetails(res.data.data);
         setForm(form => ({
           ...form,
@@ -31,7 +29,7 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
 
   const [showAddForm, setShowAddForm] = useState(false);
   const [batches, setBatches] = useState([]);
-  
+
   const [form, setForm] = useState({
     manufacturer: "",
     product: "",
@@ -63,6 +61,29 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
     // onClose(); // Optionally close modal after submit
   };
 
+const allSupplier = async () => {
+  try {
+    const res = await instance.get("suppliers?limit=all");
+    console.log("Supplier response:", res.data);
+
+    const suppliers = res.data?.data?.data; // 🛠️ fixed line
+    if (Array.isArray(suppliers)) {
+      setGetAllSuppliers(suppliers);
+    } else {
+      console.error("Suppliers is not an array:", suppliers);
+      setGetAllSuppliers([]);
+    }
+  } catch (error) {
+    console.error("Failed to fetch suppliers:", error);
+    setGetAllSuppliers([]);
+  }
+};
+
+
+  useEffect(() => {
+    allSupplier();
+  }, [token]);
+
   return (
     <>
       <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
@@ -74,32 +95,47 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
 
           {/* Product preview */}
           <div className="flex items-start gap-4 bg-[#F5F5F5] p-4 rounded-lg mb-4">
-  <div className="w-[48px] h-[48px] bg-gray-300 rounded-lg" />
-  <div>
-    <p className="font-semibold text-[#1A1A1A]">
-      {productDetails?.productName || "Product Name"}
-    </p>
-    <p className="text-xs text-[#666]">
-      {productDetails?.description || "No description"}
-    </p>
-  </div>
-</div>
+            <div className="w-[48px] h-[48px] bg-gray-300 rounded-lg" />
+            <div>
+              <p className="font-semibold text-[#1A1A1A]">
+                {productDetails?.productName || "Product Name"}
+              </p>
+              <p className="text-xs text-[#666]">
+                {productDetails?.description || "No description"}
+              </p>
+            </div>
+          </div>
 
           {/* Inputs */}
           <div className="space-y-4">
             <Input label="Manufacturers" placeholder="Manufacturers Name" name="manufacturer" value={form.manufacturer} onChange={handleChange} />
             <Input label="Invoice Number" placeholder="Invoice Number" name="invoiceNumber" value={form.invoiceNumber} onChange={handleChange} />
             {/* <Input label="Product ID" placeholder="Product ID" name="product" value={form.product} onChange={handleChange} disabled/> */}
-            <Input label="Supplier ID" placeholder="Supplier ID" name="supplier" value={form.supplier} onChange={handleChange} />
-            
+            <div>
+              <label className="block text-[#1A1A1A] font-medium text-sm mb-1">Supplier</label>
+              <select
+                name="supplier"
+                value={form.supplier}
+                onChange={handleChange}
+                className="bg-[#F5F5F5] rounded-lg w-full h-[48px] px-4 text-sm outline-none"
+              >
+                <option value="">Select Supplier</option>
+                {getAllSuppliers.map((supplier) => (
+                  <option key={supplier._id} value={supplier._id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-               {/* Uploads */}
+
+            {/* Uploads */}
             <div className="flex gap-4">
               <UploadBox label="Upload Image" />
               <UploadBox label="Upload Receipt" />
             </div>
 
-            
+
             {/* Add Batch trigger */}
             <button
               type="button"

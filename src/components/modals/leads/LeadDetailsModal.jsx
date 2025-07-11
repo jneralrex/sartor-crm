@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
-import axios from 'axios';
+import instance from '../../../utils/axiosInstance';
 
 const LeadDetailsModal = ({ onClose, leadId }) => {
     const [activeTab, setActiveTab] = useState('basic');
     const { token } = useAuth();
-    const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
     const [getSingleLeads, setSingleLeads] = useState({});
     const [updatedStatus, setUpdatedStatus] = useState({
@@ -19,11 +18,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
 
         const singleLeads = async () => {
             try {
-                const res = await axios.get(`${VITE_API_URL}lead/${leadId}`, {
-                    headers: {
-                        's-token': token,
-                    },
-                });
+                const res = await instance.get(`lead/${leadId}`);
 
                 console.log(res);
                setSingleLeads(res.data.data);
@@ -46,11 +41,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
         e.preventDefault();
         if (!leadId) return;
         try {
-            const res = await axios.put(`${VITE_API_URL}lead/edit/${leadId}`, updatedStatus , {
-                headers: {
-                    's-token': token,
-                },
-            });
+            const res = await instance.put(`lead/edit/${leadId}`, updatedStatus);
 
             console.log(res);
             // Optionally, you can refresh the lead details or close the modal

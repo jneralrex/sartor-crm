@@ -1,30 +1,31 @@
-import UserActionNav from "../components/UserActionNav";
-import {
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from "@headlessui/react";
+import { useState, useEffect } from "react";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import classNames from "classnames";
-import task from "../assets/images/task.png";
-import { useEffect, useState } from "react";
+import instance from "../utils/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+import UserActionNav from "../components/UserActionNav";
 import AssignTaskModal from "../components/modals/taskManager/AssignTaskModal";
 import TaskDetailsModal from "../components/modals/taskManager/TaskDetailsModal";
-import { useAuth } from "../context/AuthContext";
-import axios from "axios";
+import task from "../assets/images/task.png";
 
+const categories = [
+  "All",
+  "To-Do",
+  "Assigned",
+  "Confirmed",
+  "Completed",
+  "Unconfirmed",
+  "Overdue",
+];
 
-
-
-// {categorizedTasks.map(({ name }) => (
-//   <Tab key={name}>...</Tab>
-// ))}
-
-// {categorizedTasks.map(({ name, posts }) => (
-//   <TabPanel key={name}>...</TabPanel>
-// ))}
-
+const categoryMap = {
+  pending: "To-Do",
+  assigned: "Assigned",
+  confirmed: "Confirmed",
+  completed: "Completed",
+  unconfirmed: "Unconfirmed",
+  overdue: "Overdue",
+};
 
 const statusColor = {
   Assigned: " text-[#000068]",
@@ -33,41 +34,43 @@ const statusColor = {
   Due: " text-[#FF6259]",
 };
 
-
 const TaskManager = () => {
   const { token } = useAuth();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [statusCounts, setStatusCounts] = useState({});
-  const [allTasks, setAllTasks] = useState([]);
   const [categorizedTasks, setCategorizedTasks] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleModalToggle = () => setIsModalOpen((prev) => !prev);
   const handleStatusModalToggle = () => setIsStatusModalOpen((prev) => !prev);
-  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
   const getTask = async () => {
     try {
-      const res = await axios.get(`${VITE_API_URL}tasks`, {
-        headers: { 's-token': token },
-      });
+      const res = await instance.get("tasks");
+      const { tasks, analytics } = res.data.data;
 
-      const { tasks, analytics } = res.data;
-
-      setAllTasks(tasks);
       setStatusCounts(analytics?.statusCounts || {});
 
-      const categoriesGenerated = Object.keys(analytics?.statusCounts || {}).map(status => ({
-        name: status,
-        posts: tasks.filter(task => task.status === status),
-      }));
+      const categorized = categories.map((status) => {
+        let posts;
 
-      categoriesGenerated.unshift({ name: "All", posts: tasks });
+        if (status === "All") {
+          posts = tasks;
+        } else {
+          posts = tasks.filter((task) => {
+            const normalized = categoryMap[task.status?.toLowerCase()] || task.status;
+            return normalized === status;
+          });
+        }
 
-      setCategorizedTasks(categoriesGenerated);
+        return { name: status, posts };
+      });
+
+      setCategorizedTasks(categorized);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching tasks:", error);
     }
   };
 
@@ -75,7 +78,12 @@ const TaskManager = () => {
     getTask();
   }, [token]);
 
-  console.log("task", categorizedTasks)
+  useEffect(() => {
+    const currentCategory = categories[selectedIndex];
+    const currentTasks = categorizedTasks.find((t) => t.name === currentCategory)?.posts || [];
+    console.log(`Clicked category: ${currentCategory}`, currentTasks);
+  }, [selectedIndex]);
+
   return (
     <>
       <nav className="outlet-frame">
@@ -86,10 +94,10 @@ const TaskManager = () => {
       </nav>
 
       <div className="pt-24 px-6 md:px-12">
-        <TabGroup>
+        <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
           <div className="flex justify-between flex-col lg:flex-row items-center mb-5">
             <TabList className="flex gap-2 justify-between w-full lg:w-[80%] overflow-auto">
-              {categorizedTasks.map(({ name }) => (
+              {categories.map((name) => (
                 <Tab
                   key={name}
                   className={({ selected }) =>
@@ -113,9 +121,9 @@ const TaskManager = () => {
             </button>
           </div>
 
-          {/* Stats section */}
+          {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-6 mb-8 border-primary_grey p-4 bg-primary_white">
-            {Object.entries(statusCounts).map(([label, count]) => (
+            {categories.slice(1).map((label) => (
               <div
                 key={label}
                 className="flex flex-col gap-2 items-center justify-center border border-l md:border-b-0 md:border-r md:first:border-l-0 md:last:border-r-0 md:border-t-0 h-[139px]"
@@ -123,51 +131,61 @@ const TaskManager = () => {
                 <img src={task} alt="Task Icon" />
                 <div className="text-center flex flex-col items-center">
                   <span className="md:text-[22px] font-semibold text-primary_blue">
-                    {count}
+                    {statusCounts[label] || 0}
                   </span>
-                  <span className="text-sm md:text-[16px] text-[#767676]">
-                    {label}
-                  </span>
+                  <span className="text-sm md:text-[16px] text-[#767676]">{label}</span>
                 </div>
               </div>
             ))}
           </div>
 
           <TabPanels>
-            {categorizedTasks.map(({ name, posts }) => (
-              <TabPanel key={name} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {posts.length === 0 ? (
-                  <p className="text-gray-500">No tasks in this category.</p>
-                ) : (
-                  posts.map((post) => (
-                    <div
-                      key={post._id || post.id}
-                      className="bg-primary_white p-5 rounded-md shadow-sm border border-primary_grey md:max-w-[359px] cursor-pointer"
-                      onClick={handleStatusModalToggle}
-                    >
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-semibold underline text-[#484848] text-[18px]">
-                          {post.client}
-                        </h3>
-                        <span
-                          className={`min-w-[58px] h-[17px] px-2 text-[12px] rounded-md font-semibold text-center bg-[#F8F8F8] ${statusColor[post.status]}`}
-                        >
-                          {post.status}
-                        </span>
+            {categories.map((name) => {
+              const match = categorizedTasks.find((t) => t.name === name);
+              const posts = match?.posts || [];
+
+              return (
+                <TabPanel key={name} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {posts.length > 0 ? (
+                    posts.map((post) => (
+                      <div
+                        key={post._id}
+                        className="bg-primary_white p-5 rounded-md shadow-sm border border-primary_grey md:max-w-[359px] cursor-pointer"
+                        onClick={handleStatusModalToggle}
+                      >
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold underline text-[#484848] text-[18px]">
+                            {post.title || post.taskName || "-"}
+                          </h3>
+                          <span
+                            className={`min-w-[58px] h-[17px] px-2 text-[12px] rounded-md font-semibold text-center bg-[#F8F8F8] ${statusColor[post.status]}`}
+                          >
+                            {post.status}
+                          </span>
+                        </div>
+                        <p className="font-medium mt-1 text-[16px] text-[#484848]">
+                          {post.task || post.description || "-"}
+                        </p>
+                        <p className="text-sm text-[#767676] mt-1 font-medium">
+                          {post.description || ""}
+                        </p>
+                        <p className="text-sm text-[#767676] font-semibold mt-2">
+                          {post.dueDate || post.creationDateTime
+                            ? new Date(post.creationDateTime).toLocaleDateString()
+                            : ""}
+                        </p>
                       </div>
-                      <p className="font-medium mt-1 text-[16px] text-[#484848]">{post.task}</p>
-                      <p className="text-sm text-[#767676] mt-1 font-medium">{post.description}</p>
-                      <p className="text-sm text-[#767676] font-semibold mt-2">{post.date}</p>
-                    </div>
-                  ))
-                )}
-              </TabPanel>
-            ))}
+                    ))
+                  ) : (
+                    <p className="text-gray-500">No tasks in this category.</p>
+                  )}
+                </TabPanel>
+              );
+            })}
           </TabPanels>
         </TabGroup>
       </div>
 
-      {/* Modals */}
       {isModalOpen && <AssignTaskModal onClose={handleModalToggle} />}
       {isStatusModalOpen && <TaskDetailsModal onClose={handleStatusModalToggle} />}
     </>
@@ -175,5 +193,3 @@ const TaskManager = () => {
 };
 
 export default TaskManager;
-
-

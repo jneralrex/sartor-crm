@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/AuthContext';
 import { X } from 'lucide-react';
-import axios from 'axios';
+import instance from '../../../utils/axiosInstance';
 
 const ProductDetailsModal = ({onClose, productId}) => {
       const { token } = useAuth();
-    const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
     const [singleProduct, setSingleProduct] = useState({});
 
@@ -15,11 +14,7 @@ const ProductDetailsModal = ({onClose, productId}) => {
 
         const getSingleProduct = async () => {
             try {
-                const res = await axios.get(`${VITE_API_URL}product/${productId}`, {
-                    headers: {
-                        's-token': token,
-                    },
-                });
+                const res = await instance.get(`product/${productId}`);
 
                 console.log(res);
                 setSingleProduct(res.data.data);

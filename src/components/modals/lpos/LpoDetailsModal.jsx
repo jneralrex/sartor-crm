@@ -1,11 +1,10 @@
 import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/AuthContext';
-import axios from 'axios';
+import instance from '../../../utils/axiosInstance';
 
 const LpoDetailsModal = ({ onClose, lpoId }) => {
     const { token } = useAuth();
-    const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
     const [singleLpo, setSingleLpo] = useState({});
 
@@ -14,11 +13,7 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
 
         const singleLpo = async () => {
             try {
-                const res = await axios.get(`${VITE_API_URL}lpo/${lpoId}`, {
-                    headers: {
-                        's-token': token,
-                    },
-                });
+                const res = await instance.get(`lpo/${lpoId}`);
 
                 console.log(res);
                 setSingleLpo(res.data.data);

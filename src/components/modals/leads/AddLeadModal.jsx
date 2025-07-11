@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { X, Plus } from 'lucide-react';
-import axios from 'axios';
 import { useAuth } from '../../../context/AuthContext';
+import instance from '../../../utils/axiosInstance';
 
 const AddLeadModal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('basic');
   const { token } = useAuth();
-  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
   const [addLeads, setAddLeads] = useState({
     name: "",
@@ -62,11 +61,7 @@ const AddLeadModal = ({ onClose }) => {
     }
 
     try {
-      const res = await axios.post(`${VITE_API_URL}lead`, addLeads, {
-        headers: {
-          's-token': token,
-        },
-      });
+      const res = await instance.post(`lead`, addLeads);
 
       console.log("Lead created successfully:", res.data);
       onClose(); // close modal on success

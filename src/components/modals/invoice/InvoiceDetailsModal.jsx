@@ -1,11 +1,10 @@
 import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/AuthContext';
-import axios from 'axios';
+import instance from '../../../utils/axiosInstance';
 
 const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
     const { token } = useAuth();
-    const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
     const [singleInvoice, setSingleInvoice] = useState({});
 
@@ -14,11 +13,7 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
 
         const singleLpo = async () => {
             try {
-                const res = await axios.get(`${VITE_API_URL}invoice/${invoiceId}`, {
-                    headers: {
-                        's-token': token,
-                    },
-                });
+                const res = await instance.get(`invoice/${invoiceId}`);
 
                 console.log(res);
                 setSingleInvoice(res.data.data);

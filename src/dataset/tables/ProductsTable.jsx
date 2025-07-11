@@ -1,16 +1,14 @@
 import { Download, Ellipsis, Plus } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { useEffect, useState } from 'react';
-import { Menu } from '@headlessui/react'
+import { Menu } from '@headlessui/react';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
 import ProductDetailsModal from '../../components/modals/product/ProductDetailsModal';
 import CreateProductModal from '../../components/modals/product/CreateProductModal';
 import AddBatchWrapperModal from '../../components/modals/product/AddBatchModal';
+import instance from '../../utils/axiosInstance';
 
-
-
-const ProductsTable = ({ }) => {
+const ProductsTable = () => {
   const { token } = useAuth();
   const [getAllProducts, setGetAllProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
@@ -19,44 +17,36 @@ const ProductsTable = ({ }) => {
   const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
   const [addBatchProductId, setAddBatchProductId] = useState(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const perPage = 10;
 
-  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
-
-  const filteredProducts = getAllProducts;
-
-  const allProducts = async () => {
+  const allProducts = async (page = 1) => {
     try {
-      const res = await axios.get(`${VITE_API_URL}products?limit=all`, {
-        headers: {
-          's-token': token,
-        },
-      });
+      const res = await instance.get(`products?page=${page}&limit=${perPage}`);
+      const { data, totalPages } = res.data.data;
 
-      console.log(res.data);
-      setGetAllProducts(res.data.data.data);
-
+      setGetAllProducts(data);
+      setTotalPages(totalPages || 1);
     } catch (error) {
       console.log(error);
     }
   };
 
-
   useEffect(() => {
-    allProducts();
-  }, [token]);
+    allProducts(currentPage);
+  }, [currentPage, token]);
 
-  // Add this function inside ProductsTable
   const handleCreateProduct = async (formData) => {
     try {
-      const res = await axios.post(`${VITE_API_URL}product`, formData, {
-        headers: { 's-token': token }
+      const res = await instance.post("product", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
       });
       console.log("Product created:", res);
       setIsModalCreateProductModalOpen(false);
-      allProducts(); // Refresh product list
-      // Optionally show a success snackbar here
+      allProducts(currentPage);
     } catch (error) {
-      // Optionally show an error snackbar here
       console.error(error);
     }
   };
@@ -75,7 +65,7 @@ const ProductsTable = ({ }) => {
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
-          <img src={search} alt="" srcset="" />
+          <img src={search} alt="" />
           <input
             type="text"
             placeholder="Search by ID, name or email"
@@ -83,15 +73,23 @@ const ProductsTable = ({ }) => {
           />
         </div>
         <div className="flex gap-2">
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm h-[40px] flex text-center items-center gap-1 text-[#1A1A1A] public-sans" onClick={setIsModalCreateProductModalOpen} ><span><Plus /></span><span>Add Product </span></button>
-          <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px]'>Download csv</span></buttton>
+          <button
+            className="bg-primary_white border px-2 py-2 rounded-md text-sm h-[40px] flex text-center items-center gap-1 text-[#1A1A1A]"
+            onClick={() => setIsModalCreateProductModalOpen(true)}
+          >
+            <Plus /> Add Product
+          </button>
+          <button className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'>
+            <Download className='text-primary_white h-[16.67px]' />
+            <span className='text-primary_white text-[12px]'>Download CSV</span>
+          </button>
         </div>
       </div>
 
       <div className="overflow-x-auto rounded-lg border">
         <table className="w-full text-left text-sm bg-primary_white">
-          <thead className=" border-b text-primary_blue font-semibold text-xs md:text-[14px]">
-            <tr className=''>
+          <thead className="border-b text-primary_blue font-semibold text-xs md:text-[14px]">
+            <tr>
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Product Name</th>
               <th className="px-4 py-2">Supplier</th>
@@ -103,7 +101,7 @@ const ProductsTable = ({ }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.map((prod) => (
+            {getAllProducts.map((prod) => (
               <tr key={prod._id} className="border-b hover:bg-gray-50 text-start">
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod._id}</td>
                 <td className="px-4 py-3 flex items-center gap-2">
@@ -116,20 +114,17 @@ const ProductsTable = ({ }) => {
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.sellingPrice}</td>
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {Array.isArray(prod.restocks) && prod.restocks.length > 0
-                    ? new Date(
-                      Math.max(...prod.restocks.map(r => r.date))
-                    ).toLocaleDateString()
+                    ? new Date(Math.max(...prod.restocks.map(r => new Date(r.date)))).toLocaleDateString()
                     : prod.expiryDate
                       ? new Date(prod.expiryDate).toLocaleDateString()
                       : 'N/A'}
                 </td>
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.quantity}</td>
-                <td className="px-4 py-3 ">
-                  {/* Menu Dropdown */}
+                <td className="px-4 py-3">
                   <div className="relative">
                     <Menu as="div" className="relative inline-block text-left">
                       <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                        <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
+                        <Ellipsis />
                       </Menu.Button>
                       <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                         <div className="py-1">
@@ -153,7 +148,6 @@ const ProductsTable = ({ }) => {
                               </button>
                             )}
                           </Menu.Item>
-
                         </div>
                       </Menu.Items>
                     </Menu>
@@ -165,35 +159,51 @@ const ProductsTable = ({ }) => {
         </table>
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-        <span>Show 12 from 1400</span>
+        <span>Page {currentPage} of {totalPages}</span>
         <div className="flex items-center gap-2">
-          <button className="px-2 py-1 border rounded text-gray-500">1</button>
-          <button className="px-2 py-1 border rounded">2</button>
-          <button className="px-2 py-1 border rounded">3</button>
-          <span>...</span>
-          <button className="px-2 py-1 border rounded">440</button>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+            className="px-2 py-1 border rounded text-gray-500"
+          >
+            Prev
+          </button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-2 py-1 border rounded ${currentPage === i + 1 ? 'bg-primary_blue text-white' : ''}`}
+            >
+              {i + 1}
+            </button>
+          )).slice(0, 5)}
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+            className="px-2 py-1 border rounded text-gray-500"
+          >
+            Next
+          </button>
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modals */}
       {isProductDetailsMOdalOpen && (
         <ProductDetailsModal
           onClose={() => setProductDetailsMOdalOpen(false)}
           productId={selectedProductId}
         />
       )}
-
-
-      {/* Create Product Modal */}
       {isModalCreateProductModalOpen && (
         <CreateProductModal
           onClose={() => setIsModalCreateProductModalOpen(false)}
           onSubmit={handleCreateProduct}
         />
       )}
-
-      {/* Add Batch Modal */}
       {isAddBatchModalOpen && (
         <AddBatchWrapperModal
           onClose={() => setIsAddBatchModalOpen(false)}
@@ -201,10 +211,7 @@ const ProductsTable = ({ }) => {
         />
       )}
     </>
-
-
-  )
-}
+  );
+};
 
 export default ProductsTable;
-

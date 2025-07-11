@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Check, Eye, EyeOff, OctagonAlert } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
-import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
+import instance from '../../utils/axiosInstance';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,9 +22,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true); // 2. Start loader
     try {
-      const res = await axios.post(VITE_API_URL + 'auth/login', loginDetails);
-      console.log(`API URL: ${VITE_API_URL}`);
-      console.log(res);
+      const res = await instance.post(VITE_API_URL + 'auth/login', loginDetails);
 
       if (res.status === 200) {
         setToken(res.data.data.token);

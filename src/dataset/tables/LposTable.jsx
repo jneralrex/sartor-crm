@@ -5,31 +5,33 @@ import { useEffect, useState } from 'react';
 import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
 import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import instance from '../../utils/axiosInstance';
 
 
 
-const LposTable = ({ }) => {
+const LposTable = () => {
   const { token } = useAuth();
   const [getAllLpos, setGetAllLpos] = useState([]);
   const [isViewLpoModalOpen, setViewLpoModalOpen] = useState(false);
   const [isCreateLopModalOpen, setCreateLpoModal] = useState(false);
   const [selectedLpoId, setSelectedLpoId] = useState(null);
 
-  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+   // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const perPage = 10;
 
   const filteredLPOs = getAllLpos;
 
-  const allLPOs = async () => {
+  const allLPOs = async (page = 1) => {
     try {
-      const res = await axios.get(`${VITE_API_URL}lpos?limit=all`, {
-        headers: {
-          's-token': token,
-        },
-      });
+      const res = await instance.get(`lpos?page=${page}&limit=${perPage}`);
 
+      const { data, totalPages } = res.data.data;
       console.log(res.data);
       setGetAllLpos(res.data.data.lpos);
+      setTotalPages(totalPages || 1);
+
 
     } catch (error) {
       console.log(error);
@@ -38,8 +40,8 @@ const LposTable = ({ }) => {
 
 
   useEffect(() => {
-    allLPOs();
-  }, [token]);
+    allLPOs(currentPage);
+  }, [currentPage, token]);
 
   const handleViewLpoModalToggle = (id) => {
     setSelectedLpoId(id);
@@ -149,16 +151,39 @@ const LposTable = ({ }) => {
         </table>
       </div>
 
+         {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-        <span>Show 12 from 1400</span>
+        <span>Page {currentPage} of {totalPages}</span>
         <div className="flex items-center gap-2">
-          <button className="px-2 py-1 border rounded text-gray-500">1</button>
-          <button className="px-2 py-1 border rounded">2</button>
-          <button className="px-2 py-1 border rounded">3</button>
-          <span>...</span>
-          <button className="px-2 py-1 border rounded">440</button>
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
+            className="px-2 py-1 border rounded text-gray-500"
+          >
+            Prev
+          </button>
+
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`px-2 py-1 border rounded ${currentPage === i + 1 ? 'bg-primary_blue text-white' : ''}`}
+            >
+              {i + 1}
+            </button>
+          )).slice(0, 5)}
+
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
+            className="px-2 py-1 border rounded text-gray-500"
+          >
+            Next
+          </button>
         </div>
       </div>
+
+
       {isViewLpoModalOpen && <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} />}
       {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal} />}
     </>
