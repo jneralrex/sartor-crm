@@ -99,7 +99,7 @@ const AssignTaskModal = ({ onClose }) => {
           <label className='font-medium text-[14px] text-[#1A1A1A]'>
             Due Date
             <input
-              type="date"
+              type='datetime-local'
               className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] px-4 text-sm outline-none w-full'
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}

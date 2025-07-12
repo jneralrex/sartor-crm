@@ -1,16 +1,42 @@
 import { X } from 'lucide-react';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TaskNotesModal from './TaskNotesModal';
 import AssignToNewEmployee from './AssignToNewEmployee';
 import ReassignTaskModal from './ReassignTaskModal';
 import InvoiceModal from './InvoiceModal';
+import { useAuth } from '../../../context/AuthContext';
+import instance from '../../../utils/axiosInstance';
 
 
-const TaskDetailsModal = ({ onClose }) => {
+const TaskDetailsModal = ({ onClose, taskId }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
     const [isReAssignModalOpen, setIsReAssignModalOpen] = useState(false);
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+    const [singleTask, setSingleTask] = useState({});
+    const { token } = useAuth();
+
+
+    useEffect(() => {
+        if (!taskId) return;
+
+        const getSingleTask = async () => {
+            try {
+                const res = await instance.get(`task/${taskId}`);
+
+                console.log(res);
+                setSingleTask(res.data.data);
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        getSingleTask();
+    }, [token, taskId]);
+
+
+    console.log(singleTask)
 
 
     const handleModalToggle = () => {
@@ -35,6 +61,7 @@ const TaskDetailsModal = ({ onClose }) => {
                     <button onClick={onClose}>
                         <X className="text-gray-500 hover:text-black" />
                     </button>
+
                 </div>
 
                 <div className=" py-4 rounded-md items-center grid grid-cols-2 gap-x-10 md:gap-x-44 gap-y-4">
@@ -43,49 +70,52 @@ const TaskDetailsModal = ({ onClose }) => {
                         Tittle
 
                         <span className='text-[#484848] mt-2 w-[150px]'>
-                            Follow up on this Client: Tamsy Tech
+                            {singleTask.title || "-"}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Phone Number
 
                         <span className='text-[#484848] mt-2'>
-                            (847) 785-2310
+                            {singleTask.user?.phone || "-"}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Employee's Name
 
                         <span className='text-[#484848] mt-2'>
-                            Liam Carter
+                         {singleTask.user?.fullName || "-"}
+
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Date Created
 
                         <span className='text-[#484848] mt-2'>
-                            12, Feb 2023
+                            {new Date(singleTask.creationDateTime).toLocaleDateString()}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Email Address
 
                         <span className='text-[#484848] mt-2'>
-                            karekal23@gmail.com
+                                                        {singleTask.user?.email || "-"}
+
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Role
 
                         <span className='text-[#484848] mt-2'>
-                            Admin
+                                                        {singleTask.user?.role || "-"}
+
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Due On
 
                         <span className='text-[#484848] mt-2'>
-                            14, Feb 2023
+                            {singleTask.dueDate || "-"}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -95,12 +125,13 @@ const TaskDetailsModal = ({ onClose }) => {
                             e.preventDefault();
                             handleModalToggle();
                         }}>
-                            Assigned
+                                                        {singleTask.status || "-"}
+
                         </span>
                     </label>
 
 
-                    <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                    {/* <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Invoice
 
                         <span className='text-[#484848] underline mt-2' onClick={(e) => {
@@ -109,7 +140,7 @@ const TaskDetailsModal = ({ onClose }) => {
                         }}>
                             View Invoice
                         </span>
-                    </label>
+                    </label> */}
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Payment Doc
 
@@ -129,7 +160,7 @@ const TaskDetailsModal = ({ onClose }) => {
                     Description
 
                     <span className='text-[#484848] mt-2'>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Porro explicabo ipsa ipsum adipisci! Quisquam, eaque.
+                        {singleTask.description || "-"}
                     </span>
                 </label>
 

@@ -10,7 +10,7 @@ import instance from '../../utils/axiosInstance';
 
 
 
-const EmployeeTable = ({ }) => {
+const EmployeeTable = ({}) => {
  
 const { token } = useAuth();
 
@@ -18,6 +18,7 @@ const { token } = useAuth();
   const [isAssignEmployeeModalOpen, setAssignEmployeeModalOpen] = useState(false);
   const [isEmployeeDetailsModalOpen, setEmployeeDetailsModalOpen] = useState(false);
   const [getAllEmployee, setGetAllEmployee] = useState([]);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
 
   
     const filteredEmployees = getAllEmployee;
@@ -47,9 +48,16 @@ const { token } = useAuth();
   const handleAddEmployee = () => {
     setAssignEmployeeModalOpen((prev) => !prev);
   };
-  const handleEmployeeDetailsModalToggle = () => {
-    setEmployeeDetailsModalOpen((prev) => !prev);
-  };
+ const openEmployeeDetailsModal = (employeeId) => {
+  setSelectedEmployeeId(employeeId);
+  setEmployeeDetailsModalOpen(true);
+};
+
+const closeEmployeeDetailsModal = () => {
+  setEmployeeDetailsModalOpen(false);
+  setSelectedEmployeeId(null);
+};
+
 
   return (
     <>
@@ -122,7 +130,7 @@ const { token } = useAuth();
                               <button
                                 className={`${active ? 'bg-gray-100' : ''
                                   } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={ handleEmployeeDetailsModalToggle}
+      onClick={() => openEmployeeDetailsModal(emp._id)}
                               >
                                 View Details
                               </button>
@@ -174,7 +182,9 @@ const { token } = useAuth();
       </div>
 {/* modals */}
 { isAssignTaskModalOpen && <AssignEmployeeTask onClose={handleAssignTaskModalToggle}/> }
-{ isEmployeeDetailsModalOpen && <EmployeeDetails onClose={handleEmployeeDetailsModalToggle}/> }
+{isEmployeeDetailsModalOpen && (
+  <EmployeeDetails employeeId={selectedEmployeeId} onClose={closeEmployeeDetailsModal} />
+)}
 {isAssignEmployeeModalOpen && <AddNewEmployeeModal onClose={handleAddEmployee}/>}
     </>
   );

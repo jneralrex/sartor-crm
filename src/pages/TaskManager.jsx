@@ -41,14 +41,20 @@ const TaskManager = () => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [statusCounts, setStatusCounts] = useState({});
   const [categorizedTasks, setCategorizedTasks] = useState([]);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleModalToggle = () => setIsModalOpen((prev) => !prev);
-  const handleStatusModalToggle = () => setIsStatusModalOpen((prev) => !prev);
+
+
+ const handleStatusModalToggle = (taskId) => {
+    setSelectedTaskId(taskId);
+    setIsStatusModalOpen(true);
+  };
 
   const getTask = async () => {
     try {
-      const res = await instance.get("tasks");
+      const res = await instance.get("tasks?limit=1000");
       const { tasks, analytics } = res.data.data;
 
       setStatusCounts(analytics?.statusCounts || {});
@@ -122,7 +128,7 @@ const TaskManager = () => {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-6 mb-8 border-primary_grey p-4 bg-primary_white">
+          <div className="grid grid-cols-2 lg:grid-cols-6 mb-8 border-primary_grey p-4 bg-primary_white">
             {categories.slice(1).map((label) => (
               <div
                 key={label}
@@ -151,7 +157,9 @@ const TaskManager = () => {
                       <div
                         key={post._id}
                         className="bg-primary_white p-5 rounded-md shadow-sm border border-primary_grey md:max-w-[359px] cursor-pointer"
-                        onClick={handleStatusModalToggle}
+                        onClick={() => {
+                          handleStatusModalToggle(post._id);
+                        }}
                       >
                         <div className="flex items-center justify-between">
                           <h3 className="font-semibold underline text-[#484848] text-[18px]">
@@ -187,7 +195,15 @@ const TaskManager = () => {
       </div>
 
       {isModalOpen && <AssignTaskModal onClose={handleModalToggle} />}
-      {isStatusModalOpen && <TaskDetailsModal onClose={handleStatusModalToggle} />}
+{isStatusModalOpen && (
+  <TaskDetailsModal
+    taskId={selectedTaskId}
+    onClose={() => {
+      setIsStatusModalOpen(false);
+      setSelectedTaskId(null);
+    }}
+  />
+)}
     </>
   );
 };
