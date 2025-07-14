@@ -100,7 +100,7 @@ const LabelGenTable = () => {
                       <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
                         <Ellipsis />
                       </Menu.Button>
-                      <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                      {/* <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                         <div className="py-1">
                           <Menu.Item>
                             {({ active }) => (
@@ -123,7 +123,7 @@ const LabelGenTable = () => {
                             )}
                           </Menu.Item>
                         </div>
-                      </Menu.Items>
+                      </Menu.Items> */}
                     </Menu>
                   </div>
                 </td>

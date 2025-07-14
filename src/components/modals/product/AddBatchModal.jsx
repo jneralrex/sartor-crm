@@ -8,6 +8,18 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
   const { token } = useAuth();
   const [productDetails, setProductDetails] = useState(null);
   const [getAllSuppliers, setGetAllSuppliers] = useState([]);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isUploadingReceipt, setIsUploadingReceipt] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [batches, setBatches] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
+  const [receiptFile, setReceiptFile] = useState(null);
+  const [imageFileLabel, setImageFileLabel] = useState("Upload Image");
+  const [receiptFileLabel, setReceiptFileLabel] = useState("Upload Receipt");
+  const [imagePreview, setImagePreview] = useState("");
+  const [receiptPreview, setReceiptPreview] = useState("");
+
+
 
   useEffect(() => {
     if (!productId) return;
@@ -27,8 +39,8 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
   }, [productId, token]);
 
 
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [batches, setBatches] = useState([]);
+  ;
+
 
   const [form, setForm] = useState({
     manufacturer: "",
@@ -38,6 +50,73 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
     image: "",
     receipt: ""
   });
+
+  // Function to upload files to Cloudinary
+  const UploadBox = ({ label, onUpload, fileUrl, setFileUrl }) => {
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [done, setDone] = useState(false);
+
+    const handleFileChange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      setLoading(true);
+      setProgress(0);
+      setDone(false);
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "ml_default");
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "https://api.cloudinary.com/v1_1/dwua55lnu/image/upload");
+
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          setProgress(percentComplete);
+        }
+      });
+
+      xhr.onload = () => {
+        const res = JSON.parse(xhr.responseText);
+        if (res.secure_url) {
+          onUpload(res.secure_url); // Save to form
+          setFileUrl(res.secure_url); // Save preview
+          setDone(true);
+        }
+        setLoading(false);
+      };
+
+      xhr.onerror = () => {
+        console.error("Upload failed");
+        setLoading(false);
+      };
+
+      xhr.send(formData);
+    };
+
+    return (
+      <label className="relative flex-1 bg-[#F5F5F5] h-[72px] flex flex-col items-center justify-center text-xs text-[#999] border border-[#ccc] rounded-lg cursor-pointer overflow-hidden">
+        <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+
+        {fileUrl ? (
+          <img src={fileUrl} alt="Preview" className="absolute inset-0 w-full h-full object-cover rounded-lg" />
+        ) : loading ? (
+          <div className="text-center text-sm">
+            <div className="loader w-5 h-5 mx-auto mb-1" />
+            <span>{progress}%</span>
+          </div>
+        ) : done ? (
+          <span className="text-green-600">Done ✅</span>
+        ) : (
+          label
+        )}
+      </label>
+    );
+  };
+
 
   // Handler to add a batch from the form modal
   const handleAddBatch = (batch) => {
@@ -51,38 +130,63 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
   };
 
   // Handler for submit all
-  const handleSubmit = () => {
-    const payload = {
-      ...form,
-      batch: batches
-    };
-    // TODO: Make API call here
-    console.log("Submitting:", payload);
-    // onClose(); // Optionally close modal after submit
+  const handleSubmit = async () => {
+    try {
+      let imageUrl = "";
+      let receiptUrl = "";
+
+      if (imageFile) {
+        imageUrl = await uploadToCloudinary(imageFile);
+      }
+
+      if (receiptFile) {
+        receiptUrl = await uploadToCloudinary(receiptFile);
+      }
+
+      const payload = {
+        ...form,
+        image: imageUrl,
+        receipt: receiptUrl,
+        batch: batches,
+      };
+
+      console.log("Final payload:", payload);
+
+      // ✅ Send this payload to your backend
+      const res = await instance.post("/batch", payload);
+
+      console.log(res)
+
+      onClose();
+    } catch (error) {
+      console.error("Submit failed", error);
+    }
   };
 
-const allSupplier = async () => {
-  try {
-    const res = await instance.get("suppliers?limit=all");
-    console.log("Supplier response:", res.data);
+  const allSupplier = async () => {
+    try {
+      const res = await instance.get("suppliers?limit=all");
+      console.log("Supplier response:", res.data);
 
-    const suppliers = res.data?.data?.data; // 🛠️ fixed line
-    if (Array.isArray(suppliers)) {
-      setGetAllSuppliers(suppliers);
-    } else {
-      console.error("Suppliers is not an array:", suppliers);
+      const suppliers = res.data?.data?.data; // 🛠️ fixed line
+      if (Array.isArray(suppliers)) {
+        setGetAllSuppliers(suppliers);
+      } else {
+        console.error("Suppliers is not an array:", suppliers);
+        setGetAllSuppliers([]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch suppliers:", error);
       setGetAllSuppliers([]);
     }
-  } catch (error) {
-    console.error("Failed to fetch suppliers:", error);
-    setGetAllSuppliers([]);
-  }
-};
+  };
 
 
   useEffect(() => {
     allSupplier();
   }, [token]);
+
+  console.log(form);
 
   return (
     <>
@@ -131,8 +235,22 @@ const allSupplier = async () => {
 
             {/* Uploads */}
             <div className="flex gap-4">
-              <UploadBox label="Upload Image" />
-              <UploadBox label="Upload Receipt" />
+              <UploadBox
+                label="Upload Image"
+                onUpload={(url) => setForm((prev) => ({ ...prev, image: url }))}
+                fileUrl={imagePreview}
+                setFileUrl={setImagePreview}
+              />
+
+              <UploadBox
+                label="Upload Receipt"
+                onUpload={(url) => setForm((prev) => ({ ...prev, receipt: url }))}
+                fileUrl={receiptPreview}
+                setFileUrl={setReceiptPreview}
+              />
+
+
+
             </div>
 
 
@@ -171,10 +289,11 @@ const allSupplier = async () => {
               className="bg-primary_blue w-full text-white py-3 rounded-lg text-[16px] font-semibold"
               onClick={handleSubmit}
               type="button"
-              disabled={batches.length === 0}
+              disabled={batches.length === 0 || isUploadingImage || isUploadingReceipt}
             >
-              Submit All Batches
+              {isUploadingImage || isUploadingReceipt ? "Uploading..." : "Submit All Batches"}
             </button>
+
           </div>
         </div>
       </div>
@@ -207,9 +326,16 @@ const SummaryRow = ({ label, value }) => (
 );
 
 
-const UploadBox = ({ label }) => (
-  <div className="flex-1 text-center bg-[#F5F5F5] h-[72px] flex items-center justify-center text-xs text-[#999] border border-[#ccc] rounded-lg">
-    Click to Upload or Drag and drop here
-  </div>
+const UploadBox = ({ label, onFileChange }) => (
+  <label className="flex-1 text-center bg-[#F5F5F5] h-[72px] flex items-center justify-center text-xs text-[#999] border border-[#ccc] rounded-lg cursor-pointer">
+    <input
+      type="file"
+      accept="image/*"
+      className="hidden"
+      onChange={(e) => onFileChange(e.target.files[0])}
+    />
+    {label}
+  </label>
 );
+
 export default AddBatchWrapperModal;

@@ -9,6 +9,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
 
     const [getSingleLeads, setSingleLeads] = useState({});
     const [updatedStatus, setUpdatedStatus] = useState({
+        id: leadId,
         status: '', 
     });
 
@@ -41,7 +42,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
         e.preventDefault();
         if (!leadId) return;
         try {
-            const res = await instance.put(`lead/edit/${leadId}`, updatedStatus);
+            const res = await instance.put(`lead/status/update`, updatedStatus);
 
             console.log(res);
             // Optionally, you can refresh the lead details or close the modal
@@ -51,11 +52,12 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
         }
     }
 
+    console.log(updatedStatus)
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-white w-[90%] max-w-[455px] h-[95vh] rounded-xl shadow-lg overflow-y-auto hide-scrollbar">
                 <div className="flex items-center justify-between px-6 pt-6">
-                    <h2 className="text-[18px] md:text-[20px] font-semibold text-[#1A1A1A]">Add A New Lead</h2>
+                    <h2 className="text-[18px] md:text-[20px] font-semibold text-[#1A1A1A]">Lead Details</h2>
                     <button onClick={onClose}><X /></button>
                 </div>
 
