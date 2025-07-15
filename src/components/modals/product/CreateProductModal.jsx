@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import instance from "../../../utils/axiosInstance"
 
 const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
     const [formData, setFormData] = useState({
@@ -6,7 +7,7 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
         barcodeNumber: '',
         manufacturer: '',
         description: '',
-        productImage: '', // store Cloudinary URL
+        productImage: '', 
     });
 
     const [preview, setPreview] = useState(null);
@@ -37,7 +38,7 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
             const file = files[0];
             setPreview(URL.createObjectURL(file));
             setUploading(true);
-            setUploadProgress(0); // <-- Reset progress
+            setUploadProgress(0); 
 
             const formDataCloud = new FormData();
             formDataCloud.append("file", file);
@@ -90,11 +91,29 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!validate()) return;
-        onSubmit(formData); // Pass updated data with image URL
-    };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!validate()) return;
+
+  try {
+    
+    const response = await instance.post("product", formData); 
+
+    console.log("Product Created", response.data);
+    // onSubmit(response.data); 
+    setFormData({
+      productName: '',  
+        barcodeNumber: '',
+        manufacturer: '',
+        description: '',
+        productImage: '',
+    });
+    onClose(); 
+  } catch (error) {
+    console.error("Error creating product", error);
+  }
+};
 
         console.log("Payload",formData);
     return (
@@ -148,6 +167,7 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
                         type="submit"
                         disabled={uploading}
                         className={`w-full bg-blue-900 text-white py-3 rounded-lg font-semibold ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        // onClick={handleSubmit}
                     >
                         {productToEdit ? "Update Product" : "Create Product"}
                     </button>

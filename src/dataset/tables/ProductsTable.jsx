@@ -20,7 +20,7 @@ const ProductsTable = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const perPage = 10;
+  const perPage = 100;
 
   const allProducts = async (page = 1) => {
     try {
@@ -38,18 +38,18 @@ const ProductsTable = () => {
     allProducts(currentPage);
   }, [currentPage, token]);
 
-  const handleCreateProduct = async (formData) => {
-    try {
-      const res = await instance.post("product", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
-      console.log("Product created:", res);
-      setIsModalCreateProductModalOpen(false);
-      allProducts(currentPage);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const handleCreateProduct = async (formData) => {
+  //   try {
+  //     const res = await instance.post("product", formData, {
+  //       headers: { "Content-Type": "multipart/form-data" }
+  //     });
+  //     console.log("Product created:", res);
+  //     setIsModalCreateProductModalOpen(false);
+  //     allProducts(currentPage);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const handleViewProductDetailModalToggle = (id) => {
     setSelectedProductId(id);
@@ -103,7 +103,7 @@ const ProductsTable = () => {
           <tbody>
             {getAllProducts.map((prod) => (
               <tr key={prod._id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod._id}</td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.batchId}</td>
                 <td className="px-4 py-3 flex items-center gap-2">
                   <div className="text-xs md:text-[14px] font-medium text-[#484848] flex items-center gap-2">
                     <input type="checkbox" /> {prod.productName}
@@ -201,7 +201,7 @@ const ProductsTable = () => {
       {isModalCreateProductModalOpen && (
         <CreateProductModal
           onClose={() => setIsModalCreateProductModalOpen(false)}
-          onSubmit={handleCreateProduct}
+          // onSubmit={handleCreateProduct}
         />
       )}
       {isAddBatchModalOpen && (
