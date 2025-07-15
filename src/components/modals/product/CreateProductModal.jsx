@@ -96,6 +96,7 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
         onSubmit(formData); // Pass updated data with image URL
     };
 
+        console.log("Payload",formData);
     return (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
             <div className="bg-white w-[90%] max-w-[500px] max-h-[95vh] overflow-y-scroll rounded-xl p-6 space-y-4 hide-scrollbar">
