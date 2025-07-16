@@ -11,6 +11,7 @@ const ViewBatchesByProduct = ({ productId, onClose }) => {
     const fetchBatches = async () => {
       try {
         const res = await instance.get(`/product/batches/${productId}`);
+        console.log(res.data)
         setBatches(res.data.data);
       } catch (err) {
         console.error('Failed to fetch batches:', err);
@@ -50,8 +51,8 @@ const ViewBatchesByProduct = ({ productId, onClose }) => {
                 <th className="py-2 px-3 border">Expiry Date</th>
                 <th className="py-2 px-3 border">Manufacturer</th>
                 <th className="py-2 px-3 border">Supplier</th>
-                {/* <th className="py-2 px-3 border">Invoice</th>
-                <th className="py-2 px-3 border">Receipt</th> */}
+                <th className="py-2 px-3 border">Invoice</th>
+                {/* <th className="py-2 px-3 border">Receipt</th> */}
               </tr>
             </thead>
             <tbody>
@@ -66,16 +67,17 @@ const ViewBatchesByProduct = ({ productId, onClose }) => {
                   <td className="py-2 px-3 border">
                     {batch.supplier?.name || 'N/A'}
                   </td>
-                  {/* <td className="py-2 px-3 border">
-                    <a href={batch.image} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                  <td className="py-2 px-3 border">
+                    {/* <a href={batch.image} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
                       View Image
-                    </a>
+                    </a> */}
+                    {batch.invoiceNumber }
                   </td>
                   <td className="py-2 px-3 border">
                     <a href={batch.receipt} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
                       Download PDF
                     </a>
-                  </td> */}
+                  </td>
                 </tr>
               ))}
             </tbody>
