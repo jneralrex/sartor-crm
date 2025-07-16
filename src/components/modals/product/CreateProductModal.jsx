@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import instance from "../../../utils/axiosInstance"
 
-const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
+const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null }) => {
     const [formData, setFormData] = useState({
         productName: '',
         barcodeNumber: '',
@@ -16,20 +16,21 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
     const [uploadProgress, setUploadProgress] = useState(0);
 
 
-    useEffect(() => {
-        if (productToEdit) {
-            setFormData({
-                productName: productToEdit.productName,
-                barcodeNumber: productToEdit.barcodeNumber,
-                manufacturer: productToEdit.manufacturer,
-                description: productToEdit.description,
-                productImage: productToEdit.productImage || '',
-            });
-            if (productToEdit.productImage) {
-                setPreview(productToEdit.productImage);
-            }
+   useEffect(() => {
+    if (productToEdit) {
+        setFormData((prev) => ({
+            productName: productToEdit.productName || '',
+            barcodeNumber: productToEdit.barcodeNumber || '',
+            manufacturer: productToEdit.manufacturer || '',
+            description: productToEdit.description || '',
+            productImage: productToEdit.productImage || '',
+        }));
+        if (productToEdit.productImage) {
+            setPreview(productToEdit.productImage);
         }
-    }, [productToEdit]);
+    }
+}, [productToEdit]);
+
 
     const handleChange = async (e) => {
         const { name, value, files } = e.target;
@@ -81,41 +82,80 @@ const CreateProductModal = ({ onClose, onSubmit, productToEdit = null }) => {
     };
 
 
-    const validate = () => {
-        let newErrors = {};
-        if (!formData.barcodeNumber.trim()) newErrors.barcodeNumber = "Barcode is required";
-        if (!formData.productName.trim()) newErrors.productName = "Product name is required";
-        if (!formData.manufacturer.trim()) newErrors.manufacturer = "Manufacturer is required";
-        if (!formData.description.trim()) newErrors.description = "Description is required";
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+   
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
+   const validate = () => {
+    let newErrors = {};
 
-  if (!validate()) return;
+    // Always validate productName
+    if (!formData.productName?.trim()) {
+        newErrors.productName = "Product name is required";
+    }
 
-  try {
-    
-    const response = await instance.post("product", formData); 
+    // Only validate the rest if not editing (i.e., it's a create request)
+    if (!productToEdit) {
+        if (!formData.barcodeNumber?.trim()) newErrors.barcodeNumber = "Barcode is required";
+        if (!formData.manufacturer?.trim()) newErrors.manufacturer = "Manufacturer is required";
+        if (!formData.description?.trim()) newErrors.description = "Description is required";
+    }
 
-    console.log("Product Created", response.data);
-    // onSubmit(response.data); 
-    setFormData({
-      productName: '',  
-        barcodeNumber: '',
-        manufacturer: '',
-        description: '',
-        productImage: '',
-    });
-    onClose(); 
-  } catch (error) {
-    console.error("Error creating product", error);
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
 };
 
-        console.log("Payload",formData);
+
+const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    try {
+        let response;
+
+        if (productToEdit) {
+            // Only send productName for update
+            response = await instance.put(`product/edit/${productToEdit._id}`, {
+                productName: formData.productName,
+            });
+            console.log("Product Updated", response.data);
+         if (onSuccess) {
+  onSuccess(response.data?.data || response.data); // Use whichever is available
+}
+
+
+        } else {
+            // Send full data for create
+            response = await instance.post("product", formData);
+            console.log("Product Created", response.data);
+           if (onSuccess) {
+  onSuccess(response.data?.data || response.data); // Use whichever is available
+}
+
+
+        }
+
+         if (onSuccess) {
+      onSuccess(response.data.data); // Make sure this matches the shape of your API response
+    }
+
+        // Reset form
+        setFormData({
+            productName: '',
+            barcodeNumber: '',
+            manufacturer: '',
+            description: '',
+            productImage: '',
+        });
+
+        onClose();
+    } catch (error) {
+        console.error("Error submitting product", error);
+    }
+};
+
+
+console.log("Form Data:", formData);
+
     return (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
             <div className="bg-white w-[90%] max-w-[500px] max-h-[95vh] overflow-y-scroll rounded-xl p-6 space-y-4 hide-scrollbar">

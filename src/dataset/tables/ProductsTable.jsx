@@ -7,6 +7,7 @@ import ProductDetailsModal from '../../components/modals/product/ProductDetailsM
 import CreateProductModal from '../../components/modals/product/CreateProductModal';
 import AddBatchWrapperModal from '../../components/modals/product/AddBatchModal';
 import instance from '../../utils/axiosInstance';
+import EditProductModal from '../../components/modals/product/EditProductModal';
 
 const ProductsTable = () => {
   const { token } = useAuth();
@@ -16,6 +17,9 @@ const ProductsTable = () => {
   const [isModalCreateProductModalOpen, setIsModalCreateProductModalOpen] = useState(false);
   const [isAddBatchModalOpen, setIsAddBatchModalOpen] = useState(false);
   const [addBatchProductId, setAddBatchProductId] = useState(null);
+  const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState(null);
+
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,6 +29,7 @@ const ProductsTable = () => {
   const allProducts = async (page = 1) => {
     try {
       const res = await instance.get(`products?page=${page}&limit=${perPage}`);
+      console.log(res.data);
       const { data, totalPages } = res.data.data;
 
       setGetAllProducts(data);
@@ -38,28 +43,35 @@ const ProductsTable = () => {
     allProducts(currentPage);
   }, [currentPage, token]);
 
-  // const handleCreateProduct = async (formData) => {
-  //   try {
-  //     const res = await instance.post("product", formData, {
-  //       headers: { "Content-Type": "multipart/form-data" }
-  //     });
-  //     console.log("Product created:", res);
-  //     setIsModalCreateProductModalOpen(false);
-  //     allProducts(currentPage);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   const handleViewProductDetailModalToggle = (id) => {
     setSelectedProductId(id);
     setProductDetailsMOdalOpen(true);
   };
 
-  const handleAddBatchModalToggle = (productId) => {
-    setAddBatchProductId(productId);
-    setIsAddBatchModalOpen(true);
+  // const handleAddBatchModalToggle = (productId) => {
+  //   setAddBatchProductId(productId);
+  //   setIsAddBatchModalOpen(true);
+  // };
+
+  const optimisticUpdate = (updatedProduct) => {
+    setGetAllProducts(prev =>
+      prev.map(item =>
+        item._id === updatedProduct._id ? updatedProduct : item
+      )
+    );
   };
+
+  const handleUpdate = async (data) => {
+    optimisticUpdate(data); // UI updates immediately
+    try {
+      const res = await instance.put(`/product/edit/${data._id}`, data);
+      console.log("Confirmed update", res.data);
+    } catch (err) {
+      console.error("Update failed", err);
+      // Optionally revert the change if failed
+    }
+  };
+
 
   return (
     <>
@@ -103,14 +115,18 @@ const ProductsTable = () => {
           <tbody>
             {getAllProducts.map((prod, index) => (
               <tr key={prod._id} className="border-b hover:bg-gray-50 text-start">
-   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {(currentPage - 1) * perPage + index + 1}
                 </td>                <td className="px-4 py-3 flex items-center gap-2">
                   <div className="text-xs md:text-[14px] font-medium text-[#484848] flex items-center gap-2">
                     <input type="checkbox" /> {prod.productName}
                   </div>
                 </td>
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.batch?.supplier?.name || 'N/A'}</td>
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                  {Array.isArray(prod.batches) && prod.batches.length > 0
+                    ? [...new Set(prod.batches.map(b => b?.supplier?.name).filter(Boolean))].join(', ')
+                    : 'N/A'}
+                </td>
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.status || 'N/A'}</td>
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.sellingPrice}</td>
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
@@ -139,16 +155,23 @@ const ProductsTable = () => {
                               </button>
                             )}
                           </Menu.Item>
+                        </div>
+                        <div>
+
                           <Menu.Item>
                             {({ active }) => (
                               <button
                                 className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={() => handleAddBatchModalToggle(prod._id)}
+                                onClick={() => {
+                                  setProductToEdit(prod);
+                                  setIsEditProductModalOpen(true);
+                                }}
                               >
-                                Add Batch
+                                Edit
                               </button>
                             )}
                           </Menu.Item>
+
                         </div>
                       </Menu.Items>
                     </Menu>
@@ -202,15 +225,32 @@ const ProductsTable = () => {
       {isModalCreateProductModalOpen && (
         <CreateProductModal
           onClose={() => setIsModalCreateProductModalOpen(false)}
-          // onSubmit={handleCreateProduct}
+          onSuccess={(newProduct) => {
+            setGetAllProducts((prev) => [...prev, newProduct]);
+          }}
+        />
+
+      )}
+
+      {isEditProductModalOpen && (
+        <CreateProductModal
+          onClose={() => setIsEditProductModalOpen(false)}
+          productToEdit={productToEdit}
+          onSuccess={(updatedProduct) => {
+            setGetAllProducts((prev) =>
+              prev.map((p) => (p._id === updatedProduct._id ? updatedProduct : p))
+            );
+          }}
         />
       )}
+
       {isAddBatchModalOpen && (
         <AddBatchWrapperModal
           onClose={() => setIsAddBatchModalOpen(false)}
           productId={addBatchProductId}
         />
       )}
+
     </>
   );
 };

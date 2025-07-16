@@ -8,8 +8,15 @@ import { Bell } from "lucide-react";
 import { useEffect, useState } from "react";
 import EditPersonalInfoModal from "./modals/userAction/EditPersonalInfoModal";
 import SystemSettingModal from "./modals/userAction/SystemSettingModal";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
+
 
 const UserActionNav = () => {
+const { logout } = useAuth();
+const navigate = useNavigate();
+
+
 
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -32,6 +39,11 @@ const [user, setUser] = useState({ name: "", email: "" });
   const handleSystemSettingModalToggle = () => {
     setSystemSettingModalOpen((prev) => !prev);
   };
+  
+const handleLogout = () => {
+  logout();              
+  navigate("/login");    
+};
 
   return (
     <div className="max-w-[300px] md:max-w-[400px] md:gap-2 flex items-center justify-end md:justify-between absolute right-0 top-3 md:top-0 md:relative  ">
@@ -80,16 +92,16 @@ const [user, setUser] = useState({ name: "", email: "" });
                 )}
               </Menu.Item>
 
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    className={`${active ? 'bg-red-100 text-red-700' : 'text-red-500'
-                      } group flex items-center w-full gap-2 px-4 py-2 text-sm`}
-                  >
-                    Logout
-                  </button>
-                )}
-              </Menu.Item>
+             <Menu.Item>
+  {({ active }) => (
+    <button
+      onClick={handleLogout}
+      className={`${active ? 'bg-red-100 text-red-700' : 'text-red-500'} group flex items-center w-full gap-2 px-4 py-2 text-sm`}
+    >
+      Logout
+    </button>
+  )}
+</Menu.Item>
             </div>
           </Menu.Items>
         </Menu>

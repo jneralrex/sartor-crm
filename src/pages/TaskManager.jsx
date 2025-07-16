@@ -7,6 +7,7 @@ import UserActionNav from "../components/UserActionNav";
 import AssignTaskModal from "../components/modals/taskManager/AssignTaskModal";
 import TaskDetailsModal from "../components/modals/taskManager/TaskDetailsModal";
 import task from "../assets/images/task.png";
+import EditTaskModal from "../components/modals/taskManager/EditTask";
 
 const categories = [
   "All",
@@ -41,15 +42,24 @@ const TaskManager = () => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [statusCounts, setStatusCounts] = useState({});
   const [categorizedTasks, setCategorizedTasks] = useState([]);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const handleModalToggle = () => setIsModalOpen((prev) => !prev);
 
 
- const handleStatusModalToggle = (taskId) => {
+  const handleStatusModalToggle = (taskId) => {
     setSelectedTaskId(taskId);
     setIsStatusModalOpen(true);
+  };
+
+  const handleEditClick = (taskId) => {
+    const allTasks = categorizedTasks.flatMap((cat) => cat.posts);
+    const taskToEdit = allTasks.find((t) => t._id === taskId);
+    setSelectedTask(taskToEdit);
+    setIsEditModalOpen(true);
   };
 
   const getTask = async () => {
@@ -170,6 +180,7 @@ const TaskManager = () => {
                           >
                             {post.status}
                           </span>
+                          
                         </div>
                         <p className="font-medium mt-1 text-[16px] text-[#484848]">
                           {post.task || post.description || "-"}
@@ -182,6 +193,15 @@ const TaskManager = () => {
                             ? new Date(post.creationDateTime).toLocaleDateString()
                             : ""}
                         </p>
+                        <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // prevent triggering onClick for status modal
+                              handleEditClick(post._id);
+                            }}
+                            className="mt-3 text-primary_blue text-sm underline"
+                          >
+                            Edit
+                          </button>
                       </div>
                     ))
                   ) : (
@@ -195,15 +215,35 @@ const TaskManager = () => {
       </div>
 
       {isModalOpen && <AssignTaskModal onClose={handleModalToggle} />}
-{isStatusModalOpen && (
-  <TaskDetailsModal
-    taskId={selectedTaskId}
-    onClose={() => {
-      setIsStatusModalOpen(false);
-      setSelectedTaskId(null);
-    }}
-  />
-)}
+      {isStatusModalOpen && (
+        <TaskDetailsModal
+          taskId={selectedTaskId}
+          onClose={() => {
+            setIsStatusModalOpen(false);
+            setSelectedTaskId(null);
+          }}
+        />
+      )}
+
+      {isEditModalOpen && (
+        <EditTaskModal
+          task={selectedTask}
+          onClose={() => setIsEditModalOpen(false)}
+         onSuccess={(updatedTask) => {
+  setCategorizedTasks(prevTasks =>
+    prevTasks.map(category => ({
+      ...category,
+      posts: category.posts.map(task =>
+        task._id === updatedTask._id ? updatedTask : task
+      ),
+    }))
+  );
+  setIsEditModalOpen(false);
+}}
+
+        />
+      )}
+
     </>
   );
 };

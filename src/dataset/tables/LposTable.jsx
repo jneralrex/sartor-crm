@@ -6,6 +6,7 @@ import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
 import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
 import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
+import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
 
 
 
@@ -15,6 +16,9 @@ const LposTable = () => {
   const [isViewLpoModalOpen, setViewLpoModalOpen] = useState(false);
   const [isCreateLopModalOpen, setCreateLpoModal] = useState(false);
   const [selectedLpoId, setSelectedLpoId] = useState(null);
+  const [selectedLpo, setSelectedLpo] = useState(null);
+  const [isEditLpoModalOpen, setEditLpoModalOpen] = useState(false);
+
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -123,8 +127,7 @@ const LposTable = () => {
                   <div className="relative">
                     <Menu as="div" className="relative inline-block text-left">
                       <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                        <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
-
+                        <Ellipsis />
                       </Menu.Button>
 
                       <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
@@ -132,18 +135,30 @@ const LposTable = () => {
                           <Menu.Item>
                             {({ active }) => (
                               <button
-                                className={`${active ? 'bg-gray-100 rounded-md' : ''
-                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
                                 onClick={() => handleViewLpoModalToggle(lpo._id)}
                               >
                                 View Details
                               </button>
                             )}
                           </Menu.Item>
-
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => {
+                                  setSelectedLpo(lpo);
+                                  setEditLpoModalOpen(true);
+                                }}
+                              >
+                                Edit LPO
+                              </button>
+                            )}
+                          </Menu.Item>
                         </div>
                       </Menu.Items>
                     </Menu>
+
                   </div>
                 </td>
               </tr>
@@ -187,6 +202,19 @@ const LposTable = () => {
 
       {isViewLpoModalOpen && <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} />}
       {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal} />}
+      {isEditLpoModalOpen && (
+          <EditLpoModal
+            lpo={selectedLpo}
+            onClose={() => setEditLpoModalOpen(false)}
+            onSuccess={(updatedLpo) => {
+              setGetAllLpos(prev =>
+                prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
+              );
+            }}
+          />
+
+      )}
+
     </>
   );
 };

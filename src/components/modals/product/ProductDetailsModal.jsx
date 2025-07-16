@@ -52,12 +52,17 @@ const ProductDetailsModal = ({ onClose, productId }) => {
               {singleProduct?.batchId || 'NA'}
             </span>
           </label>
-          <label className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
-            Supplier
-            <span className='text-[#484848] mt-2'>
-              {singleProduct?.batch?.supplier?.name || 'NA'}
-            </span>
-          </label>
+         <label className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+  Supplier(s)
+  <span className='text-[#484848] mt-2'>
+    {Array.isArray(singleProduct.batches) && singleProduct.batches.length > 0
+      ? [...new Set(singleProduct.batches
+          .map(b => b?.supplier?.name)
+          .filter(Boolean))].join(', ')
+      : 'NA'}
+  </span>
+</label>
+
           <label className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
             Barcode
             <span className='text-[#484848] mt-2'>
