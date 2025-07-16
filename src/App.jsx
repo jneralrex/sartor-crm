@@ -18,6 +18,8 @@ import LoginPage from './pages/auth/LoginPage';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ProductsTable from './dataset/tables/ProductsTable';
 import PrivateRoute from './context/PrivateRoutes';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const router = createBrowserRouter(
@@ -47,5 +49,7 @@ const router = createBrowserRouter(
 );
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (<>  <RouterProvider router={router} />
+    <ToastContainer position="top-center" />
+  </>);
 }
