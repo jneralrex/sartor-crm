@@ -8,6 +8,7 @@ import CreateProductModal from '../../components/modals/product/CreateProductMod
 import AddBatchWrapperModal from '../../components/modals/product/AddBatchModal';
 import instance from '../../utils/axiosInstance';
 import EditProductModal from '../../components/modals/product/EditProductModal';
+import ViewBatchesByProduct from '../../components/modals/product/ViewBatchesByProduct';
 
 const ProductsTable = () => {
   const { token } = useAuth();
@@ -19,7 +20,13 @@ const ProductsTable = () => {
   const [addBatchProductId, setAddBatchProductId] = useState(null);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
+const [isViewBatchesOpen, setIsViewBatchesOpen] = useState(false);
+const [viewBatchProductId, setViewBatchProductId] = useState(null);
 
+const handleViewBatches = (productId) => {
+  setViewBatchProductId(productId);
+  setIsViewBatchesOpen(true);
+};
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,10 +55,10 @@ const ProductsTable = () => {
     setProductDetailsMOdalOpen(true);
   };
 
-  // const handleAddBatchModalToggle = (productId) => {
-  //   setAddBatchProductId(productId);
-  //   setIsAddBatchModalOpen(true);
-  // };
+  const handleAddBatchModalToggle = (productId) => {
+    setAddBatchProductId(productId);
+    setIsAddBatchModalOpen(true);
+  };
 
   const optimisticUpdate = (updatedProduct) => {
     setGetAllProducts(prev =>
@@ -171,6 +178,30 @@ const ProductsTable = () => {
                               </button>
                             )}
                           </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => {
+                                  handleAddBatchModalToggle(prod._id);
+                                  
+                                }}
+                              >
+                                Add Batch
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+  {({ active }) => (
+    <button
+      className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+      onClick={() => handleViewBatches(prod._id)}
+    >
+      View Batches
+    </button>
+  )}
+</Menu.Item>
+
 
                         </div>
                       </Menu.Items>
@@ -250,6 +281,13 @@ const ProductsTable = () => {
           productId={addBatchProductId}
         />
       )}
+
+{isViewBatchesOpen && (
+  <ViewBatchesByProduct
+    productId={viewBatchProductId}
+    onClose={() => setIsViewBatchesOpen(false)}
+  />
+)}
 
     </>
   );

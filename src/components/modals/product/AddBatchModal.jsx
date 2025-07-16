@@ -20,26 +20,23 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
   const [receiptPreview, setReceiptPreview] = useState("");
 
 
-
-  useEffect(() => {
-    if (!productId) return;
-    const fetchProduct = async () => {
-      try {
-        const res = await instance.get(`product/${productId}`);
-        setProductDetails(res.data.data);
-        setForm(form => ({
-          ...form,
-          product: res.data.data._id, // or productName if you want to show name
-        }));
-      } catch (err) {
-        setProductDetails(null);
-      }
-    };
-    fetchProduct();
-  }, [productId, token]);
-
-
-  ;
+useEffect(() => {
+  if (!productId) return;
+  const fetchProduct = async () => {
+    try {
+      const res = await instance.get(`product/${productId}`);
+      setProductDetails(res.data.data);
+      setForm((form) => ({
+        ...form,
+        product: res.data.data._id,
+        manufacturer: res.data.data.manufacturer, // ← set from API response
+      }));
+    } catch (err) {
+      setProductDetails(null);
+    }
+  };
+  fetchProduct();
+}, [productId, token]);
 
 
   const [form, setForm] = useState({
@@ -212,7 +209,17 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
 
           {/* Inputs */}
           <div className="space-y-4">
-            <Input label="Manufacturers" placeholder="Manufacturers Name" name="manufacturer" value={form.manufacturer} onChange={handleChange} />
+<label className="block">
+  <span className="block text-[#1A1A1A] font-medium text-sm mb-1">Manufacturer</span>
+  <input
+    type="text"
+    name="manufacturer"
+    value={form.manufacturer}
+    readOnly
+    className="bg-[#F5F5F5] rounded-lg w-full h-[48px] px-4 text-sm outline-none text-gray-500 cursor-not-allowed"
+  />
+</label>
+
             <Input label="Invoice Number" placeholder="Invoice Number" name="invoiceNumber" value={form.invoiceNumber} onChange={handleChange} />
             {/* <Input label="Product ID" placeholder="Product ID" name="product" value={form.product} onChange={handleChange} disabled/> */}
             <div>
@@ -249,8 +256,6 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
                 setFileUrl={setReceiptPreview}
               />
 
-
-
             </div>
 
 
@@ -278,11 +283,11 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
             ))}
 
             {/* Totals */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <SummaryRow label="Total Qty:" value={batches.reduce((sum, b) => sum + Number(b.quantity || 0), 0)} />
               <SummaryRow label="Total Supply Price:" value={batches.reduce((sum, b) => sum + Number(b.supplyPrice || 0), 0)} />
               <SummaryRow label="Total Selling Price:" value={batches.reduce((sum, b) => sum + Number(b.sellingPrice || 0), 0)} />
-            </div>
+            </div> */}
 
             {/* Submit button */}
             <button
@@ -326,16 +331,6 @@ const SummaryRow = ({ label, value }) => (
 );
 
 
-const UploadBox = ({ label, onFileChange }) => (
-  <label className="flex-1 text-center bg-[#F5F5F5] h-[72px] flex items-center justify-center text-xs text-[#999] border border-[#ccc] rounded-lg cursor-pointer">
-    <input
-      type="file"
-      accept="image/*"
-      className="hidden"
-      onChange={(e) => onFileChange(e.target.files[0])}
-    />
-    {label}
-  </label>
-);
+
 
 export default AddBatchWrapperModal;
