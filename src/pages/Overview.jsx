@@ -83,14 +83,14 @@ const Overview = () => {
                     <span className='grid-cards-icons'><img src={customers} alt="" /></span>
                     <div className='grid-text-cards'>
                         <span className='grid-cards-text-main'>1000</span>
-                        <span className='grid-cards-text-sub'>Total Sales</span>
+                        <span className='grid-cards-text-sub'>Customer</span>
                     </div>
                 </div>
                 <div className='grid-cards'>
                     <span className='grid-cards-icons'><img src={lead} alt="" /></span>
                     <div className='grid-text-cards'>
                         <span className='grid-cards-text-main'>1000</span>
-                        <span className='grid-cards-text-sub'>Total Sales</span>
+                        <span className='grid-cards-text-sub'>Total LPOs</span>
                     </div>
                 </div>
                 <div className='grid-cards'>
@@ -104,7 +104,7 @@ const Overview = () => {
                     <span className='grid-cards-icons'><img src={chart} alt="" /></span>
                     <div className='grid-text-cards'>
                         <span className='grid-cards-text-main'>N1,000,000</span>
-                        <span className='grid-cards-text-sub'>Total Sales</span>
+                        <span className='grid-cards-text-sub'>Total Revenue</span>
                     </div>
                 </div>
             </div>
