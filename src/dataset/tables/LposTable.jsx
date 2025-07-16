@@ -16,10 +16,10 @@ const LposTable = () => {
   const [isCreateLopModalOpen, setCreateLpoModal] = useState(false);
   const [selectedLpoId, setSelectedLpoId] = useState(null);
 
-   // Pagination state
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const perPage = 10;
+  const perPage = 100;
 
   const filteredLPOs = getAllLpos;
 
@@ -73,7 +73,7 @@ const LposTable = () => {
         <table className="w-full text-left text-sm bg-primary_white">
           <thead className=" border-b text-primary_blue font-semibold text-xs md:text-[14px]">
             <tr className=''>
-              <th className="px-4 py-2">ID</th>
+              <th className="px-4 py-2">S/N</th>
               <th className="px-4 py-2">Customer</th>
               <th className="px-4 py-2">Address</th>
               <th className="px-4 py-2">LPO Status</th>
@@ -83,10 +83,11 @@ const LposTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredLPOs.map((lpo) => (
+            {filteredLPOs.map((lpo, index) => (
               <tr key={lpo._id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 text-[#767676] font-normal text-xs md:text-[14px]">{lpo.lead?.userId}</td>
-                <td className="px-4 py-3 flex items-center gap-2 ">
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                  {(currentPage - 1) * perPage + index + 1}
+                </td>                <td className="px-4 py-3 flex items-center gap-2 ">
                   <div>
                     <div className="text-[#484848] font-medium text-xs md:text-[14px]">
                       {lpo.lead?.name || 'N/A'}
@@ -151,7 +152,7 @@ const LposTable = () => {
         </table>
       </div>
 
-         {/* Pagination */}
+      {/* Pagination */}
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
         <span>Page {currentPage} of {totalPages}</span>
         <div className="flex items-center gap-2">

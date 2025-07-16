@@ -15,7 +15,7 @@ const LabelGenTable = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const perPage = 10;
+  const perPage = 100;
 
   const handleModalToggle = () => {
     setIsModalOpen((prev) => !prev);
@@ -54,7 +54,7 @@ const LabelGenTable = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border">
+      {/* <div className="overflow-x-auto rounded-lg border">
         <table className="w-full text-left text-sm bg-primary_white">
           <thead className=" border-b text-primary_blue font-semibold text-xs md:text-[14px]">
             <tr className=''>
@@ -100,7 +100,7 @@ const LabelGenTable = () => {
                       <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
                         <Ellipsis />
                       </Menu.Button>
-                      {/* <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                      <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
                         <div className="py-1">
                           <Menu.Item>
                             {({ active }) => (
@@ -123,7 +123,7 @@ const LabelGenTable = () => {
                             )}
                           </Menu.Item>
                         </div>
-                      </Menu.Items> */}
+                      </Menu.Items>
                     </Menu>
                   </div>
                 </td>
@@ -142,7 +142,7 @@ const LabelGenTable = () => {
           <span>...</span>
           <button className="px-2 py-1 border rounded">440</button>
         </div>
-      </div>
+      </div> */}
 
       {/* Modal */}
       {isModalOpen && <ProductDetailsModal onClose={handleModalToggle} />}

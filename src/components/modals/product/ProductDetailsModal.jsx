@@ -64,6 +64,12 @@ const ProductDetailsModal = ({ onClose, productId }) => {
               {singleProduct?.barcodeNumber || 'NA'}
             </span>
           </label>
+           <label className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+            Manufacturer
+            <span className='text-[#484848] mt-2'>
+              {singleProduct?.manufacturer || 'NA'}
+            </span>
+          </label>
           <label className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
             Unit Price
             <span className='text-[#484848] mt-2'>

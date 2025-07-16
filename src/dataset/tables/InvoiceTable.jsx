@@ -68,7 +68,7 @@ const InvoiceTable = ({ }) => {
                 <table className="w-full text-left text-sm bg-primary_white">
                     <thead className=" border-b text-primary_blue font-semibold text-xs md:text-[14px]">
                         <tr className=''>
-                            <th className="px-4 py-2">ID</th>
+                            <th className="px-4 py-2">S/N</th>
                             <th className="px-4 py-2">Customer Name</th>
                             <th className="px-4 py-2">Products</th>
                             <th className="px-4 py-2">Status</th>
@@ -79,10 +79,11 @@ const InvoiceTable = ({ }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredInvoice.map((invoice) => (
+                        {filteredInvoice.map((invoice, index) => (
                             <tr key={invoice._id} className="border-b hover:bg-gray-50 text-start">
-                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{invoice.invoiceId}</td>
-                                <td className="px-4 py-3 flex items-center gap-2">
+                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                                    {(currentPage - 1) * perPage + index + 1}
+                                </td>                                <td className="px-4 py-3 flex items-center gap-2">
                                     <div>
                                         <div className="text-xs md:text-[14px] font-medium text-[#484848]">
                                             {invoice.name || 'N/A'}

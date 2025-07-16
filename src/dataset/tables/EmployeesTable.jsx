@@ -19,6 +19,9 @@ const { token } = useAuth();
   const [isEmployeeDetailsModalOpen, setEmployeeDetailsModalOpen] = useState(false);
   const [getAllEmployee, setGetAllEmployee] = useState([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+   const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const perPage = 100;
 
   
     const filteredEmployees = getAllEmployee;
@@ -28,6 +31,9 @@ const { token } = useAuth();
         const res = await instance.get("users");
   
         console.log(res.data);
+
+            setTotalPages(totalPages || 1);
+
         setGetAllEmployee(res.data.data);
   
 
@@ -80,7 +86,7 @@ const closeEmployeeDetailsModal = () => {
         <table className="w-full text-left text-sm bg-primary_white">
           <thead className=" border-b text-primary_blue font-semibold md:text-[14px] ">
             <tr className=''>
-              <th className="px-4 py-2">ID</th>
+              <th className="px-4 py-2">S/N</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Position</th>
               <th className="px-4 py-2">Date Added</th>
@@ -89,10 +95,11 @@ const closeEmployeeDetailsModal = () => {
             </tr>
           </thead>
         <tbody>
-  {filteredEmployees.map((emp) => (
+  {filteredEmployees.map((emp, index) => (
     <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
-      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.userId}</td>
-      <td className="px-4 py-3 flex items-center gap-2">
+   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                  {(currentPage - 1) * perPage + index + 1}
+                </td>      <td className="px-4 py-3 flex items-center gap-2">
         <img
           src={emp.image}
           alt={emp.fullName}

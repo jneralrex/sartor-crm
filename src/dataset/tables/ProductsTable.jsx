@@ -90,7 +90,7 @@ const ProductsTable = () => {
         <table className="w-full text-left text-sm bg-primary_white">
           <thead className="border-b text-primary_blue font-semibold text-xs md:text-[14px]">
             <tr>
-              <th className="px-4 py-2">ID</th>
+              <th className="px-4 py-2">S/N</th>
               <th className="px-4 py-2">Product Name</th>
               <th className="px-4 py-2">Supplier</th>
               <th className="px-4 py-2">Status</th>
@@ -101,10 +101,11 @@ const ProductsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {getAllProducts.map((prod) => (
+            {getAllProducts.map((prod, index) => (
               <tr key={prod._id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.batchId}</td>
-                <td className="px-4 py-3 flex items-center gap-2">
+   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                  {(currentPage - 1) * perPage + index + 1}
+                </td>                <td className="px-4 py-3 flex items-center gap-2">
                   <div className="text-xs md:text-[14px] font-medium text-[#484848] flex items-center gap-2">
                     <input type="checkbox" /> {prod.productName}
                   </div>
