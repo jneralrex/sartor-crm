@@ -73,11 +73,11 @@ const ViewBatchesByProduct = ({ productId, onClose }) => {
                     </a> */}
                     {batch.invoiceNumber }
                   </td>
-                  <td className="py-2 px-3 border">
+                  {/* <td className="py-2 px-3 border">
                     <a href={batch.receipt} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
                       Download PDF
                     </a>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
