@@ -7,7 +7,7 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
         barcodeNumber: '',
         manufacturer: '',
         description: '',
-        productImage: '', 
+        productImage: '',
     });
 
     const [preview, setPreview] = useState(null);
@@ -16,20 +16,20 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
     const [uploadProgress, setUploadProgress] = useState(0);
 
 
-   useEffect(() => {
-    if (productToEdit) {
-        setFormData((prev) => ({
-            productName: productToEdit.productName || '',
-            barcodeNumber: productToEdit.barcodeNumber || '',
-            manufacturer: productToEdit.manufacturer || '',
-            description: productToEdit.description || '',
-            productImage: productToEdit.productImage || '',
-        }));
-        if (productToEdit.productImage) {
-            setPreview(productToEdit.productImage);
+    useEffect(() => {
+        if (productToEdit) {
+            setFormData((prev) => ({
+                productName: productToEdit.productName || '',
+                barcodeNumber: productToEdit.barcodeNumber || '',
+                manufacturer: productToEdit.manufacturer || '',
+                description: productToEdit.description || '',
+                productImage: productToEdit.productImage || '',
+            }));
+            if (productToEdit.productImage) {
+                setPreview(productToEdit.productImage);
+            }
         }
-    }
-}, [productToEdit]);
+    }, [productToEdit]);
 
 
     const handleChange = async (e) => {
@@ -39,7 +39,7 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
             const file = files[0];
             setPreview(URL.createObjectURL(file));
             setUploading(true);
-            setUploadProgress(0); 
+            setUploadProgress(0);
 
             const formDataCloud = new FormData();
             formDataCloud.append("file", file);
@@ -82,79 +82,79 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
     };
 
 
-   
-
-   const validate = () => {
-    let newErrors = {};
-
-    // Always validate productName
-    if (!formData.productName?.trim()) {
-        newErrors.productName = "Product name is required";
-    }
-
-    // Only validate the rest if not editing (i.e., it's a create request)
-    if (!productToEdit) {
-        if (!formData.barcodeNumber?.trim()) newErrors.barcodeNumber = "Barcode is required";
-        if (!formData.manufacturer?.trim()) newErrors.manufacturer = "Manufacturer is required";
-        if (!formData.description?.trim()) newErrors.description = "Description is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-};
 
 
-const handleSubmit = async (e) => {
-    e.preventDefault();
+    const validate = () => {
+        let newErrors = {};
 
-    if (!validate()) return;
-
-    try {
-        let response;
-
-        if (productToEdit) {
-            // Only send productName for update
-            response = await instance.put(`product/edit/${productToEdit._id}`, {
-                productName: formData.productName,
-            });
-            console.log("Product Updated", response.data);
-         if (onSuccess) {
-  onSuccess(response.data?.data || response.data); // Use whichever is available
-}
-
-
-        } else {
-            // Send full data for create
-            response = await instance.post("product", formData);
-            console.log("Product Created", response.data);
-           if (onSuccess) {
-  onSuccess(response.data?.data || response.data); // Use whichever is available
-}
-
-
+        // Always validate productName
+        if (!formData.productName?.trim()) {
+            newErrors.productName = "Product name is required";
         }
 
-         if (onSuccess) {
-      onSuccess(response.data.data); // Make sure this matches the shape of your API response
-    }
+        // Only validate the rest if not editing (i.e., it's a create request)
+        if (!productToEdit) {
+            if (!formData.barcodeNumber?.trim()) newErrors.barcodeNumber = "Barcode is required";
+            if (!formData.manufacturer?.trim()) newErrors.manufacturer = "Manufacturer is required";
+            if (!formData.description?.trim()) newErrors.description = "Description is required";
+        }
 
-        // Reset form
-        setFormData({
-            productName: '',
-            barcodeNumber: '',
-            manufacturer: '',
-            description: '',
-            productImage: '',
-        });
-
-        onClose();
-    } catch (error) {
-        console.error("Error submitting product", error);
-    }
-};
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
 
-console.log("Form Data:", formData);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validate()) return;
+
+        try {
+            let response;
+
+            if (productToEdit) {
+                // Only send productName for update
+                response = await instance.put(`product/edit/${productToEdit._id}`, {
+                    productName: formData.productName,
+                });
+                console.log("Product Updated", response.data);
+                if (onSuccess) {
+                    onSuccess(response.data?.data || response.data); // Use whichever is available
+                }
+
+
+            } else {
+                // Send full data for create
+                response = await instance.post("product", formData);
+                console.log("Product Created", response.data);
+                if (onSuccess) {
+                    onSuccess(response.data?.data || response.data); // Use whichever is available
+                }
+
+
+            }
+
+            if (onSuccess) {
+                onSuccess(response.data.data); // Make sure this matches the shape of your API response
+            }
+
+            // Reset form
+            setFormData({
+                productName: '',
+                barcodeNumber: '',
+                manufacturer: '',
+                description: '',
+                productImage: '',
+            });
+
+            onClose();
+        } catch (error) {
+            console.error("Error submitting product", error);
+        }
+    };
+
+
+    console.log("Form Data:", formData);
 
     return (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
@@ -207,7 +207,7 @@ console.log("Form Data:", formData);
                         type="submit"
                         disabled={uploading}
                         className={`w-full bg-blue-900 text-white py-3 rounded-lg font-semibold ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        // onClick={handleSubmit}
+                    // onClick={handleSubmit}
                     >
                         {productToEdit ? "Update Product" : "Create Product"}
                     </button>

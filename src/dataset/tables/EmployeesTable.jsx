@@ -10,42 +10,46 @@ import instance from '../../utils/axiosInstance';
 
 
 
-const EmployeeTable = ({}) => {
- 
-const { token } = useAuth();
+const EmployeeTable = ({ }) => {
+
+  const { token } = useAuth();
 
   const [isAssignTaskModalOpen, setAssignTaskModalOpen] = useState(false);
   const [isAssignEmployeeModalOpen, setAssignEmployeeModalOpen] = useState(false);
   const [isEmployeeDetailsModalOpen, setEmployeeDetailsModalOpen] = useState(false);
   const [getAllEmployee, setGetAllEmployee] = useState([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
-   const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const perPage = 100;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isEditEmployeeModalOpen, setIsEditEmployeeModalOpen] = useState(false);
+  const [employeeToEdit, setEmployeeToEdit] = useState(null);
+  const perPage = 100;
 
-  
-    const filteredEmployees = getAllEmployee;
-  
-    const allEmp = async () => {
-      try {
-        const res = await instance.get("users");
-  
-        console.log(res.data);
 
-            setTotalPages(totalPages || 1);
+  const filteredEmployees = getAllEmployee;
 
-        setGetAllEmployee(res.data.data);
-  
+  const allEmp = async () => {
+    try {
+      const res = await instance.get("users");
 
-      } catch (error) {
-        console.log(error);
-      }
-    };
-  
-  
-    useEffect(() => {
+      console.log(res);
+
+      setTotalPages(totalPages || 1);
+
+      setGetAllEmployee(res.data.data);
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  useEffect(() => {
+    if (token) {
       allEmp();
-    }, [token]);
+    }
+  }, [token]);
 
   const handleAssignTaskModalToggle = () => {
     setAssignTaskModalOpen((prev) => !prev);
@@ -54,15 +58,15 @@ const { token } = useAuth();
   const handleAddEmployee = () => {
     setAssignEmployeeModalOpen((prev) => !prev);
   };
- const openEmployeeDetailsModal = (employeeId) => {
-  setSelectedEmployeeId(employeeId);
-  setEmployeeDetailsModalOpen(true);
-};
+  const openEmployeeDetailsModal = (employeeId) => {
+    setSelectedEmployeeId(employeeId);
+    setEmployeeDetailsModalOpen(true);
+  };
 
-const closeEmployeeDetailsModal = () => {
-  setEmployeeDetailsModalOpen(false);
-  setSelectedEmployeeId(null);
-};
+  const closeEmployeeDetailsModal = () => {
+    setEmployeeDetailsModalOpen(false);
+    setSelectedEmployeeId(null);
+  };
 
 
   return (
@@ -94,36 +98,36 @@ const closeEmployeeDetailsModal = () => {
               <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
-        <tbody>
-  {filteredEmployees.map((emp, index) => (
-    <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
-   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+          <tbody>
+            {filteredEmployees.map((emp, index) => (
+              <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
+                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {(currentPage - 1) * perPage + index + 1}
                 </td>      <td className="px-4 py-3 flex items-center gap-2">
-        <img
-          src={emp.image}
-          alt={emp.fullName}
-          className="w-8 h-8 rounded-full object-cover"
-        />
-        <div>
-          <div className=" text-[#484848] md:text-[14px] font-medium">{emp.fullName}</div>
-          <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
-        </div>
-      </td>
-      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.role}</td>
-      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">
-        {emp.creationDateTime
-          ? new Date(emp.creationDateTime).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })
-          : 'N/A'}
-      </td>
-      <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
-      <td className="px-4 py-3 ">
-        {/* Menu Dropdown */}
-        <div className="relative">
+                  <img
+                    src={emp.image}
+                    alt={emp.fullName}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className=" text-[#484848] md:text-[14px] font-medium">{emp.fullName}</div>
+                    <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
+                  </div>
+                </td>
+                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.role}</td>
+                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">
+                  {emp.creationDateTime
+                    ? new Date(emp.creationDateTime).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })
+                    : 'N/A'}
+                </td>
+                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
+                <td className="px-4 py-3 ">
+                  {/* Menu Dropdown */}
+                  <div className="relative">
                     <Menu as="div" className="relative inline-block text-left">
                       <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
                         <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
@@ -137,7 +141,7 @@ const closeEmployeeDetailsModal = () => {
                               <button
                                 className={`${active ? 'bg-gray-100' : ''
                                   } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-      onClick={() => openEmployeeDetailsModal(emp._id)}
+                                onClick={() => openEmployeeDetailsModal(emp._id)}
                               >
                                 View Details
                               </button>
@@ -159,10 +163,14 @@ const closeEmployeeDetailsModal = () => {
                           <Menu.Item>
                             {({ active }) => (
                               <button
-                                className={`${active ? 'bg-red-100 text-red-700' : 'text-red-500'
-                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm`}
+                                className={`${active ? 'bg-gray-100' : ''
+                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => {
+                                  setEmployeeToEdit(emp);
+                                  setIsEditEmployeeModalOpen(true);
+                                }}
                               >
-                                Delete
+                                Edit
                               </button>
                             )}
                           </Menu.Item>
@@ -187,12 +195,33 @@ const closeEmployeeDetailsModal = () => {
           <button className="px-2 py-1 border rounded">440</button>
         </div>
       </div>
-{/* modals */}
-{ isAssignTaskModalOpen && <AssignEmployeeTask onClose={handleAssignTaskModalToggle}/> }
-{isEmployeeDetailsModalOpen && (
-  <EmployeeDetails employeeId={selectedEmployeeId} onClose={closeEmployeeDetailsModal} />
-)}
-{isAssignEmployeeModalOpen && <AddNewEmployeeModal onClose={handleAddEmployee}/>}
+      {/* modals */}
+      {isAssignTaskModalOpen && <AssignEmployeeTask onClose={handleAssignTaskModalToggle} />}
+      {isEmployeeDetailsModalOpen && (
+        <EmployeeDetails employeeId={selectedEmployeeId} onClose={closeEmployeeDetailsModal} />
+      )}
+      {isAssignEmployeeModalOpen && (
+        <AddNewEmployeeModal
+          onClose={handleAddEmployee}
+          onSuccess={(newEmployee) => {
+            allEmp();
+          }}
+        />
+      )}
+
+
+      {isEditEmployeeModalOpen && (
+        <AddNewEmployeeModal
+          onClose={() => setIsEditEmployeeModalOpen(false)}
+          employeeToEdit={employeeToEdit}
+          onSuccess={(updatedEmployee) => {
+            allEmp();
+            setIsEditEmployeeModalOpen(false);
+          }}
+        />
+      )}
+
+
     </>
   );
 };

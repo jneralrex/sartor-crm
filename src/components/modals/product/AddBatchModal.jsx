@@ -20,23 +20,24 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
   const [receiptPreview, setReceiptPreview] = useState("");
 
 
-useEffect(() => {
-  if (!productId) return;
-  const fetchProduct = async () => {
-    try {
-      const res = await instance.get(`product/${productId}`);
-      setProductDetails(res.data.data);
-      setForm((form) => ({
-        ...form,
-        product: res.data.data._id,
-        manufacturer: res.data.data.manufacturer, // ← set from API response
-      }));
-    } catch (err) {
-      setProductDetails(null);
-    }
-  };
-  fetchProduct();
-}, [productId, token]);
+  useEffect(() => {
+    if (!productId) return;
+    const fetchProduct = async () => {
+      try {
+        const res = await instance.get(`product/${productId}`);
+        console.log("prodct", res)
+        setProductDetails(res.data.data);
+        setForm((form) => ({
+          ...form,
+          product: res.data.data._id,
+          manufacturer: res.data.data.manufacturer, // ← set from API response
+        }));
+      } catch (err) {
+        setProductDetails(null);
+      }
+    };
+    fetchProduct();
+  }, [productId, token]);
 
 
   const [form, setForm] = useState({
@@ -196,7 +197,7 @@ useEffect(() => {
 
           {/* Product preview */}
           <div className="flex items-start gap-4 bg-[#F5F5F5] p-4 rounded-lg mb-4">
-            <div className="w-[48px] h-[48px] bg-gray-300 rounded-lg" />
+            <img src={productDetails?.productImage} className="w-[48px] h-[48px] bg-gray-300 rounded-lg" />
             <div>
               <p className="font-semibold text-[#1A1A1A]">
                 {productDetails?.productName || "Product Name"}
@@ -209,16 +210,16 @@ useEffect(() => {
 
           {/* Inputs */}
           <div className="space-y-4">
-<label className="block">
-  <span className="block text-[#1A1A1A] font-medium text-sm mb-1">Manufacturer</span>
-  <input
-    type="text"
-    name="manufacturer"
-    value={form.manufacturer}
-    readOnly
-    className="bg-[#F5F5F5] rounded-lg w-full h-[48px] px-4 text-sm outline-none text-gray-500 cursor-not-allowed"
-  />
-</label>
+            <label className="block">
+              <span className="block text-[#1A1A1A] font-medium text-sm mb-1">Manufacturer</span>
+              <input
+                type="text"
+                name="manufacturer"
+                value={form.manufacturer}
+                readOnly
+                className="bg-[#F5F5F5] rounded-lg w-full h-[48px] px-4 text-sm outline-none text-gray-500 cursor-not-allowed"
+              />
+            </label>
 
             <Input label="Invoice Number" placeholder="Invoice Number" name="invoiceNumber" value={form.invoiceNumber} onChange={handleChange} />
             {/* <Input label="Product ID" placeholder="Product ID" name="product" value={form.product} onChange={handleChange} disabled/> */}
