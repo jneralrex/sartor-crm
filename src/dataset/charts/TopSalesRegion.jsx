@@ -1,11 +1,5 @@
-const TopSalesRegions = () => {
-  const regions = [
-    { name: 'Yaba', value: 15642 },
-    { name: 'Island', value: 11048 },
-    { name: 'Ikorodu', value: 9215 },
-    { name: 'Shomolu', value: 8374 },
-    { name: 'Lekki', value: 7983 },
-  ];
+const TopSalesRegions = ({ regions }) => {
+  if (!regions || regions.length === 0) return <p>No data available.</p>;
 
   const maxValue = Math.max(...regions.map(region => region.value));
 

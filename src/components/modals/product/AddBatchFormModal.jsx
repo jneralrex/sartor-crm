@@ -1,18 +1,32 @@
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const AddBatchFormModal = ({ onClose, onAddBatch }) => {
-  const [batch, setBatch] = useState({
-    batchNumber: "",
-    quantity: "",
-    expiryDate: "",
-    sellingPrice: "",
-    supplyPrice: ""
-  });
+const AddBatchFormModal = ({ onClose, onAddBatch, initialBatch = null }) => {
+  const [batch, setBatch] = useState(() => ({
+    batchNumber: initialBatch?.batchNumber || "",
+    quantity: initialBatch?.quantity || "",
+    expiryDate: initialBatch ? new Date(initialBatch.expiryDate).toISOString().slice(0, 10) : "",
+    sellingPrice: initialBatch?.sellingPrice || "",
+    supplyPrice: initialBatch?.supplyPrice || "",
+  }));
+
+  useEffect(() => {
+    if (initialBatch) {
+      setBatch({
+        batchNumber: initialBatch.batchNumber || "",
+        quantity: initialBatch.quantity || "",
+        expiryDate: initialBatch.expiryDate ? new Date(initialBatch.expiryDate).toISOString().slice(0, 10) : "",
+        sellingPrice: initialBatch.sellingPrice || "",
+        supplyPrice: initialBatch.supplyPrice || "",
+      });
+    }
+  }, [initialBatch]);
 
   const handleChange = (e) => {
     setBatch({ ...batch, [e.target.name]: e.target.value });
   };
+
+  
 
   const handleAdd = () => {
     // Convert expiryDate to timestamp if it's a date string
@@ -46,8 +60,12 @@ const AddBatchFormModal = ({ onClose, onAddBatch }) => {
             Add
           </button>
         </form>
+
+       
+
       </div>
-    </div>
+
+        </div>
   );
 };
 

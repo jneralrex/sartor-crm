@@ -4,7 +4,7 @@ import AddBatchFormModal from "./AddBatchFormModal";
 import { useAuth } from "../../../context/AuthContext";
 import instance from "../../../utils/axiosInstance";
 
-const AddBatchWrapperModal = ({ onClose, productId }) => {
+const AddBatchWrapperModal = ({ productId, onClose, editData, onBatchUpdated }) => {
   const { token } = useAuth();
   const [productDetails, setProductDetails] = useState(null);
   const [getAllSuppliers, setGetAllSuppliers] = useState([]);
@@ -14,10 +14,10 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
   const [batches, setBatches] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const [receiptFile, setReceiptFile] = useState(null);
-  const [imageFileLabel, setImageFileLabel] = useState("Upload Image");
-  const [receiptFileLabel, setReceiptFileLabel] = useState("Upload Receipt");
   const [imagePreview, setImagePreview] = useState("");
   const [receiptPreview, setReceiptPreview] = useState("");
+  const [editingBatch, setEditingBatch] = useState(null);
+
 
 
   useEffect(() => {
@@ -38,6 +38,24 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
     };
     fetchProduct();
   }, [productId, token]);
+
+
+  useEffect(() => {
+    if (editData) {
+      setForm({
+        manufacturer: editData.manufacturer || "",
+        product: productId,
+        invoiceNumber: editData.invoiceNumber || "",
+        supplier: editData.supplier?._id || "",
+        image: editData.image || "",
+        receipt: editData.receipt || "",
+      });
+
+      setBatches([editData]);
+      setImagePreview(editData.image || "");
+      setReceiptPreview(editData.receipt || "");
+    }
+  }, [editData]);
 
 
   const [form, setForm] = useState({
@@ -117,8 +135,22 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
 
 
   // Handler to add a batch from the form modal
+  // const handleAddBatch = (batch) => {
+  //   setBatches(prev => [...prev, batch]);
+  //   setShowAddForm(false);
+  // };
+
   const handleAddBatch = (batch) => {
     setBatches(prev => [...prev, batch]);
+
+    // Populate form fields with latest batch values (optional)
+    setForm(prev => ({
+      ...prev,
+      quantity: batch.quantity || prev.quantity,
+      supplyPrice: batch.supplyPrice || prev.supplyPrice,
+      sellingPrice: batch.sellingPrice || prev.sellingPrice,
+    }));
+
     setShowAddForm(false);
   };
 
@@ -128,8 +160,60 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
   };
 
   // Handler for submit all
-  const handleSubmit = async () => {
-    try {
+  // const handleSubmit = async () => {
+  //   try {
+  //     let imageUrl = "";
+  //     let receiptUrl = "";
+
+  //     if (imageFile) {
+  //       imageUrl = await uploadToCloudinary(imageFile);
+  //     }
+
+  //     if (receiptFile) {
+  //       receiptUrl = await uploadToCloudinary(receiptFile);
+  //     }
+
+  //     const payload = {
+  //       ...form,
+  //       image: imageUrl,
+  //       receipt: receiptUrl,
+  //       batch: batches,
+  //     };
+
+  //     console.log("Final payload:", payload);
+
+  //     // ✅ Send this payload to your backend
+  //     const res = await instance.post("/batch", payload);
+
+  //     console.log(res)
+
+  //     onClose();
+  //   } catch (error) {
+  //     console.error("Submit failed", error);
+  //   }
+  // };
+
+
+ const handleSubmit = async () => {
+  try {
+    const payload = {
+      ...form,
+      image: imagePreview,
+      receipt: receiptPreview,
+      batch: batches,
+    };
+
+    if (editData?._id) {
+      const res = await instance.put(`batch/edit/${editData._id}`, {
+        ...payload,
+        ...batches[0], 
+      });
+
+     if (onBatchUpdated && typeof onBatchUpdated === 'function') {
+  onBatchUpdated({ ...res.data.data });
+}
+
+    } else {
       let imageUrl = "";
       let receiptUrl = "";
 
@@ -141,25 +225,23 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
         receiptUrl = await uploadToCloudinary(receiptFile);
       }
 
-      const payload = {
+      const newPayload = {
         ...form,
         image: imageUrl,
         receipt: receiptUrl,
         batch: batches,
       };
 
-      console.log("Final payload:", payload);
-
-      // ✅ Send this payload to your backend
-      const res = await instance.post("/batch", payload);
-
-      console.log(res)
-
-      onClose();
-    } catch (error) {
-      console.error("Submit failed", error);
+      await instance.post("batch", newPayload);
     }
-  };
+
+    onClose(); 
+  } catch (error) {
+    console.error("Submit failed", error);
+  }
+};
+
+
 
   const allSupplier = async () => {
     try {
@@ -179,6 +261,16 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
     }
   };
 
+  const handleEditBatch = (batch) => {
+    setEditingBatch(batch);
+    setShowAddForm(true);
+  };
+
+  const handleAddBatchClick = () => {
+    setEditingBatch(null);
+    setShowAddForm(true);
+  };
+
 
   useEffect(() => {
     allSupplier();
@@ -191,7 +283,7 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
       <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
         <div className="bg-white w-[90%] max-w-[500px] max-h-[95vh] overflow-y-scroll rounded-xl p-6 space-y-4 hide-scrollbar">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Add Batch</h2>
+            <h2 className="text-xl font-semibold"> {editData ? "Edit Batch" : "Add Batch"}</h2>
             <button onClick={onClose} className="text-2xl">&times;</button>
           </div>
 
@@ -263,13 +355,12 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
             {/* Add Batch trigger */}
             <button
               type="button"
-              onClick={() => setShowAddForm(true)}
+              onClick={handleAddBatchClick}
               className="text-[#999] items-center gap-2 text-[16px] font-medium w-full text-center flex justify-center"
             >
               <Plus size={18} /> Add Batch
             </button>
 
-            {/* List of batches */}
             {batches.map((batch, idx) => (
               <div key={idx} className="bg-[#F5F5F5] p-4 rounded-lg flex justify-between items-center mt-2">
                 <div>
@@ -279,9 +370,11 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
                 </div>
                 <div className="flex gap-3 items-center">
                   <button onClick={() => setBatches(batches.filter((_, i) => i !== idx))}><X className="text-red-500" size={18} /></button>
+                  <button onClick={() => handleEditBatch(batch)} className="text-blue-500">Edit</button> {/* Add edit button */}
                 </div>
               </div>
             ))}
+
 
             {/* Totals */}
             {/* <div className="space-y-2">
@@ -305,7 +398,25 @@ const AddBatchWrapperModal = ({ onClose, productId }) => {
       </div>
 
       {/* Nested Modal */}
-      {showAddForm && <AddBatchFormModal onClose={() => setShowAddForm(false)} onAddBatch={handleAddBatch} />}
+      {/* {showAddForm && <AddBatchFormModal onClose={() => setShowAddForm(false)} onAddBatch={handleAddBatch} />} */}
+
+      {showAddForm && (
+        <AddBatchFormModal
+          onClose={() => setShowAddForm(false)}
+          onAddBatch={(batch) => {
+            if (editingBatch) {
+              setBatches(prev =>
+                prev.map(b => b._id === editingBatch._id ? batch : b)
+              );
+            } else {
+              setBatches(prev => [...prev, batch]);
+            }
+            setShowAddForm(false);
+            setEditingBatch(null);
+          }}
+          initialBatch={editingBatch}
+        />
+      )}
     </>
   );
 };

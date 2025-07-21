@@ -1,6 +1,6 @@
 import Chart from 'react-apexcharts';
 
-const TotalCustomersChart = () => {
+const TotalCustomersChart = ({ monthlyCounts }) => {
   const options = {
     chart: { type: 'bar' },
     xaxis: {
@@ -15,12 +15,7 @@ const TotalCustomersChart = () => {
     },
   };
 
-  const series = [
-    {
-      name: 'Customers',
-      data: [1000, 1150, 1200, 980, 900, 1020, 950, 1100, 1050, 1200, 1000, 950],
-    },
-  ];
+  const series = [{ name: 'Customers', data: monthlyCounts }];
 
   return <Chart options={options} series={series} type="bar" height={300} />;
 };

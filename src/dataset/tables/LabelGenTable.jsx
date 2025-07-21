@@ -8,6 +8,7 @@ import { Menu } from '@headlessui/react';
 import QRCode from 'react-qr-code';
 import Barcode from 'react-barcode';
 import html2canvas from 'html2canvas';
+import LabelModal from '../../components/modals/labelgen/LabelModal';
 
 const LabelGenTable = () => {
   const { token } = useAuth();
@@ -197,8 +198,8 @@ const LabelGenTable = () => {
       </div>
 
       {isModalOpen && <ProductDetailsModal onClose={handleModalToggle} />}
-
-      {selectedLabel && (
+      
+      {/* {selectedLabel && (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
           <div className="bg-primary_white p-6 shadow-lg min-w-[455px] rounded-xl">
             <div className='flex items-center justify-between mb-4'>
@@ -368,7 +369,9 @@ const LabelGenTable = () => {
             )}
           </div>
         </div>
-      )}
+      )}  */}
+
+      {selectedLabel && <LabelModal label={selectedLabel} onClose={() => setSelectedLabel(null)} />}
     </>
   )
 }
