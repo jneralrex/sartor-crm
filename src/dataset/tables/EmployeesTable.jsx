@@ -7,6 +7,7 @@ import EmployeeDetails from '../../components/modals/employees/EmployeeDetails';
 import AddNewEmployeeModal from '../../components/modals/employees/AddNewEmployeeModal';
 import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
+import ConfirmModal from '../../components/ConfirmationPopUp';
 
 
 
@@ -23,6 +24,9 @@ const EmployeeTable = ({ }) => {
   const [totalPages, setTotalPages] = useState(1);
   const [isEditEmployeeModalOpen, setIsEditEmployeeModalOpen] = useState(false);
   const [employeeToEdit, setEmployeeToEdit] = useState(null);
+  const [employeeToDelete, setEmployeeToDelete] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
   const perPage = 100;
 
 
@@ -67,6 +71,22 @@ const EmployeeTable = ({ }) => {
     setEmployeeDetailsModalOpen(false);
     setSelectedEmployeeId(null);
   };
+
+  const confirmDelete = async () => {
+    try {
+    const res =  await instance.delete(`user/delete`, {
+        data: { id: employeeToDelete },
+      });
+      console.log(res)
+      console.log("del",employeeToDelete)
+      setIsConfirmOpen(false);
+      setEmployeeToDelete(null);
+      allEmp(); // Refresh list
+    } catch (err) {
+      console.error('Error deleting employee:', err);
+    }
+  };
+
 
 
   return (
@@ -174,6 +194,21 @@ const EmployeeTable = ({ }) => {
                               </button>
                             )}
                           </Menu.Item>
+
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
+                                onClick={() => {
+                                  setEmployeeToDelete(emp._id);
+                                  setIsConfirmOpen(true);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </Menu.Item>
+
                         </div>
                       </Menu.Items>
                     </Menu>
@@ -221,7 +256,13 @@ const EmployeeTable = ({ }) => {
         />
       )}
 
-
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Employee"
+        message="Are you sure you want to delete this employee? This action is irreversible."
+      />
     </>
   );
 };

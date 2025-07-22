@@ -6,6 +6,7 @@ import { Menu } from '@headlessui/react'
 import LeadDetailsModal from '../../components/modals/leads/LeadDetailsModal';
 import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
+import ConfirmModal from '../../components/ConfirmationPopUp';
 
 const LeadsTable = () => {
   const { token } = useAuth();
@@ -14,6 +15,9 @@ const LeadsTable = () => {
   const [isLeadDetailsModalOpen, setLeadDetailsModalOpen] = useState(false);
   const [getAllLeads, setGetAllLeads] = useState([]);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
+  const [leadToDelete, setLeadToDelete] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
 
 
   // Pagination state
@@ -46,6 +50,21 @@ const LeadsTable = () => {
 
     } catch (error) {
       console.log(error);
+    }
+  };
+
+
+  const confirmDelete = async () => {
+    if (!leadToDelete) return;
+    try {
+      await instance.delete(`lead/delete/${leadToDelete}`);
+      allLeads();
+    } catch (error) {
+      console.error('Failed to delete batch:', error);
+      toast.error("Failed to delete batch.");
+    } finally {
+      setIsConfirmOpen(false);
+      setLeadToDelete(null);
     }
   };
 
@@ -146,6 +165,18 @@ const LeadsTable = () => {
                             </button>
                           )}
                         </Menu.Item>
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
+                              onClick={() => {
+                                setLeadToDelete(emp._id);
+                                setIsConfirmOpen(true);
+                              }}                            >
+                              Delete
+                            </button>
+                          )}
+                        </Menu.Item>
                       </div>
                     </Menu.Items>
                   </Menu>
@@ -193,6 +224,14 @@ const LeadsTable = () => {
       {/* Modal */}
       {isAddLeadModalOpen && <AddLeadModal onClose={handleLeadModalToggle} />}
       {isLeadDetailsModalOpen && (<LeadDetailsModal onClose={() => setLeadDetailsModalOpen(false)} leadId={selectedLeadId} />)}
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Lead"
+        message="Are you sure you want to delete this lead? This action is irreversible."
+      />
     </>
   );
 };

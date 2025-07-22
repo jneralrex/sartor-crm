@@ -5,6 +5,7 @@ import { Menu } from '@headlessui/react'
 import { useAuth } from '../../context/AuthContext';
 import InvoiceDetailsModal from '../../components/modals/invoice/InvoiceDetailsModal';
 import instance from '../../utils/axiosInstance';
+import ConfirmModal from '../../components/ConfirmationPopUp';
 
 
 const InvoiceTable = ({ }) => {
@@ -13,6 +14,8 @@ const InvoiceTable = ({ }) => {
     const [getInvoices, setGetInvoices] = useState([]);
     const [isViewInvoiceModalOpen, setViewLpoModalOpen] = useState(false);
     const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
+    const [invoiceToDelete, setInvoiceToDelete] = useState(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
 
     // Pagination state
@@ -35,7 +38,21 @@ const InvoiceTable = ({ }) => {
         } catch (error) {
             console.error('Error fetching invoices:', error);
         }
-    }
+    };
+
+
+    const confirmDelete = async () => {
+        if (!invoiceToDelete) return;
+        try {
+            await instance.delete(`invoice/delete/${invoiceToDelete}`);
+            getAllInvoices();
+        } catch (error) {
+            console.error('Failed to delete batch:', error);
+        } finally {
+            setIsConfirmOpen(false);
+            setInvoiceToDelete(null);
+        }
+    };
 
 
     useEffect(() => {
@@ -144,6 +161,19 @@ const InvoiceTable = ({ }) => {
                                                             </button>
                                                         )}
                                                     </Menu.Item>
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <button
+                                                                className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
+                                                                onClick={() => {
+                                                                    setInvoiceToDelete(invoice._id);
+                                                                    setIsConfirmOpen(true);
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        )}
+                                                    </Menu.Item>
 
                                                 </div>
                                             </Menu.Items>
@@ -196,6 +226,15 @@ const InvoiceTable = ({ }) => {
                 invoiceId={selectedInvoiceId}
             />
             )}
+
+             <ConfirmModal
+                          isOpen={isConfirmOpen}
+                          onClose={() => setIsConfirmOpen(false)}
+                          onConfirm={confirmDelete}
+                          title="Delete Invoice"
+                          message="Are you sure you want to delete this Invoice? This action is irreversible."
+                        />
+            
         </>
     );
 }

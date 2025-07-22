@@ -9,6 +9,7 @@ import AddBatchWrapperModal from '../../components/modals/product/AddBatchModal'
 import instance from '../../utils/axiosInstance';
 import EditProductModal from '../../components/modals/product/EditProductModal';
 import ViewBatchesByProduct from '../../components/modals/product/ViewBatchesByProduct';
+import ConfirmModal from '../../components/ConfirmationPopUp';
 
 const ProductsTable = () => {
   const { token } = useAuth();
@@ -20,13 +21,15 @@ const ProductsTable = () => {
   const [addBatchProductId, setAddBatchProductId] = useState(null);
   const [isEditProductModalOpen, setIsEditProductModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
-const [isViewBatchesOpen, setIsViewBatchesOpen] = useState(false);
-const [viewBatchProductId, setViewBatchProductId] = useState(null);
+  const [isViewBatchesOpen, setIsViewBatchesOpen] = useState(false);
+  const [viewBatchProductId, setViewBatchProductId] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-const handleViewBatches = (productId) => {
-  setViewBatchProductId(productId);
-  setIsViewBatchesOpen(true);
-};
+  const handleViewBatches = (productId) => {
+    setViewBatchProductId(productId);
+    setIsViewBatchesOpen(true);
+  };
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,6 +49,20 @@ const handleViewBatches = (productId) => {
     }
   };
 
+      const confirmDelete = async () => {
+      if (!productToDelete) return;
+      try {
+        await instance.delete(`product/delete/${productToDelete}`);
+        allProducts();
+      } catch (error) {
+        console.error('Failed to delete batch:', error);
+        toast.error("Failed to delete batch.");
+      } finally {
+        setIsConfirmOpen(false);
+        setProductToDelete(null);
+      }
+    };
+
   useEffect(() => {
     allProducts(currentPage);
   }, [currentPage, token]);
@@ -60,24 +77,6 @@ const handleViewBatches = (productId) => {
     setIsAddBatchModalOpen(true);
   };
 
-  const optimisticUpdate = (updatedProduct) => {
-    setGetAllProducts(prev =>
-      prev.map(item =>
-        item._id === updatedProduct._id ? updatedProduct : item
-      )
-    );
-  };
-
-  const handleUpdate = async (data) => {
-    optimisticUpdate(data); // UI updates immediately
-    try {
-      const res = await instance.put(`/product/edit/${data._id}`, data);
-      console.log("Confirmed update", res.data);
-    } catch (err) {
-      console.error("Update failed", err);
-      // Optionally revert the change if failed
-    }
-  };
 
 
   return (
@@ -184,7 +183,7 @@ const handleViewBatches = (productId) => {
                                 className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
                                 onClick={() => {
                                   handleAddBatchModalToggle(prod._id);
-                                  
+
                                 }}
                               >
                                 Add Batch
@@ -192,15 +191,28 @@ const handleViewBatches = (productId) => {
                             )}
                           </Menu.Item>
                           <Menu.Item>
-  {({ active }) => (
-    <button
-      className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-      onClick={() => handleViewBatches(prod._id)}
-    >
-      View Batches
-    </button>
-  )}
-</Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => handleViewBatches(prod._id)}
+                              >
+                                View Batches
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
+                                onClick={() =>{
+                                   setProductToDelete(prod._id);
+                                  setIsConfirmOpen(true);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </Menu.Item>
 
 
                         </div>
@@ -282,12 +294,20 @@ const handleViewBatches = (productId) => {
         />
       )}
 
-{isViewBatchesOpen && (
-  <ViewBatchesByProduct
-    productId={viewBatchProductId}
-    onClose={() => setIsViewBatchesOpen(false)}
-  />
-)}
+      {isViewBatchesOpen && (
+        <ViewBatchesByProduct
+          productId={viewBatchProductId}
+          onClose={() => setIsViewBatchesOpen(false)}
+        />
+      )}
+
+       <ConfirmModal
+              isOpen={isConfirmOpen}
+              onClose={() => setIsConfirmOpen(false)}
+              onConfirm={confirmDelete}
+              title="Delete Product"
+              message="Are you sure you want to delete this product? This action is irreversible."
+            />
 
     </>
   );

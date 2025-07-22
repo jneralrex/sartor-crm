@@ -8,6 +8,7 @@ import AssignTaskModal from "../components/modals/taskManager/AssignTaskModal";
 import TaskDetailsModal from "../components/modals/taskManager/TaskDetailsModal";
 import task from "../assets/images/task.png";
 import EditTaskModal from "../components/modals/taskManager/EditTask";
+import ConfirmModal from "../components/ConfirmationPopUp";
 
 const categories = [
   "All",
@@ -46,9 +47,10 @@ const TaskManager = () => {
   const [selectedTaskId, setSelectedTaskId] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleModalToggle = () => setIsModalOpen((prev) => !prev);
-
 
   const handleStatusModalToggle = (taskId) => {
     setSelectedTaskId(taskId);
@@ -90,6 +92,20 @@ const TaskManager = () => {
     }
   };
 
+  const confirmDelete = async () => {
+    try {
+      const res = await instance.delete(`task/delete`, {
+        data: { id: taskToDelete },
+      });
+
+      setIsConfirmOpen(false);
+      setTaskToDelete(null);
+      getTask(); 
+    } catch (err) {
+      console.error('Error deleting employee:', err);
+    }
+  };
+
   useEffect(() => {
     getTask();
   }, [token]);
@@ -99,6 +115,8 @@ const TaskManager = () => {
     const currentTasks = categorizedTasks.find((t) => t.name === currentCategory)?.posts || [];
     console.log(`Clicked category: ${currentCategory}`, currentTasks);
   }, [selectedIndex]);
+
+  console.log(taskToDelete)
 
   return (
     <>
@@ -180,7 +198,7 @@ const TaskManager = () => {
                           >
                             {post.status}
                           </span>
-                          
+
                         </div>
                         <p className="font-medium mt-1 text-[16px] text-[#484848]">
                           {post.task || post.description || "-"}
@@ -193,7 +211,8 @@ const TaskManager = () => {
                             ? new Date(post.creationDateTime).toLocaleDateString()
                             : ""}
                         </p>
-                        <button
+                        <div className="flex justify-between">
+                          <button
                             onClick={(e) => {
                               e.stopPropagation(); // prevent triggering onClick for status modal
                               handleEditClick(post._id);
@@ -202,6 +221,19 @@ const TaskManager = () => {
                           >
                             Edit
                           </button>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setTaskToDelete(post._id);
+                              setIsConfirmOpen(true);
+
+                            }}
+                            className="mt-3 text-red-500 text-sm underline"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     ))
                   ) : (
@@ -229,20 +261,29 @@ const TaskManager = () => {
         <EditTaskModal
           task={selectedTask}
           onClose={() => setIsEditModalOpen(false)}
-         onSuccess={(updatedTask) => {
-  setCategorizedTasks(prevTasks =>
-    prevTasks.map(category => ({
-      ...category,
-      posts: category.posts.map(task =>
-        task._id === updatedTask._id ? updatedTask : task
-      ),
-    }))
-  );
-  setIsEditModalOpen(false);
-}}
+          onSuccess={(updatedTask) => {
+            setCategorizedTasks(prevTasks =>
+              prevTasks.map(category => ({
+                ...category,
+                posts: category.posts.map(task =>
+                  task._id === updatedTask._id ? updatedTask : task
+                ),
+              }))
+            );
+            setIsEditModalOpen(false);
+          }}
 
         />
       )}
+
+      
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Task"
+        message="Are you sure you want to delete this task? This action is irreversible."
+      />
 
     </>
   );

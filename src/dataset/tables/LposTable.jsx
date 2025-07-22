@@ -7,6 +7,7 @@ import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
 import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
+import ConfirmModal from '../../components/ConfirmationPopUp';
 
 
 
@@ -18,6 +19,8 @@ const LposTable = () => {
   const [selectedLpoId, setSelectedLpoId] = useState(null);
   const [selectedLpo, setSelectedLpo] = useState(null);
   const [isEditLpoModalOpen, setEditLpoModalOpen] = useState(false);
+   const [lpoToDelete, setLpoToDelete] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
 
   // Pagination state
@@ -41,6 +44,21 @@ const LposTable = () => {
       console.log(error);
     }
   };
+
+
+    const confirmDelete = async () => {
+      if (!lpoToDelete) return;
+      try {
+        await instance.delete(`lpo/delete/${lpoToDelete}`);
+        allLPOs();
+      } catch (error) {
+        console.error('Failed to delete batch:', error);
+        toast.error("Failed to delete batch.");
+      } finally {
+        setIsConfirmOpen(false);
+        setLpoToDelete(null);
+      }
+    };
 
 
   useEffect(() => {
@@ -155,6 +173,19 @@ const LposTable = () => {
                               </button>
                             )}
                           </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
+                                onClick={() => {
+                                  setLpoToDelete(lpo._id);
+                                  setIsConfirmOpen(true);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </Menu.Item>
                         </div>
                       </Menu.Items>
                     </Menu>
@@ -214,6 +245,13 @@ const LposTable = () => {
           />
 
       )}
+       <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete LPO"
+        message="Are you sure you want to delete this lpo? This action is irreversible."
+      />
 
     </>
   );
