@@ -268,9 +268,9 @@ const ProductsTable = () => {
       {isModalCreateProductModalOpen && (
         <CreateProductModal
           onClose={() => setIsModalCreateProductModalOpen(false)}
-          onSuccess={(newProduct) => {
-            setGetAllProducts((prev) => [...prev, newProduct]);
-          }}
+         onSuccess={() => {
+  allProducts(currentPage); 
+}}
         />
 
       )}
