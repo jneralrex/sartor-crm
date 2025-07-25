@@ -10,6 +10,7 @@ import instance from '../../utils/axiosInstance';
 import EditProductModal from '../../components/modals/product/EditProductModal';
 import ViewBatchesByProduct from '../../components/modals/product/ViewBatchesByProduct';
 import ConfirmModal from '../../components/ConfirmationPopUp';
+import UniversalSearch from '../../components/UniversalSearch';
 
 const ProductsTable = () => {
   const { token } = useAuth();
@@ -49,19 +50,19 @@ const ProductsTable = () => {
     }
   };
 
-      const confirmDelete = async () => {
-      if (!productToDelete) return;
-      try {
-        await instance.delete(`product/delete/${productToDelete}`);
-        allProducts();
-      } catch (error) {
-        console.error('Failed to delete batch:', error);
-        toast.error("Failed to delete batch.");
-      } finally {
-        setIsConfirmOpen(false);
-        setProductToDelete(null);
-      }
-    };
+  const confirmDelete = async () => {
+    if (!productToDelete) return;
+    try {
+      await instance.delete(`product/delete/${productToDelete}`);
+      allProducts();
+    } catch (error) {
+      console.error('Failed to delete batch:', error);
+      toast.error("Failed to delete batch.");
+    } finally {
+      setIsConfirmOpen(false);
+      setProductToDelete(null);
+    }
+  };
 
   useEffect(() => {
     allProducts(currentPage);
@@ -83,11 +84,11 @@ const ProductsTable = () => {
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
-          <img src={search} alt="" />
-          <input
-            type="text"
+          <UniversalSearch
+            collection="Products"
             placeholder="Search by ID, name or email"
-            className="bg-transparent rounded text-sm outline-none"
+            onResults={(results) => setGetAllProducts(results)}
+            auto={true}
           />
         </div>
         <div className="flex gap-2">
@@ -204,8 +205,8 @@ const ProductsTable = () => {
                             {({ active }) => (
                               <button
                                 className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
-                                onClick={() =>{
-                                   setProductToDelete(prod._id);
+                                onClick={() => {
+                                  setProductToDelete(prod._id);
                                   setIsConfirmOpen(true);
                                 }}
                               >
@@ -268,9 +269,9 @@ const ProductsTable = () => {
       {isModalCreateProductModalOpen && (
         <CreateProductModal
           onClose={() => setIsModalCreateProductModalOpen(false)}
-         onSuccess={() => {
-  allProducts(currentPage); 
-}}
+          onSuccess={() => {
+            allProducts(currentPage);
+          }}
         />
 
       )}
@@ -301,13 +302,13 @@ const ProductsTable = () => {
         />
       )}
 
-       <ConfirmModal
-              isOpen={isConfirmOpen}
-              onClose={() => setIsConfirmOpen(false)}
-              onConfirm={confirmDelete}
-              title="Delete Product"
-              message="Are you sure you want to delete this product? This action is irreversible."
-            />
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action is irreversible."
+      />
 
     </>
   );

@@ -7,6 +7,7 @@ import LeadDetailsModal from '../../components/modals/leads/LeadDetailsModal';
 import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
+import UniversalSearch from '../../components/UniversalSearch';
 
 const LeadsTable = () => {
   const { token } = useAuth();
@@ -77,11 +78,11 @@ const LeadsTable = () => {
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
-          <img src={search} alt="" srcset="" />
-          <input
-            type="text"
+          <UniversalSearch
+            collection="Leads"
             placeholder="Search by ID, name or email"
-            className="bg-transparent rounded text-sm outline-none"
+            onResults={(results) => setGetAllLeads(results)}
+            auto={true}
           />
         </div>
         <div className="flex gap-2">

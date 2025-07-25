@@ -5,6 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import { Menu } from '@headlessui/react';
 import CustomerDetails from '../../components/modals/customer/CustomerDetails';
+import ConfirmModal from '../../components/ConfirmationPopUp';
+import UniversalSearch from '../../components/UniversalSearch';
 
 const CustomerstTable = ({ onClose }) => {
     const { token } = useAuth();
@@ -13,6 +15,11 @@ const CustomerstTable = ({ onClose }) => {
     const [totalPages, setTotalPages] = useState(1);
     const [isCustomerDetailsModalOpen, setCustomerDetailsModalOpen] = useState(false);
     const [selectedCustomerId, setSelectedCustomerId] = useState(null);
+    const [customerToDelete, setCustomerToDelete] = useState(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [customerToEdit, setCustomerToEdit] = useState(null);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
     const perPage = 100;
 
     const allCustomer = async () => {
@@ -20,7 +27,7 @@ const CustomerstTable = ({ onClose }) => {
             const res = await instance.get(`customers?limit=${perPage}`);
             console.log(res.data);
 
-            // Accessing nested response correctly
+
             const customerArray = res.data?.data?.data || [];
             const total = res.data?.data?.pagination?.totalPages || 1;
 
@@ -43,15 +50,31 @@ const CustomerstTable = ({ onClose }) => {
         setCustomerDetailsModalOpen(true);
     };
 
+    const handleDeleteCustomer = async () => {
+        if (!customerToDelete) return;
+        try {
+            await instance.delete(`/customer/delete/${customerToDelete}`);
+
+            allCustomer();
+        } catch (error) {
+            console.error("Failed to delete customer:", error);
+            alert("An error occurred while deleting the customer.");
+        }
+        finally {
+            setIsConfirmOpen(false);
+            setCustomerToDelete(null);
+        }
+    };
+
     return (
         <>
             <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
                 <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
-                    <img src={search} alt="search" />
-                    <input
-                        type="text"
+                    <UniversalSearch
+                        collection="customer"
                         placeholder="Search by ID, name or email"
-                        className="bg-transparent rounded text-sm outline-none"
+                        onResults={(results) => setGetAllCustomer(results)}
+                        auto={true}
                     />
                 </div>
                 <div className="flex gap-2">
@@ -125,15 +148,14 @@ const CustomerstTable = ({ onClose }) => {
                                                     </Menu.Item>
                                                 </div>
                                                 <div>
-
                                                     <Menu.Item>
                                                         {({ active }) => (
                                                             <button
                                                                 className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                                                // onClick={() => {
-                                                                //     setProductToEdit(prod);
-                                                                //     setIsEditProductModalOpen(true);
-                                                                // }}
+                                                                onClick={() => {
+                                                                    setCustomerToEdit(emp);
+                                                                    setIsEditModalOpen(true);
+                                                                }}
                                                             >
                                                                 Edit
                                                             </button>
@@ -144,15 +166,16 @@ const CustomerstTable = ({ onClose }) => {
                                                         {({ active }) => (
                                                             <button
                                                                 className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
-                                                                // onClick={() => {
-                                                                //     setProductToDelete(prod._id);
-                                                                //     setIsConfirmOpen(true);
-                                                                // }}
+                                                                onClick={() => {
+                                                                    setCustomerToDelete(emp._id);
+                                                                    setIsConfirmOpen(true);
+                                                                }}
                                                             >
                                                                 Delete
                                                             </button>
                                                         )}
                                                     </Menu.Item>
+
 
                                                 </div>
                                             </Menu.Items>
@@ -179,6 +202,58 @@ const CustomerstTable = ({ onClose }) => {
                     ))}
                 </div>
             </div>
+            {isEditModalOpen && customerToEdit && (
+                <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+                    <div className="bg-white p-6 rounded shadow-md w-[90%] max-w-md">
+                        <h2 className="text-lg font-semibold mb-4">Edit Customer Status</h2>
+                        <select
+                            className="w-full border rounded px-3 py-2 mb-4"
+                            value={customerToEdit.status}
+                            onChange={(e) =>
+                                setCustomerToEdit((prev) => ({ ...prev, status: e.target.value }))
+                            }
+                        >
+                            {[
+                                "Active", "In-active"
+                            ].map((status) => (
+                                <option key={status} value={status}>
+                                    {status}
+                                </option>
+                            ))}
+                        </select>
+
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setIsEditModalOpen(false)}
+                                className="px-4 py-2 rounded bg-gray-200"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        console.log("Editing customer ID:", customerToEdit._id);
+                                        console.log("New status:", customerToEdit.status);
+                                        await instance.put(`/customer/edit/${customerToEdit._id}`, {
+                                            status: customerToEdit.status,
+                                        });
+                                        console.log(customerToEdit)
+                                        allCustomer();
+                                        setIsEditModalOpen(false);
+                                    } catch (err) {
+                                        console.error("Error updating customer:", err);
+                                        alert("Failed to update customer status.");
+                                    }
+                                }}
+                                className="px-4 py-2 rounded bg-blue-600 text-white"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
 
             {isCustomerDetailsModalOpen && (
                 <CustomerDetails
@@ -186,6 +261,13 @@ const CustomerstTable = ({ onClose }) => {
                     customerId={selectedCustomerId}
                 />
             )}
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={handleDeleteCustomer}
+                title="Delete Customer"
+                message="Are you sure you want to delete this Customer? This action is irreversible."
+            />
         </>
     );
 };

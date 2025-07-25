@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
 import ConfirmModal from '../../components/ConfirmationPopUp';
+import UniversalSearch from '../../components/UniversalSearch';
 
 
 
@@ -19,7 +20,7 @@ const LposTable = () => {
   const [selectedLpoId, setSelectedLpoId] = useState(null);
   const [selectedLpo, setSelectedLpo] = useState(null);
   const [isEditLpoModalOpen, setEditLpoModalOpen] = useState(false);
-   const [lpoToDelete, setLpoToDelete] = useState(null);
+  const [lpoToDelete, setLpoToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
 
@@ -46,19 +47,19 @@ const LposTable = () => {
   };
 
 
-    const confirmDelete = async () => {
-      if (!lpoToDelete) return;
-      try {
-        await instance.delete(`lpo/delete/${lpoToDelete}`);
-        allLPOs();
-      } catch (error) {
-        console.error('Failed to delete batch:', error);
-        toast.error("Failed to delete batch.");
-      } finally {
-        setIsConfirmOpen(false);
-        setLpoToDelete(null);
-      }
-    };
+  const confirmDelete = async () => {
+    if (!lpoToDelete) return;
+    try {
+      await instance.delete(`lpo/delete/${lpoToDelete}`);
+      allLPOs();
+    } catch (error) {
+      console.error('Failed to delete batch:', error);
+      toast.error("Failed to delete batch.");
+    } finally {
+      setIsConfirmOpen(false);
+      setLpoToDelete(null);
+    }
+  };
 
 
   useEffect(() => {
@@ -78,11 +79,11 @@ const LposTable = () => {
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20 ">
         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
-          <img src={search} alt="" srcset="" />
-          <input
-            type="text"
+          <UniversalSearch
+            collection="LPOs"
             placeholder="Search by ID, name or email"
-            className="bg-transparent rounded text-sm outline-none"
+            onResults={(results) => setGetAllLpos(results)}
+            auto={true}
           />
         </div>
         <div className="flex gap-2">
@@ -234,18 +235,18 @@ const LposTable = () => {
       {isViewLpoModalOpen && <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} />}
       {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal} />}
       {isEditLpoModalOpen && (
-          <EditLpoModal
-            lpo={selectedLpo}
-            onClose={() => setEditLpoModalOpen(false)}
-            onSuccess={(updatedLpo) => {
-              setGetAllLpos(prev =>
-                prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
-              );
-            }}
-          />
+        <EditLpoModal
+          lpo={selectedLpo}
+          onClose={() => setEditLpoModalOpen(false)}
+          onSuccess={(updatedLpo) => {
+            setGetAllLpos(prev =>
+              prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
+            );
+          }}
+        />
 
       )}
-       <ConfirmModal
+      <ConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
         onConfirm={confirmDelete}

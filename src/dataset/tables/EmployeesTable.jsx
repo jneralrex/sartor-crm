@@ -8,6 +8,7 @@ import AddNewEmployeeModal from '../../components/modals/employees/AddNewEmploye
 import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
+import UniversalSearch from '../../components/UniversalSearch';
 
 
 
@@ -30,23 +31,23 @@ const EmployeeTable = ({ }) => {
   const perPage = 100;
 
 
-  const filteredEmployees = getAllEmployee;
 
   const allEmp = async () => {
     try {
       const res = await instance.get("users");
 
-      console.log(res);
+      const employeesArray = res.data?.data?.data || [];
+      const total = res.data?.data?.pagination?.totalPages || 1;
 
-      setTotalPages(totalPages || 1);
-
-      setGetAllEmployee(res.data.data);
-
+      setGetAllEmployee(employeesArray);
+      setTotalPages(total);
 
     } catch (error) {
       console.log(error);
+      setGetAllEmployee([]); // fallback to prevent map error
     }
   };
+
 
 
   useEffect(() => {
@@ -74,11 +75,11 @@ const EmployeeTable = ({ }) => {
 
   const confirmDelete = async () => {
     try {
-    const res =  await instance.delete(`user/delete`, {
+      const res = await instance.delete(`user/delete`, {
         data: { id: employeeToDelete },
       });
       console.log(res)
-      console.log("del",employeeToDelete)
+      console.log("del", employeeToDelete)
       setIsConfirmOpen(false);
       setEmployeeToDelete(null);
       allEmp(); // Refresh list
@@ -93,11 +94,13 @@ const EmployeeTable = ({ }) => {
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3">
         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
-          <img src={search} alt="" srcset="" />
-          <input
-            type="text"
+          <UniversalSearch
+            collection="user" // ✅ Must match backend collection name
             placeholder="Search by ID, name or email"
-            className="bg-transparent rounded text-sm outline-none"
+onResults={(results) => {
+  console.log('Search results:', results);
+  setGetAllEmployee(results);
+}}            auto={true}
           />
         </div>
         <div className="flex gap-2">
@@ -119,7 +122,7 @@ const EmployeeTable = ({ }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((emp, index) => (
+            {getAllEmployee.map((emp, index) => (
               <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {(currentPage - 1) * perPage + index + 1}
@@ -221,14 +224,9 @@ const EmployeeTable = ({ }) => {
       </div>
 
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-        <span>Show 12 from 1400</span>
-        <div className="flex items-center gap-2">
-          <button className="px-2 py-1 border rounded text-gray-500">1</button>
-          <button className="px-2 py-1 border rounded">2</button>
-          <button className="px-2 py-1 border rounded">3</button>
-          <span>...</span>
-          <button className="px-2 py-1 border rounded">440</button>
-        </div>
+        <span>
+          Showing {getAllEmployee.length} of {perPage * totalPages}
+        </span>
       </div>
       {/* modals */}
       {isAssignTaskModalOpen && <AssignEmployeeTask onClose={handleAssignTaskModalToggle} />}
