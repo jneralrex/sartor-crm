@@ -91,7 +91,7 @@ const EmployeeDetails = ({onClose, employeeId}) => {
                         Last Login
 
                         <span className='text-[#484848] mt-2'>
-                            { singleEmployee?.lastLogin || 'NA'}
+                            { singleEmployee?.online || 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">

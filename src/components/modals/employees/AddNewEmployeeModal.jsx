@@ -6,14 +6,14 @@ import instance from '../../../utils/axiosInstance';
 
 
 
-const roleOptions = [
+const userRoleOptions = [
   "Manager",
-  "Admin",
   "Sales Rep",
   "Inventory Manager",
   "Merchandiser",
   "Employee",
 ];
+
 
 const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
   const { token } = useAuth();
@@ -25,6 +25,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
     email: "",
     phone: "",
     role: "",
+    userRole:"",
     userManagement: false,
     lpo: false,
     payment: false,
@@ -34,24 +35,24 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
   });
 
   useEffect(() => {
-    if (employeeToEdit) {
-      setAddNewEmployeeDetails((prev) => ({
-        fullName: employeeToEdit.fullName || '',
-        address: employeeToEdit.address || '',
-        email: employeeToEdit.email || '',
-        phone: employeeToEdit.phone || '',
-        role: employeeToEdit.role || '',
-        userManagement: employeeToEdit.userManagement || false,
-        lpo: employeeToEdit.lpo || false,
-        payment: employeeToEdit.payment || false,
-        sales: employeeToEdit.sales || false,
-        clg: employeeToEdit.clg || false,
-        workflow: employeeToEdit.workflow || false
+  if (employeeToEdit) {
+    setAddNewEmployeeDetails((prev) => ({
+      fullName: employeeToEdit.fullName || '',
+      address: employeeToEdit.address || '',
+      email: employeeToEdit.email || '',
+      phone: employeeToEdit.phone || '',
+      role: employeeToEdit.role || '',
+      userRole: employeeToEdit.userRole || '',
+      userManagement: employeeToEdit.userManagement || false,
+      lpo: employeeToEdit.lpo || false,
+      payment: employeeToEdit.payment || false,
+      sales: employeeToEdit.sales || false,
+      clg: employeeToEdit.clg || false,
+      workflow: employeeToEdit.workflow || false
+    }));
+  }
+}, [employeeToEdit]);
 
-      }));
-
-    }
-  }, [employeeToEdit]);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -164,22 +165,39 @@ const handleSubmit = async (e) => {
                 />
               </div>
             </label>
-            <label className='font-medium text-[14px] text-[#1A1A1A]'>Select Role
-              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
-                <select
-                  name="role"
-                  value={addNewEmployeeDetails.role}
-                  onChange={handleChange}
-                  className='bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'
-                  required
-                >
-                  <option value="">Select Role</option>
-                  {roleOptions.map((opt, idx) => (
-                    <option key={idx} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-            </label>
+            <label className='font-medium text-[14px] text-[#1A1A1A]'>Access Role (System Role)
+  <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
+    <select
+      name="role"
+      value={addNewEmployeeDetails.role}
+      onChange={handleChange}
+      className='bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'
+      required
+    >
+      <option value="">Select Access Role</option>
+      <option value="Admin">Admin</option>
+      <option value="User">User</option>
+    </select>
+  </div>
+</label>
+
+<label className='font-medium text-[14px] text-[#1A1A1A]'>Job Role (User Role)
+  <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
+    <select
+      name="userRole"
+      value={addNewEmployeeDetails.userRole}
+      onChange={handleChange}
+      className='bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'
+      required
+    >
+      <option value="">Select Job Role</option>
+      {userRoleOptions.map((opt, idx) => (
+        <option key={idx} value={opt}>{opt}</option>
+      ))}
+    </select>
+  </div>
+</label>
+
             <label className='font-medium text-[14px] text-[#1A1A1A]'>Employee's Phone Number
               <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
                 <input
