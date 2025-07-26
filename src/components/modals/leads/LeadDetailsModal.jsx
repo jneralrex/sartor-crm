@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import instance from '../../../utils/axiosInstance';
+import DetailsSkeleton from '../../DetailsSkeleton';
 
 const LeadDetailsModal = ({ onClose, leadId }) => {
     const [activeTab, setActiveTab] = useState('basic');
     const { token } = useAuth();
+    const [loading, setLoading] = useState(true);
+
 
     const [getSingleLeads, setSingleLeads] = useState({});
     const [updatedStatus, setUpdatedStatus] = useState({
@@ -18,6 +21,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
         if (!leadId) return;
 
         const singleLeads = async () => {
+            setLoading(true);
             try {
                 const res = await instance.get(`lead/${leadId}`);
 
@@ -26,6 +30,9 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
 
             } catch (error) {
                 console.log(error);
+            }
+            finally {
+                setLoading(false);
             }
         };
 
@@ -52,7 +59,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
         }
     }
 
-    console.log(updatedStatus)
+    if (loading) return <DetailsSkeleton />;
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-white w-[90%] max-w-[455px] h-[95vh] rounded-xl shadow-lg overflow-y-auto hide-scrollbar">

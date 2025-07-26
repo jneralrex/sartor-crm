@@ -7,6 +7,7 @@ import { Menu } from '@headlessui/react';
 import CustomerDetails from '../../components/modals/customer/CustomerDetails';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
+import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 const CustomerstTable = ({ onClose }) => {
     const { token } = useAuth();
@@ -19,10 +20,13 @@ const CustomerstTable = ({ onClose }) => {
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [customerToEdit, setCustomerToEdit] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const perPage = 100;
 
     const allCustomer = async () => {
+        setLoading(true);
+
         try {
             const res = await instance.get(`customers?limit=${perPage}`);
             console.log(res.data);
@@ -35,6 +39,8 @@ const CustomerstTable = ({ onClose }) => {
             setTotalPages(total);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -99,7 +105,9 @@ const CustomerstTable = ({ onClose }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredCustomers.map((emp, index) => (
+                        {loading ? (
+                            Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+                        ) : (filteredCustomers.map((emp, index) => (
                             <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
                                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                                     {(currentPage - 1) * perPage + index + 1}
@@ -183,7 +191,8 @@ const CustomerstTable = ({ onClose }) => {
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        ))
+                        )}
                     </tbody>
                 </table>
             </div>

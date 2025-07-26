@@ -11,6 +11,7 @@ import EditProductModal from '../../components/modals/product/EditProductModal';
 import ViewBatchesByProduct from '../../components/modals/product/ViewBatchesByProduct';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
+import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 const ProductsTable = () => {
   const { token } = useAuth();
@@ -26,6 +27,7 @@ const ProductsTable = () => {
   const [viewBatchProductId, setViewBatchProductId] = useState(null);
   const [productToDelete, setProductToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
   const handleViewBatches = (productId) => {
     setViewBatchProductId(productId);
@@ -38,6 +40,7 @@ const ProductsTable = () => {
   const perPage = 100;
 
   const allProducts = async (page = 1) => {
+    setLoading(true);
     try {
       const res = await instance.get(`products?page=${page}&limit=${perPage}`);
       console.log(res.data);
@@ -47,6 +50,8 @@ const ProductsTable = () => {
       setTotalPages(totalPages || 1);
     } catch (error) {
       console.log(error);
+     } finally {
+      setLoading(false);
     }
   };
 
@@ -120,7 +125,10 @@ const ProductsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {getAllProducts.map((prod, index) => (
+              {loading ? (
+              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+            ) : (
+            getAllProducts.map((prod, index) => (
               <tr key={prod._id} className="border-b hover:bg-gray-50 text-start">
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {(currentPage - 1) * perPage + index + 1}
@@ -221,8 +229,9 @@ const ProductsTable = () => {
                     </Menu>
                   </div>
                 </td>
-              </tr>
-            ))}
+               </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

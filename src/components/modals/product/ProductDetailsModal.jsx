@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/AuthContext';
 import { X } from 'lucide-react';
 import instance from '../../../utils/axiosInstance';
+import DetailsSkeleton from '../../DetailsSkeleton';
 
 const ProductDetailsModal = ({ onClose, productId }) => {
   const { token } = useAuth();
 
   const [singleProduct, setSingleProduct] = useState({});
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!productId) return;
 
     const getSingleProduct = async () => {
+      setLoading(true);
       try {
         const res = await instance.get(`product/${productId}`);
 
@@ -22,12 +24,16 @@ const ProductDetailsModal = ({ onClose, productId }) => {
       } catch (error) {
         console.log(error);
       }
+      finally {
+        setLoading(false);
+      }
     };
 
     getSingleProduct();
   }, [token, productId]);
 
-  console.log(singleProduct)
+  if (loading) return <DetailsSkeleton />;
+
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
       <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">

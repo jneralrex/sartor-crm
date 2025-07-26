@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
+import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 const LeadsTable = () => {
   const { token } = useAuth();
@@ -18,6 +19,7 @@ const LeadsTable = () => {
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [leadToDelete, setLeadToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
 
 
@@ -40,6 +42,7 @@ const LeadsTable = () => {
 
 
   const allLeads = async (page = 1) => {
+    setLoading(true);
     try {
       const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
       const { data, totalPages } = res.data.data;
@@ -51,6 +54,9 @@ const LeadsTable = () => {
 
     } catch (error) {
       console.log(error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -105,7 +111,9 @@ const LeadsTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredEmployees.map((emp, index) => (
+             {loading ? (
+              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+            ) : (filteredEmployees.map((emp, index) => (
               <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {(currentPage - 1) * perPage + index + 1}
@@ -183,9 +191,9 @@ const LeadsTable = () => {
                   </Menu>
                 </td>
               </tr>
-            ))}
+              ))
+            )}
           </tbody>
-
         </table>
       </div>
 

@@ -2,16 +2,19 @@ import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useAuth } from '../../../context/AuthContext';
 import instance from '../../../utils/axiosInstance';
+import DetailsSkeleton from '../../DetailsSkeleton';
 
 const LpoDetailsModal = ({ onClose, lpoId }) => {
     const { token } = useAuth();
 
     const [singleLpo, setSingleLpo] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!lpoId) return;
 
         const singleLpo = async () => {
+            setLoading(true);
             try {
                 const res = await instance.get(`lpo/${lpoId}`);
 
@@ -21,10 +24,15 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
             } catch (error) {
                 console.log(error);
             }
+            finally {
+                setLoading(false);
+            }
         };
 
         singleLpo();
     }, [token, lpoId]);
+
+    if (loading) return <DetailsSkeleton />;
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">

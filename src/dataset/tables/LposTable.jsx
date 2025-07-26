@@ -9,6 +9,7 @@ import instance from '../../utils/axiosInstance';
 import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
+import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 
 
@@ -22,6 +23,7 @@ const LposTable = () => {
   const [isEditLpoModalOpen, setEditLpoModalOpen] = useState(false);
   const [lpoToDelete, setLpoToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
 
   // Pagination state
@@ -32,6 +34,8 @@ const LposTable = () => {
   const filteredLPOs = getAllLpos;
 
   const allLPOs = async (page = 1) => {
+        setLoading(true);
+
     try {
       const res = await instance.get(`lpos?page=${page}&limit=${perPage}`);
 
@@ -43,6 +47,8 @@ const LposTable = () => {
 
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,7 +112,9 @@ const LposTable = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredLPOs.map((lpo, index) => (
+             {loading ? (
+              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+            ) : (filteredLPOs.map((lpo, index) => (
               <tr key={lpo._id} className="border-b hover:bg-gray-50 text-start">
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {(currentPage - 1) * perPage + index + 1}
@@ -193,8 +201,9 @@ const LposTable = () => {
 
                   </div>
                 </td>
-              </tr>
-            ))}
+               </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

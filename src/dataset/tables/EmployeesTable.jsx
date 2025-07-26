@@ -9,6 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
+import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 
 
@@ -27,27 +28,27 @@ const EmployeeTable = ({ }) => {
   const [employeeToEdit, setEmployeeToEdit] = useState(null);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
 
   const perPage = 100;
 
 
-
   const allEmp = async () => {
+    setLoading(true);
     try {
       const res = await instance.get("users");
-
       const employeesArray = res.data?.data?.data || [];
       const total = res.data?.data?.pagination?.totalPages || 1;
-
       setGetAllEmployee(employeesArray);
       setTotalPages(total);
-
     } catch (error) {
       console.log(error);
       setGetAllEmployee([]); // fallback to prevent map error
+    } finally {
+      setLoading(false);
     }
   };
-
 
 
   useEffect(() => {
@@ -97,10 +98,10 @@ const EmployeeTable = ({ }) => {
           <UniversalSearch
             collection="user" // ✅ Must match backend collection name
             placeholder="Search by ID, name or email"
-onResults={(results) => {
-  console.log('Search results:', results);
-  setGetAllEmployee(results);
-}}            auto={true}
+            onResults={(results) => {
+              console.log('Search results:', results);
+              setGetAllEmployee(results);
+            }} auto={true}
           />
         </div>
         <div className="flex gap-2">
@@ -122,103 +123,107 @@ onResults={(results) => {
             </tr>
           </thead>
           <tbody>
-            {getAllEmployee.map((emp, index) => (
-              <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
-                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                  {(currentPage - 1) * perPage + index + 1}
-                </td>      <td className="px-4 py-3 flex items-center gap-2">
-                  <img
-                    src={emp.image}
-                    alt={emp.fullName}
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <div>
-                    <div className=" text-[#484848] md:text-[14px] font-medium">{emp.fullName}</div>
-                    <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
-                  </div>
-                </td>
-                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.role}</td>
-                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">
-                  {emp.creationDateTime
-                    ? new Date(emp.creationDateTime).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })
-                    : 'N/A'}
-                </td>
-                <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
-                <td className="px-4 py-3 ">
-                  {/* Menu Dropdown */}
-                  <div className="relative">
-                    <Menu as="div" className="relative inline-block text-left">
-                      <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                        <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
+            {loading ? (
+              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+            ) : (
+              getAllEmployee.map((emp, index) => (
+                <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
+                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                    {(currentPage - 1) * perPage + index + 1}
+                  </td>      <td className="px-4 py-3 flex items-center gap-2">
+                    <img
+                      src={emp.image}
+                      alt={emp.fullName}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <div>
+                      <div className=" text-[#484848] md:text-[14px] font-medium">{emp.fullName}</div>
+                      <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.role}</td>
+                  <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">
+                    {emp.creationDateTime
+                      ? new Date(emp.creationDateTime).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                      : 'N/A'}
+                  </td>
+                  <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
+                  <td className="px-4 py-3 ">
+                    {/* Menu Dropdown */}
+                    <div className="relative">
+                      <Menu as="div" className="relative inline-block text-left">
+                        <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+                          <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
 
-                      </Menu.Button>
+                        </Menu.Button>
 
-                      <Menu.Items className="absolute p-4 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                        <div className="py-1">
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100' : ''
-                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={() => openEmployeeDetailsModal(emp._id)}
-                              >
-                                View Details
-                              </button>
-                            )}
-                          </Menu.Item>
+                        <Menu.Items className="absolute p-4 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                          <div className="py-1">
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''
+                                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                  onClick={() => openEmployeeDetailsModal(emp._id)}
+                                >
+                                  View Details
+                                </button>
+                              )}
+                            </Menu.Item>
 
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100' : ''
-                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={handleAssignTaskModalToggle}
-                              >
-                                Assign Task
-                              </button>
-                            )}
-                          </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''
+                                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                  onClick={handleAssignTaskModalToggle}
+                                >
+                                  Assign Task
+                                </button>
+                              )}
+                            </Menu.Item>
 
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100' : ''
-                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={() => {
-                                  setEmployeeToEdit(emp);
-                                  setIsEditEmployeeModalOpen(true);
-                                }}
-                              >
-                                Edit
-                              </button>
-                            )}
-                          </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''
+                                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                  onClick={() => {
+                                    setEmployeeToEdit(emp);
+                                    setIsEditEmployeeModalOpen(true);
+                                  }}
+                                >
+                                  Edit
+                                </button>
+                              )}
+                            </Menu.Item>
 
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
-                                onClick={() => {
-                                  setEmployeeToDelete(emp._id);
-                                  setIsConfirmOpen(true);
-                                }}
-                              >
-                                Delete
-                              </button>
-                            )}
-                          </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
+                                  onClick={() => {
+                                    setEmployeeToDelete(emp._id);
+                                    setIsConfirmOpen(true);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              )}
+                            </Menu.Item>
 
-                        </div>
-                      </Menu.Items>
-                    </Menu>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                          </div>
+                        </Menu.Items>
+                      </Menu>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

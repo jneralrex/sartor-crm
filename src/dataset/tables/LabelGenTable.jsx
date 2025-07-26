@@ -9,6 +9,7 @@ import QRCode from 'react-qr-code';
 import Barcode from 'react-barcode';
 import html2canvas from 'html2canvas';
 import LabelModal from '../../components/modals/labelgen/LabelModal';
+import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 const LabelGenTable = () => {
   const { token } = useAuth();
@@ -18,6 +19,8 @@ const LabelGenTable = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [selectedLabel, setSelectedLabel] = useState(null);
   const [viewMode, setViewMode] = useState('details');
+    const [loading, setLoading] = useState(true);
+
   const qrCodeRef = useRef(null);
   const perPage = 100;
 
@@ -39,12 +42,15 @@ const LabelGenTable = () => {
   };
 
   const allBatch = async (page = 1) => {
+    setLoading(true);
     try {
       const res = await instance.get(`labels?page=${page}&limit=${perPage}`);
       setGetAllBatch(res.data.data.data);
       setTotalPages(res.data.data.totalPages || 1);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,7 +128,9 @@ const LabelGenTable = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(getAllBatch) && getAllBatch.map((batch) => (
+             {loading ? (
+              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+            ) : ( Array.isArray(getAllBatch) && getAllBatch.map((batch) => (
               <tr key={batch._id} className="border-b hover:bg-gray-50 text-start">
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {batch.batch?.batchNumber || '—'}
@@ -180,8 +188,9 @@ const LabelGenTable = () => {
                     </Menu.Items>
                   </Menu>
                 </td>
-              </tr>
-            ))}
+          </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

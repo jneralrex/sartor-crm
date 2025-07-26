@@ -7,6 +7,7 @@ import InvoiceDetailsModal from '../../components/modals/invoice/InvoiceDetailsM
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
+import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 
 const InvoiceTable = ({ }) => {
@@ -17,6 +18,7 @@ const InvoiceTable = ({ }) => {
     const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
     const [invoiceToDelete, setInvoiceToDelete] = useState(null);
     const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
 
     // Pagination state
@@ -28,6 +30,7 @@ const InvoiceTable = ({ }) => {
     const filteredInvoice = getInvoices;
 
     const getAllInvoices = async (page = 1) => {
+        setLoading(true);
         try {
             const res = await instance.get(`invoices?page=${page}&limit=${perPage}`);
             const { data, totalPages } = res.data.data;
@@ -38,6 +41,8 @@ const InvoiceTable = ({ }) => {
 
         } catch (error) {
             console.error('Error fetching invoices:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -97,7 +102,9 @@ const InvoiceTable = ({ }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredInvoice.map((invoice, index) => (
+                        {loading ? (
+                            Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+                        ) : (filteredInvoice.map((invoice, index) => (
                             <tr key={invoice._id} className="border-b hover:bg-gray-50 text-start">
                                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                                     {(currentPage - 1) * perPage + index + 1}
@@ -182,7 +189,8 @@ const InvoiceTable = ({ }) => {
                                     </div>
                                 </td>
                             </tr>
-                        ))}
+                        ))
+                        )}
                     </tbody>
                 </table>
             </div>

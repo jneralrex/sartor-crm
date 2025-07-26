@@ -3,16 +3,20 @@ import TaskNotesModal from '../taskManager/TaskNotesModal';
 import { X } from 'lucide-react';
 import instance from '../../../utils/axiosInstance';
 import { useAuth } from '../../../context/AuthContext';
+import DetailsSkeleton from '../../DetailsSkeleton';
 
 const EmployeeDetails = ({onClose, employeeId}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [singleEmployee, setSingleEmployee] = useState({});
     const { token } = useAuth();
+      const [loading, setLoading] = useState(true);
+
   
   useEffect(() => {
         if (!employeeId) return;
 
         const getSingleEmployee = async () => {
+            setLoading(true);
             try {
                 const res = await instance.get(`user/${employeeId}`);
 
@@ -22,6 +26,10 @@ const EmployeeDetails = ({onClose, employeeId}) => {
             } catch (error) {
                 console.log(error);
             }
+            finally {
+                setLoading(false);
+            }
+        
         };
 
         getSingleEmployee();
@@ -32,7 +40,8 @@ const EmployeeDetails = ({onClose, employeeId}) => {
     };
 
     console.log(singleEmployee)
-   
+   if (loading) return <DetailsSkeleton />;
+
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
