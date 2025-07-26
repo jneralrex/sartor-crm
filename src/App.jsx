@@ -16,10 +16,10 @@ import Invoices from './pages/Invoices';
 import ConvertLabelGen from './pages/ConvertLabelGen';
 import LoginPage from './pages/auth/LoginPage';
 import ForgotPassword from './pages/auth/ForgotPassword';
-import ProductsTable from './dataset/tables/ProductsTable';
 import PrivateRoute from './context/PrivateRoutes';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Product from './pages/Product';
 
 
 const router = createBrowserRouter(
@@ -38,7 +38,7 @@ const router = createBrowserRouter(
           <Route path="employees" element={<Employees />} />
           <Route path="lpos" element={<Lpos />} />
           <Route path="leads" element={<Leads />} />
-          <Route path="products" element={<ProductsTable />} />
+          <Route path="products" element={<Product />} />
           <Route path="customers" element={<Customers />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="label-gen" element={<ConvertLabelGen />} />
