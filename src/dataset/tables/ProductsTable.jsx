@@ -90,7 +90,7 @@ const ProductsTable = () => {
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
           <UniversalSearch
-            collection="Products"
+            collection="product"
             placeholder="Search by ID, name or email"
             onResults={(results) => setGetAllProducts(results)}
             auto={true}

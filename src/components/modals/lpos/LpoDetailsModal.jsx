@@ -9,6 +9,10 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
 
     const [singleLpo, setSingleLpo] = useState({});
     const [loading, setLoading] = useState(true);
+    const [updatedStatus, setUpdatedStatus] = useState({
+        id: lpoId,
+        status: '',
+    });
 
     useEffect(() => {
         if (!lpoId) return;
@@ -31,6 +35,26 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
 
         singleLpo();
     }, [token, lpoId]);
+
+    const handleChange = (e) => {
+        setUpdatedStatus({ ...updatedStatus, [e.target.name]: e.target.value });
+    };
+
+    const updateStatus = async (e) => {
+        e.preventDefault();
+        if (!lpoId) return;
+        try {
+            const res = await instance.put(`/lpo/status/update`, updatedStatus);
+
+            console.log(res);
+            // Optionally, you can refresh the lead details or close the modal
+            onClose();
+        } catch (error) {
+            console.error("Error updating lead status:", error);
+        }
+    }
+
+    console.log(updatedStatus)
 
     if (loading) return <DetailsSkeleton />;
     return (
@@ -161,11 +185,35 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                     </span>
                 </label>
 
-
+                <Select label="Update Status" name="status" value={updatedStatus.status} onChange={handleChange} options={["Contacted  ", "Order Fulfilled", "Delivered", "Closed Lost", "Follow Up", "Qualified", "Interested", "Hold", "In-Negotiations", "LPO Generated", "Closed Won", "Payment Confirmed"]} />
+                <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
+                    onClick={updateStatus}
+                >
+                    Update Status
+                </button>
             </div>
         </div>
     )
 }
+
+
+// Reusable Select Component
+const Select = ({ label, name, value, onChange, options = [] }) => (
+    <label className="block text-sm font-medium text-[#1A1A1A] mt-5 mb-3">
+        {label}
+        <select
+            name={name}
+            value={value}
+            onChange={onChange}
+            className="mt-1 w-full h-[48px] bg-[#F5F5F5] rounded-lg px-4 text-sm text-[#484848] outline-none"
+        >
+            <option value="">Select {label}</option>
+            {options.map((opt, idx) => (
+                <option key={idx} value={opt}>{opt}</option>
+            ))}
+        </select>
+    </label>
+);
 
 export default LpoDetailsModal
 

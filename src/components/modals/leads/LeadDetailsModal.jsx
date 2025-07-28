@@ -11,10 +11,7 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
 
 
     const [getSingleLeads, setSingleLeads] = useState({});
-    const [updatedStatus, setUpdatedStatus] = useState({
-        id: leadId,
-        status: '', 
-    });
+
 
 
     useEffect(() => {
@@ -39,25 +36,11 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
         singleLeads();
     }, [token, leadId]);
 
-    const handleChange = (e) => {
-    setUpdatedStatus({ ...updatedStatus, [e.target.name]: e.target.value });
-  };
+ 
 
   console.log(updatedStatus)
 
-    const updateStatus = async(e)=>{
-        e.preventDefault();
-        if (!leadId) return;
-        try {
-            const res = await instance.put(`lead/status/update`, updatedStatus);
-
-            console.log(res);
-            // Optionally, you can refresh the lead details or close the modal
-            onClose();
-        } catch (error) {
-            console.error("Error updating lead status:", error);
-        }
-    }
+   
 
     if (loading) return <DetailsSkeleton />;
     return (

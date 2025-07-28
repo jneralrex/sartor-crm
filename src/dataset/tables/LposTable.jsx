@@ -241,7 +241,11 @@ const LposTable = () => {
       </div>
 
 
-      {isViewLpoModalOpen && <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} />}
+      {isViewLpoModalOpen && <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId}   onSuccess={(updatedLpo) => {
+            setGetAllLpos(prev =>
+              prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
+            );
+          }} />}
       {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal} />}
       {isEditLpoModalOpen && (
         <EditLpoModal
