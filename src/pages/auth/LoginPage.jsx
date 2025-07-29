@@ -177,6 +177,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
 import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
+import { toast } from 'react-toastify';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -184,7 +185,7 @@ const LoginPage = () => {
   const [loginDetails, setLoginDetails] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-const { setToken, setUser } = useAuth();
+  const { setToken, setUser } = useAuth();
   const VITE_API_URL = import.meta.env.VITE_BASE_URL;
 
   const handleChange = (e) => {
@@ -197,44 +198,30 @@ const { setToken, setUser } = useAuth();
 
     try {
       const res = await instance.post(`${VITE_API_URL}auth/login`, loginDetails);
-      console.log(res)
+      const response = res.data
 
-      if (res.status === 200) {
-        const userData = res.data.data;
-
-        // ✅ Save full user object to localStorage
-        // localStorage.setItem('user', JSON.stringify(userData));
-setToken(userData.token);
-  setUser(userData); 
-        setSnackbar({
-          type: 'success',
-          message: (
-            <span className="flex items-center gap-2">
-              <Check className="w-4 h-4" />
-              Login successful!
-            </span>
-          ),
-        });
-
-        setTimeout(() => {
-          setSnackbar(null);
-          navigate('/overview');
-        }, 1500);
+      if (!response.status) {
+        toast.error(response?.message);
+        setLoading(false);
+        return;
       }
-    } catch (error) {
-      setSnackbar({
-        type: 'error',
-        message: (
-          <span className="flex items-center gap-2">
-            <OctagonAlert className="w-4 h-4" />
-            {error.response?.data?.message || 'Login failed. An Error occurred.'}
-          </span>
-        ),
-      });
-    }
 
-    setLoading(false);
-    setTimeout(() => setSnackbar(null), 5000);
+      const userData = response.data;
+
+      setToken(userData.token);
+      setUser(userData);
+      toast.success(response?.message);
+
+      setTimeout(() => {
+        setSnackbar(null);
+        navigate('/overview');
+      }, 1500);
+
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.message);
+      return;
+    }
   };
 
   return (

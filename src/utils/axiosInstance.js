@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 function isTokenExpired(token) {
   if (!token) return true;
@@ -51,9 +52,17 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+    console.log(error)
+    if (error.response.status === 401) {
+      toast.error("Session expired, logging you out......")
       localStorage.removeItem("token");
-      window.location.href = "/login";
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
+
+    } else if (error.response.status === 403) {
+      toast.warn("Sorry you're not allowed to perform this kind of operation")
     }
     return Promise.reject(error);
   }
