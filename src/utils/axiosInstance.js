@@ -59,7 +59,7 @@ instance.interceptors.response.use(
 
       setTimeout(() => {
         window.location.href = "/login";
-      }, 1500);
+      }, 2000);
 
     } else if (error.response.status === 403) {
       toast.warn("Sorry you're not allowed to perform this kind of operation")
