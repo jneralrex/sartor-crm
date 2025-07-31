@@ -143,12 +143,12 @@ const Overview = () => {
       </div>
 
       {/* Tables */}
-      <div className="p-6 min-h-screen">
+      {/* <div className="p-6 min-h-screen">
         <div className="flex flex-col md:justify-center items-center lg:items-start lg:flex-row gap-6">
           <ProductTable />
           <SalesRepList />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

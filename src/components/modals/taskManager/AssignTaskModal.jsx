@@ -2,29 +2,29 @@ import { X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import instance from '../../../utils/axiosInstance';
 
-const AssignTaskModal = ({ onClose }) => {
+const AssignTaskModal = ({ onClose, onSuccess }) => {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
-
-  const getEmployees = async () => {
-    try {
-      const res = await instance.get('users');
-      console.log(res);
-      setEmployees(res.data.data); // ✅ adjust based on your actual API shape
-    } catch (error) {
-      console.error("Error fetching employees:", error);
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    const getEmployees = async () => {
+      try {
+        const res = await instance.get('users');
+        setEmployees(res.data.data.data); // Adjust if API response differs
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
+    };
     getEmployees();
   }, []);
 
   const handleCreateTask = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const payload = {
         user: selectedEmployee,
@@ -32,13 +32,15 @@ const AssignTaskModal = ({ onClose }) => {
         description,
         dueDate,
       };
-      console.log("Payload sent:", payload);
-      const res = await instance.post("task/create", payload);
-      
-      console.log("Task created:", res.data);
-      onClose(); // Close modal on success
+      await instance.post("task/create", payload);
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       console.error("Task creation failed:", error);
+      // Optionally show toast/snackbar here
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,7 +53,6 @@ const AssignTaskModal = ({ onClose }) => {
         </div>
 
         <form className='flex flex-col gap-5 mt-5' onSubmit={handleCreateTask}>
-          {/* Select Employee */}
           <label className='font-medium text-[14px] text-[#1A1A1A]'>
             Select Employee
             <select
@@ -69,7 +70,6 @@ const AssignTaskModal = ({ onClose }) => {
             </select>
           </label>
 
-          {/* Title */}
           <label className='font-medium text-[14px] text-[#1A1A1A]'>
             Title of Task
             <input
@@ -82,7 +82,6 @@ const AssignTaskModal = ({ onClose }) => {
             />
           </label>
 
-          {/* Description */}
           <label className='font-medium text-[14px] text-[#1A1A1A]'>
             Description
             <textarea
@@ -95,7 +94,6 @@ const AssignTaskModal = ({ onClose }) => {
             />
           </label>
 
-          {/* Due Date */}
           <label className='font-medium text-[14px] text-[#1A1A1A]'>
             Due Date
             <input
@@ -107,12 +105,22 @@ const AssignTaskModal = ({ onClose }) => {
             />
           </label>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className='bg-primary_blue text-white w-full py-3 rounded-lg text-[16px] font-semibold h-[52px]'
+            disabled={loading}
+            className={`bg-primary_blue text-white w-full py-3 rounded-lg text-[16px] font-semibold h-[52px] flex items-center justify-center ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
           >
-            Create Task
+            {loading ? (
+              <>
+                <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                Creating Task...
+              </>
+            ) : (
+              'Create Task'
+            )}
           </button>
         </form>
       </div>

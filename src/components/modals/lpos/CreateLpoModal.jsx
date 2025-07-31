@@ -19,11 +19,12 @@ const CreateLpoModal = ({ onClose }) => {
     const [terms, setTerms] = useState('');
     const [products, setProducts] = useState([{ product: '', quantity: '' }]);
     const [totalAmount, setTotalAmount] = useState(0);
-     const [getAllLeads, setGetAllLeads] = useState([]);
-     const [getAllProducts, setGetAllProducts] = useState([]);
-    
+    const [getAllLeads, setGetAllLeads] = useState([]);
+    const [getAllProducts, setGetAllProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-      // Fetch leads and products once
+
+    // Fetch leads and products once
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -79,12 +80,17 @@ const CreateLpoModal = ({ onClose }) => {
             })),
         };
 
+        setLoading(true);
         try {
-           const res = await instance.post("lpo", payload);
+            const res = await instance.post("lpo", payload);
+
             console.log(res)
             onClose(); // Close modal on success
         } catch (err) {
             console.error(err);
+        }
+        finally {
+            setLoading(false);
         }
     };
 
@@ -101,7 +107,7 @@ const CreateLpoModal = ({ onClose }) => {
                 <form onSubmit={handleSubmit} className='flex flex-col gap-5 mt-5'>
 
                     {/* Lead Selection */}
-                   <label className='font-medium text-[14px] text-[#1A1A1A]'>
+                    <label className='font-medium text-[14px] text-[#1A1A1A]'>
                         Select Lead Name
                         <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
                             <select
@@ -137,7 +143,7 @@ const CreateLpoModal = ({ onClose }) => {
                     </label>
 
                     {/* Products Loop */}
-                   {products.map((prod, idx) => (
+                    {products.map((prod, idx) => (
                         <div key={idx} className="border rounded-lg p-3">
                             <label className='font-medium text-[14px] text-[#1A1A1A]'>
                                 Select Product
@@ -192,19 +198,30 @@ const CreateLpoModal = ({ onClose }) => {
                         >
                             <Plus size={18} /> <span>Add Product</span>
                         </button>
-                        <span className='text-[#484848] text-[16px] font-medium'>Total Amount</span>
+                        {/* <span className='text-[#484848] text-[16px] font-medium'>Total Amount</span> */}
                     </div>
 
-                    <span className='w-full text-end text-[#1A1A1A] text-[20px] font-semibold'>
+                    {/* <span className='w-full text-end text-[#1A1A1A] text-[20px] font-semibold'>
                         ₦{totalAmount.toLocaleString()}
-                    </span>
+                    </span> */}
 
                     {/* Submit */}
                     <button
                         type="submit"
-                        className='bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold h-[52px]'
+                        disabled={loading}
+                        className={`bg-primary_blue text-white w-full py-3 rounded-lg text-[16px] font-semibold h-[52px] flex items-center justify-center ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
                     >
-                        Create LPO
+                        {loading ? (
+                            <>
+                                <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                </svg>
+                                Creating LPO...
+                            </>
+                        ) : (
+                            'Create LPO'
+                        )}
                     </button>
                 </form>
             </div>

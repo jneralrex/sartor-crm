@@ -246,7 +246,17 @@ const TaskManager = () => {
         </TabGroup>
       </div>
 
-      {isModalOpen && <AssignTaskModal onClose={handleModalToggle} />}
+    {isModalOpen && (
+  <AssignTaskModal
+    onClose={handleModalToggle}
+    onSuccess={() => {
+      getTask();
+      setIsModalOpen(false);
+    }}
+  />
+)}
+
+
       {isStatusModalOpen && (
         <TaskDetailsModal
           taskId={selectedTaskId}

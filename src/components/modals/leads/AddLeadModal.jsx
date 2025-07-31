@@ -6,7 +6,8 @@ import instance from '../../../utils/axiosInstance';
 const AddLeadModal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('basic');
   const { token } = useAuth();
-
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState(null); 
   const [addLeads, setAddLeads] = useState({
     name: "",
     address: "",
@@ -53,20 +54,38 @@ const AddLeadModal = ({ onClose }) => {
     return true;
   };
 
+
   const addLeadsHandler = async (e) => {
     e.preventDefault();
     if (!validateFields()) {
-      alert("Please fill all required fields.");
+      setSnackbar({
+        type: 'error',
+        message: 'Please fill all required fields.',
+      });
+      setTimeout(() => setSnackbar(null), 3000);
       return;
     }
 
+    setLoading(true);
+
     try {
       const res = await instance.post(`lead`, addLeads);
-
-      console.log("Lead created successfully:", res.data);
-      onClose(); // close modal on success
+      setSnackbar({
+        type: 'success',
+        message: 'Lead created successfully!',
+      });
+      setTimeout(() => {
+        setSnackbar(null);
+        onClose(); // ✅ close modal after delay
+      }, 1500);
     } catch (error) {
-      console.error("Error creating lead:", error);
+      setSnackbar({
+        type: 'error',
+        message: error.response?.data?.message || 'Failed to create lead.',
+      });
+      setTimeout(() => setSnackbar(null), 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,14 +145,31 @@ const AddLeadModal = ({ onClose }) => {
             </>
           )}
 
-          <button
+           <button
             type="submit"
-            className="w-full py-3 bg-primary_blue text-white font-semibold rounded-lg"
+            disabled={loading}
+            className={`bg-primary_blue text-white w-full py-3 rounded-lg text-[16px] font-semibold h-[52px] flex items-center justify-center ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
           >
-            Submit Lead
+            {loading ? (
+              <>
+                <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+                Submitting Leads...
+              </>
+            ) : (
+              '  Submit Leads'
+            )}
           </button>
         </form>
       </div>
+        {snackbar && (
+        <div className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md z-50 
+          ${snackbar.type === 'error' ? 'bg-red-100 text-red-700 border border-red-400' : 'bg-green-100 text-green-700 border border-green-400'}`}>
+          {snackbar.message}
+        </div>
+      )}
     </div>
   );
 };

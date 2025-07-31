@@ -14,6 +14,9 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
     const [errors, setErrors] = useState({});
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState(null);
+
 
 
     useEffect(() => {
@@ -104,52 +107,44 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
     };
 
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (!validate()) return;
 
+        setLoading(true);
         try {
             let response;
 
             if (productToEdit) {
-                // Only send productName for update
                 response = await instance.put(`product/edit/${productToEdit._id}`, {
                     productName: formData.productName,
                 });
-                console.log("Product Updated", response.data);
-                if (onSuccess) {
-                    onSuccess(response.data?.data || response.data); // Use whichever is available
-                }
-
-
             } else {
-                // Send full data for create
                 response = await instance.post("product", formData);
-                console.log("Product Created", response.data);
-                if (onSuccess) {
-                    onSuccess(response.data?.data || response.data); // Use whichever is available
-                }
-
-
             }
 
             if (onSuccess) {
-                onSuccess(response.data.data); // Make sure this matches the shape of your API response
+                onSuccess(response.data?.data || response.data);
             }
 
-            // Reset form
-            setFormData({
-                productName: '',
-                barcodeNumber: '',
-                manufacturer: '',
-                description: '',
-                productImage: '',
+            setSnackbar({
+                type: 'success',
+                message: productToEdit ? 'Product updated successfully!' : 'Product created successfully!',
             });
-
-            onClose();
+            setTimeout(() => {
+                setSnackbar(null);
+                onClose();
+            }, 1500);
         } catch (error) {
             console.error("Error submitting product", error);
+            setSnackbar({
+                type: 'error',
+                message: error?.response?.data?.message || 'Something went wrong while submitting the product.',
+            });
+            setTimeout(() => setSnackbar(null), 3000);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -205,14 +200,30 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
 
                     <button
                         type="submit"
-                        disabled={uploading}
-                        className={`w-full bg-blue-900 text-white py-3 rounded-lg font-semibold ${uploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    // onClick={handleSubmit}
+                        disabled={loading || uploading}
+                        className={`bg-primary_blue text-white w-full py-3 rounded-lg text-[16px] font-semibold h-[52px] flex items-center justify-center ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
                     >
-                        {productToEdit ? "Update Product" : "Create Product"}
+                        {loading ? (
+                            <>
+                                <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                                </svg>
+                                {productToEdit ? "Updating Product..." : "Creating Product..."}
+                            </>
+                        ) : (
+                            productToEdit ? "Update Product" : "Create Product"
+                        )}
                     </button>
                 </form>
             </div>
+            {snackbar && (
+  <div className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md z-50 
+    ${snackbar.type === 'error' ? 'bg-red-100 text-red-700 border border-red-400' : 'bg-green-100 text-green-700 border border-green-400'}`}>
+    {snackbar.message}
+  </div>
+)}
+
         </div>
     );
 };

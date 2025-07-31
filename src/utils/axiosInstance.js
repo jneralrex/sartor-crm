@@ -64,6 +64,10 @@ instance.interceptors.response.use(
     } else if (error.response.status === 403) {
       toast.warn("Sorry you're not allowed to perform this kind of operation")
     }
+    else if (error.response.status === 402) {
+      toast.warn("This account is not allowed, please contact your admin")
+    }
+    
     return Promise.reject(error);
   }
 );

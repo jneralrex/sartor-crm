@@ -17,6 +17,7 @@ const AddBatchWrapperModal = ({ productId, onClose, editData, onBatchUpdated }) 
   const [imagePreview, setImagePreview] = useState("");
   const [receiptPreview, setReceiptPreview] = useState("");
   const [editingBatch, setEditingBatch] = useState(null);
+  const [loading, setLoading] = useState(false);
 
 
 
@@ -134,27 +135,23 @@ const AddBatchWrapperModal = ({ productId, onClose, editData, onBatchUpdated }) 
   };
 
 
-  // Handler to add a batch from the form modal
+
   // const handleAddBatch = (batch) => {
   //   setBatches(prev => [...prev, batch]);
+
+  //   // Populate form fields with latest batch values (optional)
+  //   setForm(prev => ({
+  //     ...prev,
+  //     quantity: batch.quantity || prev.quantity,
+  //     supplyPrice: batch.supplyPrice || prev.supplyPrice,
+  //     sellingPrice: batch.sellingPrice || prev.sellingPrice,
+  //   }));
+
   //   setShowAddForm(false);
   // };
 
-  const handleAddBatch = (batch) => {
-    setBatches(prev => [...prev, batch]);
-
-    // Populate form fields with latest batch values (optional)
-    setForm(prev => ({
-      ...prev,
-      quantity: batch.quantity || prev.quantity,
-      supplyPrice: batch.supplyPrice || prev.supplyPrice,
-      sellingPrice: batch.sellingPrice || prev.sellingPrice,
-    }));
-
-    setShowAddForm(false);
-  };
-
   // Handler for main form fields
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -194,52 +191,57 @@ const AddBatchWrapperModal = ({ productId, onClose, editData, onBatchUpdated }) 
   // };
 
 
- const handleSubmit = async () => {
-  try {
-    const payload = {
-      ...form,
-      image: imagePreview,
-      receipt: receiptPreview,
-      batch: batches,
-    };
+  const handleSubmit = async () => {
 
-    if (editData?._id) {
-      const res = await instance.put(`batch/edit/${editData._id}`, {
-        ...payload,
-        ...batches[0], 
-      });
-
-     if (onBatchUpdated && typeof onBatchUpdated === 'function') {
-  onBatchUpdated({ ...res.data.data });
-}
-
-    } else {
-      let imageUrl = "";
-      let receiptUrl = "";
-
-      if (imageFile) {
-        imageUrl = await uploadToCloudinary(imageFile);
-      }
-
-      if (receiptFile) {
-        receiptUrl = await uploadToCloudinary(receiptFile);
-      }
-
-      const newPayload = {
+    setLoading(true);
+    try {
+      const payload = {
         ...form,
-        image: imageUrl,
-        receipt: receiptUrl,
+        image: imagePreview,
+        receipt: receiptPreview,
         batch: batches,
       };
 
-      await instance.post("batch", newPayload);
-    }
+      if (editData?._id) {
+        const res = await instance.put(`batch/edit/${editData._id}`, {
+          ...payload,
+          ...batches[0],
+        });
 
-    onClose(); 
-  } catch (error) {
-    console.error("Submit failed", error);
-  }
-};
+        if (onBatchUpdated && typeof onBatchUpdated === 'function') {
+          onBatchUpdated({ ...res.data.data });
+        }
+
+      } else {
+        let imageUrl = "";
+        let receiptUrl = "";
+
+        if (imageFile) {
+          imageUrl = await uploadToCloudinary(imageFile);
+        }
+
+        if (receiptFile) {
+          receiptUrl = await uploadToCloudinary(receiptFile);
+        }
+
+        const newPayload = {
+          ...form,
+          image: imageUrl,
+          receipt: receiptUrl,
+          batch: batches,
+        };
+
+        await instance.post("batch", newPayload);
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Submit failed", error);
+    }
+    finally {
+      setLoading(false);
+    }
+  };
 
 
 
@@ -376,22 +378,29 @@ const AddBatchWrapperModal = ({ productId, onClose, editData, onBatchUpdated }) 
             ))}
 
 
-            {/* Totals */}
-            {/* <div className="space-y-2">
-              <SummaryRow label="Total Qty:" value={batches.reduce((sum, b) => sum + Number(b.quantity || 0), 0)} />
-              <SummaryRow label="Total Supply Price:" value={batches.reduce((sum, b) => sum + Number(b.supplyPrice || 0), 0)} />
-              <SummaryRow label="Total Selling Price:" value={batches.reduce((sum, b) => sum + Number(b.sellingPrice || 0), 0)} />
-            </div> */}
+
 
             {/* Submit button */}
             <button
-              className="bg-primary_blue w-full text-white py-3 rounded-lg text-[16px] font-semibold"
-              onClick={handleSubmit}
               type="button"
-              disabled={batches.length === 0 || isUploadingImage || isUploadingReceipt}
+              disabled={batches.length === 0 || isUploadingImage || isUploadingReceipt || loading}
+              onClick={handleSubmit}
+              className={`bg-primary_blue text-white w-full py-3 rounded-lg text-[16px] font-semibold h-[52px] flex items-center justify-center ${loading ? "opacity-75 cursor-not-allowed" : ""
+                }`}
             >
-              {isUploadingImage || isUploadingReceipt ? "Uploading..." : "Submit All Batches"}
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                  </svg>
+                  {editData ? "Updating Batch..." : "Submitting..."}
+                </>
+              ) : (
+                editData ? "Update Batch" : "Submit All Batches"
+              )}
             </button>
+
 
           </div>
         </div>

@@ -38,7 +38,6 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
 
  
 
-  console.log(updatedStatus)
 
    
 
@@ -83,7 +82,6 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
                                 <LabeledItem label="Phone No" value={getSingleLeads?.phone} />
                                 <LabeledItem label="Status" value={getSingleLeads?.status} />
                             </div>
-                             <Select label="Select Status" name="status" value={updatedStatus.status} onChange={handleChange} options={["Contacted  ", "Order Fulfilled", "Closed Lost", "Follow Up", "Qualified", "Interested", "Hold", "In-Negotiations", "LPO Generated", "Closed Won", "Payment Confirmed"]} />
 
                             <LabeledItem label="Company Address (Head Office)" value={getSingleLeads?.address} />
                              <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -93,20 +91,14 @@ const LeadDetailsModal = ({ onClose, leadId }) => {
                                    {getSingleLeads?.notes ? getSingleLeads.notes : 'No notes available'}
                                 </span>
                             </label>
-                             <div className='flex gap-2'>
-
-                                <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
-                                    onClick={updateStatus}
-                                >
-                                    Update Status
-                                </button>
+                             {/* <div className='flex gap-2'>
                                 <button className="bg-primary_grey text-[#484848] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]" onClick={(e) => {
                                     e.preventDefault();
                                     handleAssignModalToggle();
                                 }} >
                                     Visited
                                 </button>
-                            </div>
+                            </div> */}
                         </>
                     )}
 
