@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext';
 import instance from '../../../utils/axiosInstance';
 
-const AddLeadModal = ({ onClose }) => {
+const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
   const [activeTab, setActiveTab] = useState('basic');
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState(null); 
+  const [snackbar, setSnackbar] = useState(null);
   const [addLeads, setAddLeads] = useState({
     name: "",
     address: "",
@@ -28,6 +28,50 @@ const AddLeadModal = ({ onClose }) => {
       },
     ],
   });
+
+  // Fetch lead details if editing
+  useEffect(() => {
+    if (leadId) {
+      const fetchLead = async () => {
+        setLoading(true);
+        try {
+          const res = await instance.get(`lead/${leadId}`);
+          const lead = res.data.data; // lead is the object itself
+
+          if (!lead) {
+            throw new Error('Lead not found');
+          }
+
+          setAddLeads({
+            name: lead.name || "",
+            address: lead.address || "",
+            email: lead.email || "",
+            phone: lead.phone || "",
+            state: lead.state || "",
+            type: lead.type || "",
+            stores: lead.stores || "",
+            dealSize: lead.dealSize || "",
+            status: lead.status || "",
+            notes: lead.notes || "",  // your API response doesn't show notes, so might be empty
+            contact: Array.isArray(lead.contacts) && lead.contacts.length > 0
+              ? lead.contacts
+              : [{ name: "", email: "", phone: "", role: "" }],
+          });
+        } catch (error) {
+          console.error("Failed to fetch lead data:", error);
+          setSnackbar({
+            type: 'error',
+            message: 'Failed to load lead data.',
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchLead();
+    }
+  }, [leadId]);
+
 
   const handleChange = (e) => {
     setAddLeads({ ...addLeads, [e.target.name]: e.target.value });
@@ -54,8 +98,7 @@ const AddLeadModal = ({ onClose }) => {
     return true;
   };
 
-
-  const addLeadsHandler = async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     if (!validateFields()) {
       setSnackbar({
@@ -69,33 +112,46 @@ const AddLeadModal = ({ onClose }) => {
     setLoading(true);
 
     try {
-      const res = await instance.post(`lead`, addLeads);
-      setSnackbar({
-        type: 'success',
-        message: 'Lead created successfully!',
-      });
+      if (leadId) {
+        // EDIT mode - PUT request
+        const res = await instance.put(`lead/edit/${leadId}`, addLeads);
+        setSnackbar({
+          type: 'success',
+          message: 'Lead updated successfully!',
+        });
+      } else {
+        // ADD mode - POST request
+        const res = await instance.post(`lead`, addLeads);
+        setSnackbar({
+          type: 'success',
+          message: 'Lead created successfully!',
+        });
+      }
+
       setTimeout(() => {
         setSnackbar(null);
-        onClose(); // ✅ close modal after delay
+        onClose();
+        onSuccess();
       }, 1500);
     } catch (error) {
       setSnackbar({
         type: 'error',
-        message: error.response?.data?.message || 'Failed to create lead.',
+        message: error.response?.data?.message || (leadId ? 'Failed to update lead.' : 'Failed to create lead.'),
       });
-      setTimeout(() => setSnackbar(null), 3000);
+      setTimeout(() => setSnackbar(null), 1500);
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
 
-  console.log(addLeads)
-
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
       <div className="bg-white w-[90%] max-w-[455px] h-[95vh] rounded-xl shadow-lg overflow-y-auto hide-scrollbar">
         <div className="flex items-center justify-between px-6 pt-6">
-          <h2 className="text-[18px] md:text-[20px] font-semibold text-[#1A1A1A]">Add A New Lead</h2>
+          <h2 className="text-[18px] md:text-[20px] font-semibold text-[#1A1A1A]">
+            {leadId ? "Edit Lead" : "Add A New Lead"}
+          </h2>
           <button onClick={onClose}><X /></button>
         </div>
 
@@ -116,28 +172,75 @@ const AddLeadModal = ({ onClose }) => {
         </div>
 
         {/* Form Body */}
-        <form className="px-6 py-4 space-y-4" onSubmit={addLeadsHandler}>
+        <form className="px-6 py-4 space-y-4" onSubmit={submitHandler}>
           {activeTab === 'basic' && (
             <>
               <Input label="Company Name" name="name" value={addLeads.name} onChange={handleChange} />
               <Input label="Company Address" name="address" value={addLeads.address} onChange={handleChange} />
               <Input label="Company State" name="state" value={addLeads.state} onChange={handleChange} />
               <Input label="Company Email" name="email" value={addLeads.email} onChange={handleChange} />
-              <Select label="Company Type" name="type" value={addLeads.type} onChange={handleChange} options={["Pharmacy  ", "Clinic"]} />
+              <Select
+                label="Company Type"
+                name="type"
+                value={addLeads.type}
+                onChange={handleChange}
+                options={[
+                  "Distributor / Wholesaler",
+                  "Retailer (Supermarket / Store / Pharmacy)",
+                  "Clinic / Hospital ",
+                  "E-commerce",
+                  "Food Service / Hospitality",
+                ]}
+              />
               <Input label="Number of Stores" name="stores" value={addLeads.stores} onChange={handleChange} />
               <Input label="Company Phone Number" name="phone" value={addLeads.phone} onChange={handleChange} />
               <Input label="Potential Deal Size (₦)" name="dealSize" value={addLeads.dealSize} onChange={handleChange} />
-              <Select label="Select Status" name="status" value={addLeads.status} onChange={handleChange} options={["Contacted  ", "Order Fulfilled", "Closed Lost", "Follow Up", "Qualified", "Interested", "Hold", "In-Negotiations", "LPO Generated", "Closed Won", "Payment Confirmed"]} />
+              <Select
+                label="Select Status"
+                name="status"
+                value={addLeads.status}
+                onChange={handleChange}
+                options={[
+                  "Contacted",
+                  "Order Fulfilled",
+                  "Closed Lost",
+                  "Follow Up",
+                  "Qualified",
+                  "Interested",
+                  "Hold",
+                  "In-Negotiations",
+                  "LPO Generated",
+                  "Closed Won",
+                  "Payment Confirmed",
+                ]}
+              />
               <Textarea label="Notes" name="notes" value={addLeads.notes} onChange={handleChange} />
             </>
           )}
 
           {activeTab === 'contact' && (
             <>
-              <Input label="Contact Person" name="name" value={addLeads.contact[0].name} onChange={(e) => handleContactChange(e, 0)} />
-              <Input label="Email" name="email" value={addLeads.contact[0].email} onChange={(e) => handleContactChange(e, 0)} />
-              <Input label="Phone Number" name="phone" value={addLeads.contact[0].phone} onChange={(e) => handleContactChange(e, 0)} />
-              <Select label="Role" name="role" value={addLeads.contact[0].role} onChange={(e) => handleContactChange(e, 0)} options={['COO', 'CEO', 'Manager']} />
+              <Input label="Contact Person" name="name" value={addLeads.contact[0]?.name || ''} onChange={(e) => handleContactChange(e, 0)} />
+              <Input label="Email" name="email" value={addLeads.contact[0]?.email || ''} onChange={(e) => handleContactChange(e, 0)} />
+              <Input label="Phone Number" name="phone" value={addLeads.contact[0]?.phone || ''} onChange={(e) => handleContactChange(e, 0)} />
+              <Select
+                label="Role"
+                name="role"
+                value={addLeads.contact[0]?.role || ''}
+                onChange={(e) => handleContactChange(e, 0)}
+                options={[
+                  "Owner / Founder",
+                  "CEO / Managing Director",
+                  "Chief Operating Officer (COO)",
+                  "Chief Financial Officer (CFO) / Financial Officer",
+                  "General Manager / Branch Manager",
+                  "Procurement / Purchasing Manager",
+                  "Sales / Marketing Manager",
+                  "Store Manager / Supervisor",
+                  "Superintendent Pharmacist / Pharmacist",
+                  "Other (e.g., Matron, Doctor, Nurse, Secretary, Head Chef)",
+                ]}
+              />
               <div className="text-[#A3A3A3] flex justify-center items-center gap-2 text-sm cursor-pointer">
                 <Plus size={16} />
                 <span>Add Contact Person 2</span>
@@ -145,7 +248,7 @@ const AddLeadModal = ({ onClose }) => {
             </>
           )}
 
-           <button
+          <button
             type="submit"
             disabled={loading}
             className={`bg-primary_blue text-white w-full py-3 rounded-lg text-[16px] font-semibold h-[52px] flex items-center justify-center ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
@@ -156,15 +259,16 @@ const AddLeadModal = ({ onClose }) => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                 </svg>
-                Submitting Leads...
+                {leadId ? 'Updating Lead...' : 'Submitting Lead...'}
               </>
             ) : (
-              '  Submit Leads'
+              leadId ? 'Update Lead' : 'Submit Lead'
             )}
           </button>
         </form>
       </div>
-        {snackbar && (
+
+      {snackbar && (
         <div className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md z-50 
           ${snackbar.type === 'error' ? 'bg-red-100 text-red-700 border border-red-400' : 'bg-green-100 text-green-700 border border-green-400'}`}>
           {snackbar.message}
@@ -222,3 +326,5 @@ const Textarea = ({ label, name, value, onChange }) => (
   </label>
 );
 export default AddLeadModal;
+
+

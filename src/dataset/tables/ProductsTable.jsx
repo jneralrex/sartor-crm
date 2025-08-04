@@ -7,7 +7,6 @@ import ProductDetailsModal from '../../components/modals/product/ProductDetailsM
 import CreateProductModal from '../../components/modals/product/CreateProductModal';
 import AddBatchWrapperModal from '../../components/modals/product/AddBatchModal';
 import instance from '../../utils/axiosInstance';
-import EditProductModal from '../../components/modals/product/EditProductModal';
 import ViewBatchesByProduct from '../../components/modals/product/ViewBatchesByProduct';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';

@@ -9,8 +9,7 @@ import customers from '../assets/images/customers.png';
 import lead from '../assets/images/lead.png';
 import chart from '../assets/images/chart.png';
 
-import ProductTable from '../dataset/tables/ProductTable';
-import SalesRepList from '../dataset/tables/SalesRepList';
+
 import TotalCustomersChart from '../dataset/charts/TotalCustomersChart';
 import TotalRevenueChart from '../dataset/charts/TotalRevenueChart';
 import TopSalesRegions from '../dataset/charts/TopSalesRegion';
