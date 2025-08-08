@@ -25,6 +25,9 @@ body {
   font-family: 'sfpro', sans-serif;
 }
 
+/* *{
+  outline: 1px red solid;
+} */
 /* outlet nav frame */
 .outlet-frame {
   @apply bg-primary_white h-[72px] w-full p-10 flex z-[50] items-center justify-between fixed top-0 right-0 md:w-[70%] lg:w-[80%] xl:w-[80%];
@@ -101,3 +104,4 @@ body {
     transform: rotate(360deg);
   }
 }
+
