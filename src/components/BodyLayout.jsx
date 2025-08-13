@@ -6,7 +6,6 @@ import Navbar from './Navbar'
 const BodyLayout = () => {
     return (
         <div>
-            <Navbar />
             <Outlet />
             <Footer />
         </div>
