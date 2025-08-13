@@ -60,9 +60,9 @@ const LandingPage = () => {
                     At Sartor Limited, we help FMCG, pharma, and manufacturing businesses thrive in emerging markets through custom software and strategic consulting.
                 </p>
                 <div className="mt-8 flex justify-center space-x-4">
-                    <button className="bg-[#00D743] text-blue-700 px-5 py-2 rounded-md text-[9px] md:text-sm">
+                    <Link to={'https://calendly.com/sartorlimited/1-on-1-free-30mins-introductory-consulting-call-official'} className="bg-[#00D743] text-blue-700 px-5 py-2 rounded-md text-[9px] md:text-sm" target="_blank" rel="noopener noreferrer">
                         Book a Consultation
-                    </button>
+                    </Link>
                     <button className="bg-white text-blue-700 text-[9px] md:text-sm px-5 py-2 rounded-md">
                         Learn More
                     </button>

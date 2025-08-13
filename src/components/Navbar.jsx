@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from '../assets/images/logo.png'; 
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
@@ -12,9 +13,9 @@ const Navbar = () => {
         <li><a href="#">Our Services ▾</a></li>
         <li><a href="#">Help Center</a></li>
       </ul>
-      <button className="bg-[#00D743] text-blue-700 px-1 py-1 md:px-5 md:py-2 rounded-md text-[9px] md:text-sm">
+      <Link to={'https://calendly.com/sartorlimited/1-on-1-free-30mins-introductory-consulting-call-official'} className="bg-[#00D743] text-blue-700 px-1 py-1 md:px-5 md:py-2 rounded-md text-[9px] md:text-sm" target='_blank' rel="noopener noreferrer">
         Book a Consultation
-      </button>
+      </Link>
       </div>
     </nav>
   );
