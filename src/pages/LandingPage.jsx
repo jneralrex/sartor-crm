@@ -50,7 +50,7 @@ const LandingPage = () => {
             <Navbar />
 
             {/* Hero Section */}
-            <section className="text-center py-8 md:py-16 px-6 md:px-20 bg-[#EAECF0] min-h-screen">
+            <section className="text-center py-8 md:py-16 px-6 md:px-20 bg-[#EAECF0] md:min-h-screen">
                 <h1 className="text-4xl md:text-5xl font-bold text-blue-900 leading-tight">
                     Custom Tech And Advice To <br />
                     Start, Grow, And Lead Your <br />
