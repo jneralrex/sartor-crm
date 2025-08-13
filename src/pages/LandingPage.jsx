@@ -156,8 +156,8 @@ const LandingPage = () => {
             {/* Who We Partner With */}
             <section className="bg-black text-white py-8 md:py-16 px-6 md:px-20">
                 <div className="max-w-6xl mx-auto">
-                    <h2 className="text-center text-3xl font-semibold mb-3 md:mb-12">Who We Partner With</h2>
-                    <div className="grid md:grid-cols-2 gap-5 md:gap-10 items-stretch h-[457px]">
+                    <h2 className="text-center text-3xl font-semibold mb-2 md:mb-12">Who We Partner With</h2>
+                    <div className="grid md:grid-cols-2 gap-[5px] md:gap-10 items-stretch">
                         {/* Tabs List */}
                         <div className="flex flex-col justify-start h-full">
                             <p className="mb-3 md:mb-6 text-sm text-gray-300 text-center md:text-left">
