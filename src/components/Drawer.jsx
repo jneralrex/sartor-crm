@@ -15,14 +15,14 @@ import productIcon from '../assets/images/product.png';
 
 const menuItems = [
   { label: 'Overview', path: 'overview', icon: overViewIcon, isEmoji: false },
-  { label: 'Task Manager', path: '/task-manager', icon: taskManagerIcon, isEmoji: false },
-  { label: 'Employees', path: '/employees', icon: employeesIcon, isEmoji: false },
-  { label: 'LPOs', path: '/lpos', icon: lposIcon, isEmoji: false },
-  { label: 'Leads', path: '/leads', icon: leadIcon, isEmoji: false },
-  { label: 'Products', path: '/products', icon: productIcon, isEmoji: false },
-  { label: 'Customers', path: '/customers', icon: customerIcon, isEmoji: false },
-  { label: 'Invoices', path: '/invoices', icon: invoicesIcon, isEmoji: false },
-  { label: 'Covert Label Gen', path: '/label-gen', icon: labelIcon, isEmoji: false },
+  { label: 'Task Manager', path: 'task-manager', icon: taskManagerIcon, isEmoji: false },
+  { label: 'Employees', path: 'employees', icon: employeesIcon, isEmoji: false },
+  { label: 'LPOs', path: 'lpos', icon: lposIcon, isEmoji: false },
+  { label: 'Leads', path: 'leads', icon: leadIcon, isEmoji: false },
+  { label: 'Products', path: 'products', icon: productIcon, isEmoji: false },
+  { label: 'Customers', path: 'customers', icon: customerIcon, isEmoji: false },
+  { label: 'Invoices', path: 'invoices', icon: invoicesIcon, isEmoji: false },
+  { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, isEmoji: false },
 ];
 
 const Drawer = () => {

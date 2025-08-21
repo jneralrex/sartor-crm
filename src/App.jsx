@@ -39,7 +39,7 @@ const router = createBrowserRouter(
         <Route path="forgot-password" element={<ForgotPassword />} />
 
       {/* PROTECTED DASHBOARD ROUTES */}
-      <Route path="/dashboard" element={<PrivateRoute />}>
+      <Route path="/sartor" element={<PrivateRoute />}>
         <Route element={<AppLayout />}>
           <Route index element={<Overview />} />
           <Route path="overview" element={<Overview />} />

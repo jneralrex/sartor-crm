@@ -42,7 +42,7 @@ const LoginPage = () => {
 
       setTimeout(() => {
         setSnackbar(null);
-        navigate('/overview');
+        navigate('/sartor/overview');
       }, 1500);
 
     } catch (error) {
