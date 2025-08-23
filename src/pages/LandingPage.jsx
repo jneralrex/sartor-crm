@@ -59,12 +59,16 @@ const LandingPage = () => {
                         Streamline sales, protect your products, and scale your distribution with one intelligent platform.
                     </p>
                     <div className="flex justify-center space-x-4 mb-10">
-                        <button className="bg-green-500 hover:bg-green-600 text-black font-semibold px-6 py-2 rounded-md">
+                        <Link 
+                        to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
+                         target="_blank"
+                        rel="noopener noreferrer"
+                         className="bg-green-500 hover:bg-green-600 text-black font-semibold px-6 py-2 rounded-md">
                             Request Demo
-                        </button>
-                        <button className="bg-white hover:bg-gray-100 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md">
+                        </Link>
+                        <Link className="bg-white hover:bg-gray-100 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md">
                             Join Waitlist
-                        </button>
+                        </Link>
                     </div>
 
                     <div className="flex justify-center">

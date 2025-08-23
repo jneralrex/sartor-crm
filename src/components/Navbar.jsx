@@ -13,7 +13,7 @@ const Navbar = () => {
         <li><a href="#">Our Services ▾</a></li>
         <li><a href="#">Help Center</a></li>
       </ul>
-      <Link to={'https://calendly.com/sartorlimited/1-on-1-free-30mins-introductory-consulting-call-official'} className="bg-[#00D743] text-black px-1 py-1 md:px-5 md:py-2 rounded-md text-[9px] md:text-sm" target='_blank' rel="noopener noreferrer">
+      <Link to={'https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo'} className="bg-[#00D743] text-black px-1 py-1 md:px-5 md:py-2 rounded-md text-[9px] md:text-sm" target='_blank' rel="noopener noreferrer">
         Book a Demo
       </Link>
       </div>
