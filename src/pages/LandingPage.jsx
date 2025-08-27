@@ -303,7 +303,7 @@ const LandingPage = () => {
 
 
                 {/* Startup Insights Section */}
-                <section className="py-10">
+                <section className="py-24">
                     <div className="max-w-3xl mx-auto text-center bg-white md:bg-gray-100 rounded-lg py-10 px-6 md:px-12 shadow">
                         <h2 className="text-2xl md:text-3xl font-semibold mb-4">
                             Equip Yourself with Essential<br className="hidden md:block" /> Startup Insights
