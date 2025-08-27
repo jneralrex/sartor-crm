@@ -9,11 +9,13 @@ const Navbar = () => {
 <div className="flex items-center space-x-2 md:space-x-6">
 
       <ul className="flex space-x-1 md:space-x-8 text-gray-700 text-[9px] md:text-sm font-medium">
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Our Services ▾</a></li>
-        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Solutions ▾</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">About</a></li>
       </ul>
-      <Link to={'https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo'} className="bg-[#00D743] text-black px-1 py-1 md:px-5 md:py-2 rounded-md text-[9px] md:text-sm" target='_blank' rel="noopener noreferrer">
+      <Link to={'https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo'} className="bg-[#00A859] text-white px-1 py-1 md:px-5 md:py-2 rounded-md text-[9px] md:text-sm" target='_blank' rel="noopener noreferrer">
         Book a Demo
       </Link>
       </div>

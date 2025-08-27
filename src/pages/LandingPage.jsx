@@ -7,6 +7,14 @@ import industry from "../assets/images/industry.png";
 import company from "../assets/images/company.webp";
 import cream from "../assets/images/cream.png";
 import tab from "../assets/images/tab.png";
+import blockChain from "../assets/images/blockchain.png";
+import ai from "../assets/images/ai.png";
+import trend from "../assets/images/trend.png";
+import monitor from "../assets/images/monitor.png";
+import list from "../assets/images/list.png";
+import security from "../assets/images/security.png";
+import magnet from "../assets/images/magnet.png";
+
 import phone from "../assets/images/phone.png";
 import Navbar from "../components/Navbar";
 
@@ -37,9 +45,9 @@ const LandingPage = () => {
 
     // Partner Tabs Logic
     const partners = [
-        { name: "Blockchain-Backed Security", image: pippics },
-        { name: "DORA AI Verification", image: industry },
-        { name: "Ai-Powered Forecasting", image: company },
+        { name: "Blockchain-Backed Security", footnote: "immutable records of every transaction", image: pippics, smallImage: blockChain, alt: "Blockchain image" },
+        { name: "DORA AI Verification", footnote: "invisible finger print verified instantly", image: industry, smallImage: ai },
+        { name: "Ai-Powered Forecasting", footnote: "smarter demands planning and distribution", image: company, smallImage: trend },
     ];
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -59,12 +67,12 @@ const LandingPage = () => {
                         Streamline sales, protect your products, and scale your distribution with one intelligent platform.
                     </p>
                     <div className="flex justify-center space-x-4 mb-10">
-                        <Link 
-                        to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
-                         target="_blank"
-                        rel="noopener noreferrer"
-                         className="bg-green-500 hover:bg-green-600 text-black font-semibold px-6 py-2 rounded-md">
-                            Request Demo
+                        <Link
+                            to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-[#00A859] hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-md">
+                            Get a free demo
                         </Link>
                         <Link className="bg-white hover:bg-gray-100 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md">
                             Join Waitlist
@@ -96,7 +104,7 @@ const LandingPage = () => {
                         <h2 className="text-2xl md:text-3xl font-semibold mb-4">
                             Solutions for Every Step of Your Distribution Journey
                         </h2>
-                        <button className="bg-green-500 hover:bg-green-600 text-black font-semibold px-6 py-2 rounded-md mt-4">
+                        <button className="bg-[#00A859] hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-md mt-4">
                             Learn More
                         </button>
                     </div>
@@ -151,28 +159,9 @@ const LandingPage = () => {
 
                 <section className=" text-black py-8 md:py-16 px-6 md:px-20">
                     <div className="max-w-6xl mx-auto">
-                        <h2 className="text-center text-3xl font-semibold mb-2 md:mb-12">Who We Partner With</h2>
-                        <div className="grid md:grid-cols-2 gap-[5px] md:gap-10 items-stretch">
-                            {/* Tabs List */}
-                            <div className="flex flex-col justify-start h-full">
-                                <p className="mb-3 md:mb-6 text-sm text-black text-center md:text-left">
-                                    We are the trusted partner for:
-                                </p>
-                                <ul className=" flex gap-2 justify-center flex-wrap md:space-y-4 md:flex md:flex-col md:flex-grow md:justify-around">
-                                    {partners.map((partner, index) => (
-                                        <li
-                                            key={index}
-                                            onClick={() => setActiveIndex(index)}
-                                            className={`cursor-pointer  px-5 py-2 md:px-5 md:py-3 text-center items-center flex text-[10px] md:text-sm border rounded-md transition-all duration-200 ${index === activeIndex
-                                                ? "bg-blue-900 border-blue-800 text-black"
-                                                : "border-gray-500 text-black hover:bg-gray-800"
-                                                }`}
-                                        >
-                                            {partner.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                        <h2 className="text-center text-3xl font-semibold mb-2 md:mb-12">Why Choose CRM</h2>
+                        <div className="flex flex-col-reverse md:grid md:grid-cols-2  gap-[5px] md:gap-10 items-stretch">
+
 
                             {/* Dynamic Images */}
                             <div className=" h-[350px] md:max-h-full w-full">
@@ -182,117 +171,103 @@ const LandingPage = () => {
                                     className="rounded-lg object-cover w-full h-full"
                                 />
                             </div>
+
+
+                            {/* Tabs List */}
+                            <div className="flex flex-col justify-start h-full">
+
+                                <ul className=" flex gap-2 justify-center flex-wrap md:space-y-4 md:flex md:flex-col md:flex-grow md:justify-around">
+                                    {partners.map((partner, index) => (
+                                        <li
+                                            key={index}
+                                            onClick={() => setActiveIndex(index)}
+                                            className={` cursor-pointer  px-5 py-2 md:px-5 md:py-3 text-start items-center text-[#1A1A1A] text-[14px] font-semibold md:text-[24px] border rounded-md transition-all duration-200 ${index === activeIndex
+                                                ? " border-blue-800 text-black"
+                                                : "border-gray-500 text-black hover:bg-gray-200"
+                                                }`}
+                                        >
+                                            <div className="flex items-center gap-5">
+                                                <div>
+                                                    <img src={partner.smallImage} alt={partner.alt} className="size-8 md:size-16" />
+                                                </div>
+                                                <div>
+                                                    <div>
+                                                        {partner.name}
+                                                    </div>
+                                                    <div className="text-[#767676] md:text-[18px] text-[10px]">  {partner.footnote}</div>
+
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </section>
 
 
 
-                <section className="md:py-16 px-4 text-center">
-                    <h2 className="text-2xl md:text-3xl font-semibold mb-10">
-                        How Sartor CRM Works
-                    </h2>
 
-                    {/* For smaller screens: vertical column layout */}
-                    <div className="md:hidden space-y-6 flex flex-col items-start">
-                        {/* Step 1 */}
-                        <div className="flex items-center justify-center space-x-2">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-800 text-white font-bold rounded-full">
-                                1
-                            </div>
-                            <span className="text-base text-gray-700">Capture and Assign Leads</span>
+
+
+                <section className="max-w-7xl mx-auto px-4 py-12">
+                    <h2 className="text-2xl font-semibold text-center mb-10">How Sartor CRM Works</h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        {/* Left: Image */}
+                        <div className="flex justify-center">
+                            <img
+                                src={monitor} // Replace with actual image path
+                                alt="How Sartor CRM Works"
+                                className="rounded-lg shadow-lg max-w-full"
+                            />
                         </div>
 
-                        {/* Step 2 */}
-                        <div className="flex items-center justify-center space-x-2">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-800 text-white font-bold rounded-full">
-                                2
+                        {/* Right: Steps */}
+                        <div className="space-y-8">
+                            {/* Step 1 */}
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <div className="h-10 w-10 rounded-full bg-[#000068] text-white flex items-center justify-center font-bold text-lg">1</div>
+                                </div>
+                                <div className="ml-4">
+                                    <img src={magnet} alt="magnet" className="size-8" />
+                                    <h3 className="text-lg font-semibold">Capture and Assign Leads</h3>
+                                    <p className="text-gray-600 text-sm mt-1">Lorem ipsum dolor sit amet consectetur. Ultricies eu morbi etiam ut urna.</p>
+                                </div>
                             </div>
-                            <span className="text-base text-gray-700">Track Orders and Inventory</span>
-                        </div>
 
-                        {/* Step 3 */}
-                        <div className="flex items-center justify-center space-x-2">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-800 text-white font-bold rounded-full">
-                                3
+                            {/* Step 2 */}
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <div className="h-10 w-10 rounded-full bg-[#000068] text-white flex items-center justify-center font-bold text-lg">2</div>
+                                </div>
+                                <div className="ml-4">
+                                    <img src={list} alt="list" className="size-8" />
+                                    <h3 className="text-lg font-semibold">Track Orders and Inventory</h3>
+                                    <p className="text-gray-600 text-sm mt-1">Lorem ipsum dolor sit amet consectetur. Ultricies eu morbi etiam ut urna.</p>
+                                </div>
                             </div>
-                            <span className="text-base text-gray-700">Verify Authenticity with a Scan</span>
-                        </div>
-                    </div>
 
-                    {/* For md and up: triangle layout */}
-                    <div className="hidden md:block relative max-w-lg mx-auto h-32">
-                        {/* Step 1 - Left */}
-                        <div className="absolute left-0 top-0 flex items-center space-x-2">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-800 text-white font-bold rounded-full">
-                                1
+                            {/* Step 3 */}
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <div className="h-10 w-10 rounded-full bg-[#000068] text-white flex items-center justify-center font-bold text-lg">3</div>
+                                </div>
+                                <div className="ml-4">
+                                    <img src={security} alt="security" className="size-8" />
+                                    <h3 className="text-lg font-semibold">Verify Authenticity with a Scan</h3>
+                                    <p className="text-gray-600 text-sm mt-1">Lorem ipsum dolor sit amet consectetur. Ultricies eu morbi etiam ut urna.</p>
+                                </div>
                             </div>
-                            <span className="text-base text-gray-700 text-left">
-                                Capture and Assign Leads
-                            </span>
-                        </div>
-
-                        {/* Step 2 - Right */}
-                        <div className="absolute right-0 top-0 flex items-center space-x-2">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-800 text-white font-bold rounded-full">
-                                2
-                            </div>
-                            <span className="text-base text-gray-700 text-left">
-                                Track Orders and Inventory
-                            </span>
-                        </div>
-
-                        <div className="absolute left-1/2 transform -translate-x-1/2 top-20 flex items-center space-x-2">
-                            <div className="w-8 h-8 flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-800 text-white font-bold rounded-full">
-                                3
-                            </div>
-                            <span className="text-base text-gray-700 text-left">
-                                Verify Authenticity with a Scan
-                            </span>
                         </div>
                     </div>
-
                 </section>
-
-
-                {/* Pricing Section */}
-                <section className="py-20 px-4 text-center">
-                    <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-                        Simple, Transparent Pricing
-                    </h2>
-                    <p className="text-gray-600 mb-2">
-                        Plans for businesses of all sizes
-                    </p>
-                    <p className="text-gray-600 mb-6">
-                        no hidden fees.
-                    </p>
-                    <button className="bg-green-500 hover:bg-green-600 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md shadow">
-                        View Pricing
-                    </button>
-                </section>
-
-
-                {/* Startup Insights Section */}
-                <section className="">
-                    <div className="max-w-3xl mx-auto text-center bg-white md:bg-gray-100 rounded-lg py-10 px-6 md:px-12 shadow">
-                        <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-                            Equip Yourself with Essential<br className="hidden md:block" /> Startup Insights
-                        </h2>
-                        <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
-                            Download our exclusive Free Startup Checklist — a comprehensive guide to navigating the early stages
-                            of building a successful product-based business in emerging markets.
-                        </p>
-                        <button className="bg-green-500 hover:bg-green-600 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md shadow">
-                            Get the Free Checklist
-                        </button>
-                    </div>
-                </section>
-
-
 
 
                 {/* Testimonials */}
-                <section className="bg-white px-6 py-5 md:py-20 max-w-7xl mx-auto">
+                <section className="bg-white px-6 py-5 md:py-10 max-w-7xl mx-auto">
                     <h2 className="text-center text-2xl font-semibold text-gray-900 mb-12">
                         Client Success Stories
                     </h2>
@@ -309,6 +284,41 @@ const LandingPage = () => {
 
 
                 </section>
+
+                {/* Pricing Section */}
+                <section className="py-10 px-4 text-center">
+                    <h2 className="text-2xl md:text-3xl font-semibold mb-4">
+                        Simple, Transparent Pricing
+                    </h2>
+                    <p className="text-gray-600 mb-2">
+                        Plans for businesses of all sizes
+                    </p>
+                    <p className="text-gray-600 mb-6">
+                        no hidden fees.
+                    </p>
+                    <button className="bg-green-500 hover:bg-green-600 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md shadow">
+                        View Pricing
+                    </button>
+                </section>
+
+
+                {/* Startup Insights Section */}
+                <section className="py-10">
+                    <div className="max-w-3xl mx-auto text-center bg-white md:bg-gray-100 rounded-lg py-10 px-6 md:px-12 shadow">
+                        <h2 className="text-2xl md:text-3xl font-semibold mb-4">
+                            Equip Yourself with Essential<br className="hidden md:block" /> Startup Insights
+                        </h2>
+                        <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
+                            Download our exclusive Free Startup Checklist — a comprehensive guide to navigating the early stages
+                            of building a successful product-based business in emerging markets.
+                        </p>
+                        <button className="bg-green-500 hover:bg-green-600 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md shadow">
+                            Get the Free Checklist
+                        </button>
+                    </div>
+                </section>
+
+
             </div>
         </div>
     );
