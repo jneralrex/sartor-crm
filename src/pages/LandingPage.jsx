@@ -296,7 +296,7 @@ const LandingPage = () => {
                     <p className="text-gray-600 mb-6">
                         no hidden fees.
                     </p>
-                    <button className="bg-green-500 hover:bg-green-600 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md shadow">
+                    <button className="bg-green-500 hover:bg-green-600 text-[white] font-semibold px-6 py-2 rounded-md shadow">
                         View Pricing
                     </button>
                 </section>
@@ -312,7 +312,7 @@ const LandingPage = () => {
                             Download our exclusive Free Startup Checklist — a comprehensive guide to navigating the early stages
                             of building a successful product-based business in emerging markets.
                         </p>
-                        <button className="bg-green-500 hover:bg-green-600 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md shadow">
+                        <button className="bg-green-500 hover:bg-green-600 text-[white] font-semibold px-6 py-2 rounded-md shadow">
                             Get the Free Checklist
                         </button>
                     </div>
