@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-blue-900 text-white pt-12 pb-6 px-6 md:px-20 font-[sfpro]">
+    <footer className="bg-[#000068] text-white pt-12 pb-6 px-6 md:px-20 font-[sfpro]">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-sm mb-10">
         <div>
           <h4 className="font-semibold mb-4">Quick Links</h4>
