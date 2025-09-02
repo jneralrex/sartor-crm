@@ -216,9 +216,9 @@ const LandingPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                         {/* Left: Image */}
-                        <div className="flex justify-center">
+                        <div className="flex justify-center hidden md:block">
                             <img
-                                src={monitor} // Replace with actual image path
+                                src={monitor} 
                                 alt="How Sartor CRM Works"
                                 className="rounded-lg shadow-lg max-w-full"
                             />

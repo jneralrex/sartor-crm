@@ -1,11 +1,11 @@
 import { X, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import AddBatchFormModal from "./AddBatchFormModal";
-import { useAuth } from "../../../context/AuthContext";
+import { useToken } from '../../../store/authStore';
 import instance from "../../../utils/axiosInstance";
 
 const AddBatchWrapperModal = ({ productId, onClose, editData, onBatchUpdated }) => {
-  const { token } = useAuth();
+    const  token  = useToken();
   const [productDetails, setProductDetails] = useState(null);
   const [getAllSuppliers, setGetAllSuppliers] = useState([]);
   const [isUploadingImage, setIsUploadingImage] = useState(false);

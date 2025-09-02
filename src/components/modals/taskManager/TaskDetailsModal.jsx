@@ -4,7 +4,7 @@ import TaskNotesModal from './TaskNotesModal';
 import AssignToNewEmployee from './AssignToNewEmployee';
 import ReassignTaskModal from './ReassignTaskModal';
 import InvoiceModal from './InvoiceModal';
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 
 
@@ -14,7 +14,7 @@ const TaskDetailsModal = ({ onClose, taskId }) => {
     const [isReAssignModalOpen, setIsReAssignModalOpen] = useState(false);
     const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
     const [singleTask, setSingleTask] = useState({});
-    const { token } = useAuth();
+    const  token  = useToken();
 
 
     useEffect(() => {

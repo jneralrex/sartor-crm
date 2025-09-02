@@ -2,7 +2,7 @@ import { Download, Ellipsis, Plus } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react';
-import { useAuth } from '../../context/AuthContext';
+import { useToken } from '../../store/authStore';
 import ProductDetailsModal from '../../components/modals/product/ProductDetailsModal';
 import CreateProductModal from '../../components/modals/product/CreateProductModal';
 import AddBatchWrapperModal from '../../components/modals/product/AddBatchModal';
@@ -13,7 +13,7 @@ import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 const ProductsTable = () => {
-  const { token } = useAuth();
+    const  token  = useToken();
   const [getAllProducts, setGetAllProducts] = useState([]);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const [isProductDetailsMOdalOpen, setProductDetailsMOdalOpen] = useState(false);

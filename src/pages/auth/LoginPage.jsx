@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
-import { Check, Eye, EyeOff, OctagonAlert } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
-import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
+import useAuthStore from '../../store/authStore';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,8 +12,8 @@ const LoginPage = () => {
   const [loginDetails, setLoginDetails] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setToken, setUser } = useAuth();
-  const VITE_API_URL = import.meta.env.VITE_BASE_URL;
+
+  const setAuth = useAuthStore((state) => state.setAuth); 
 
   const handleChange = (e) => {
     setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value });
@@ -25,8 +24,8 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await instance.post(`${VITE_API_URL}auth/login`, loginDetails);
-      const response = res.data
+      const res = await instance.post("auth/login", loginDetails);
+      const response = res.data;
 
       if (!response.status) {
         toast.error(response?.message);
@@ -35,25 +34,23 @@ const LoginPage = () => {
       }
 
       const userData = response.data;
+      setAuth(userData); 
 
-      setToken(userData.token);
-      setUser(userData);
       toast.success(response?.message);
 
       setTimeout(() => {
-        setSnackbar(null);
-        navigate('/sartor/overview');
+        navigate("/sartor/overview");
       }, 1500);
-
     } catch (error) {
-      setLoading(false);
       toast.error(error.message);
-      return;
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAFAFA] relative">
+      {/* snackbar (currently not used since toastify handles messages) */}
       {snackbar && (
         <div className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md 
           ${snackbar.type === 'error' ? 'bg-red-100 text-red-700 border border-red-400' : 'bg-green-100 text-green-700 border border-green-400'}`}>

@@ -1,11 +1,11 @@
 import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 import DetailsSkeleton from '../../DetailsSkeleton';
 
 const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
-    const { token } = useAuth();
+    const  token  = useToken();
 
     const [singleInvoice, setSingleInvoice] = useState({});
     const [loading, setLoading] = useState(true);

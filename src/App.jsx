@@ -18,7 +18,6 @@ import Product from './pages/Product';
 
 import LoginPage from './pages/auth/LoginPage';
 import ForgotPassword from './pages/auth/ForgotPassword';
-import PrivateRoute from './context/PrivateRoutes';
 
 import AppLayout from './components/AppLayout';
 import LandingPage from './pages/LandingPage';
@@ -26,6 +25,7 @@ import BodyLayout from './components/BodyLayout';
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PrivateRoute from './store/PrivateRoutes';
 
 const router = createBrowserRouter(
   createRoutesFromElements(

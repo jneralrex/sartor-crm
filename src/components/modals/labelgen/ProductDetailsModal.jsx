@@ -1,11 +1,11 @@
 import { X, ChevronLeft } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 
 const ProductDetailsModal = ({ onClose }) => {
-  const { token } = useAuth();
+    const  token  = useToken();
   const [step, setStep] = useState(1); 
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [batches, setBatches] = useState([]);

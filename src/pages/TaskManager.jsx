@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import classNames from "classnames";
 import instance from "../utils/axiosInstance";
-import { useAuth } from "../context/AuthContext";
 import UserActionNav from "../components/UserActionNav";
 import AssignTaskModal from "../components/modals/taskManager/AssignTaskModal";
 import TaskDetailsModal from "../components/modals/taskManager/TaskDetailsModal";
 import task from "../assets/images/task.png";
 import EditTaskModal from "../components/modals/taskManager/EditTask";
 import ConfirmModal from "../components/ConfirmationPopUp";
+import { useToken } from "../store/authStore";
 
 const categories = [
   "All",
@@ -37,7 +37,7 @@ const statusColor = {
 };
 
 const TaskManager = () => {
-  const { token } = useAuth();
+    const  token  = useToken();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);

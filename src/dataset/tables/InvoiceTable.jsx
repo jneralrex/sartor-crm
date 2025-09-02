@@ -2,7 +2,7 @@ import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucid
 import search from '../../assets/images/search.png';
 import { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react'
-import { useAuth } from '../../context/AuthContext';
+import { useToken, useUserId } from '../../store/authStore';
 import InvoiceDetailsModal from '../../components/modals/invoice/InvoiceDetailsModal';
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
@@ -11,7 +11,8 @@ import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 
 const InvoiceTable = ({ }) => {
-    const { token } = useAuth();
+    const  token  = useToken();
+    const userId = useUserId();
 
     const [getInvoices, setGetInvoices] = useState([]);
     const [isViewInvoiceModalOpen, setViewLpoModalOpen] = useState(false);
@@ -32,7 +33,8 @@ const InvoiceTable = ({ }) => {
     const getAllInvoices = async (page = 1) => {
         setLoading(true);
         try {
-            const res = await instance.get(`invoices?page=${page}&limit=${perPage}`);
+            // const res = await instance.get(`invoices?page=${page}&limit=${perPage}`);
+            const res = await instance.get(`invoice/user/${userId}?page=${page}&limit=${perPage}`, );
             const { data, totalPages } = res.data.data;
             setGetInvoices(res.data.data.invoices);
             setTotalPages(totalPages || 1);
@@ -101,97 +103,111 @@ const InvoiceTable = ({ }) => {
                             <th className="px-4 py-2">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {loading ? (
-                            Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-                        ) : (filteredInvoice.map((invoice, index) => (
-                            <tr key={invoice._id} className="border-b hover:bg-gray-50 text-start">
-                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                                    {(currentPage - 1) * perPage + index + 1}
-                                </td>                                <td className="px-4 py-3 flex items-center gap-2">
-                                    <div>
-                                        <div className="text-xs md:text-[14px] font-medium text-[#484848]">
-                                            {invoice.name || 'N/A'}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                                    {invoice.products || 'N/A'}
-                                </td>
-                                <td className={`px-4 py-3 text-xs md:text-[14px] font-normal ${invoice.status === 'Paid'
-                                    ? ' text-[#33DF69]'
-                                    : invoice.status === 'Cancelled'
-                                        ? ' text-[#FF6259]'
-                                        : invoice.status === 'Overdue'
-                                            ? ' text-[#000068]'
-                                            : invoice.status === 'Partially Paid'
-                                                ? ' text-[#7474E1]'
-                                                : invoice.status === 'Pending'
-                                                    ? ' text-[#FFB400]'
-                                                    : ' text-gray-500'
-                                    }`}>
-                                    {invoice.status}
-                                </td>
-                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                                    {invoice.dueDate
-                                        ? new Date(invoice.dueDate).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                        })
-                                        : 'N/A'}
-                                </td>
-                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                                    {invoice.totalAmount || 'N/A'}
-                                </td>
-                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                                    {invoice.qty || 'N/A'}
-                                </td>
-                                <td className="px-4 py-3 ">
-                                    {/* Menu Dropdown */}
-                                    <div className="relative">
-                                        <Menu as="div" className="relative inline-block text-left">
-                                            <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                                                <button className="text-gray-500 hover:text-gray-700"><Ellipsis /></button>
+                   <tbody>
+  {loading ? (
+    Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+  ) : filteredInvoice.length > 0 ? (
+    filteredInvoice.map((invoice, index) => (
+      <tr key={invoice._id} className="border-b hover:bg-gray-50 text-start">
+        <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+          {(currentPage - 1) * perPage + index + 1}
+        </td>
+        <td className="px-4 py-3 flex items-center gap-2">
+          <div>
+            <div className="text-xs md:text-[14px] font-medium text-[#484848]">
+              {invoice.name || 'N/A'}
+            </div>
+          </div>
+        </td>
+        <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+          {invoice.products || 'N/A'}
+        </td>
+        <td
+          className={`px-4 py-3 text-xs md:text-[14px] font-normal ${
+            invoice.status === 'Paid'
+              ? 'text-[#33DF69]'
+              : invoice.status === 'Cancelled'
+              ? 'text-[#FF6259]'
+              : invoice.status === 'Overdue'
+              ? 'text-[#000068]'
+              : invoice.status === 'Partially Paid'
+              ? 'text-[#7474E1]'
+              : invoice.status === 'Pending'
+              ? 'text-[#FFB400]'
+              : 'text-gray-500'
+          }`}
+        >
+          {invoice.status}
+        </td>
+        <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+          {invoice.dueDate
+            ? new Date(invoice.dueDate).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })
+            : 'N/A'}
+        </td>
+        <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+          {invoice.totalAmount || 'N/A'}
+        </td>
+        <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+          {invoice.qty || 'N/A'}
+        </td>
+        <td className="px-4 py-3">
+          <div className="relative">
+            <Menu as="div" className="relative inline-block text-left">
+              <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+                <button className="text-gray-500 hover:text-gray-700">
+                  <Ellipsis />
+                </button>
+              </Menu.Button>
 
-                                            </Menu.Button>
+              <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                <div className="py-1">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={`${
+                          active ? 'bg-gray-100 rounded-md' : ''
+                        } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                        onClick={() => handleViewInvoiceModalToggle(invoice._id)}
+                      >
+                        View Details
+                      </button>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <button
+                        className={`${
+                          active ? 'bg-red-200 rounded-md' : ''
+                        } group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
+                        onClick={() => {
+                          setInvoiceToDelete(invoice._id);
+                          setIsConfirmOpen(true);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </Menu.Item>
+                </div>
+              </Menu.Items>
+            </Menu>
+          </div>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="8" className="text-center py-4 text-red-500">
+        No invoices found.
+      </td>
+    </tr>
+  )}
+</tbody>
 
-                                            <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                                                <div className="py-1">
-                                                    <Menu.Item>
-                                                        {({ active }) => (
-                                                            <button
-                                                                className={`${active ? 'bg-gray-100 rounded-md' : ''
-                                                                    } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                                                onClick={() => handleViewInvoiceModalToggle(invoice._id)}
-                                                            >
-                                                                View Details
-                                                            </button>
-                                                        )}
-                                                    </Menu.Item>
-                                                    <Menu.Item>
-                                                        {({ active }) => (
-                                                            <button
-                                                                className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
-                                                                onClick={() => {
-                                                                    setInvoiceToDelete(invoice._id);
-                                                                    setIsConfirmOpen(true);
-                                                                }}
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        )}
-                                                    </Menu.Item>
-
-                                                </div>
-                                            </Menu.Items>
-                                        </Menu>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))
-                        )}
-                    </tbody>
                 </table>
             </div>
 

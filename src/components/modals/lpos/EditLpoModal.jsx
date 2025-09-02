@@ -1,14 +1,14 @@
 import { Plus, X, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import instance from '../../../utils/axiosInstance';
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 
 const lpoStatus = [
     "Delivered", "In Transit", "Processing", "Cancelled", "Sorted", "Received", "Overdue", "To-Do", "Confirmed"
 ];
 
 const EditLpoModal = ({ lpo, onClose, onSuccess }) => {
-    const { token } = useAuth();
+    const  token  = useToken();
     const [loading, setLoading] = useState(false);
 
     const [status, setStatusToEdit] = useState({ status: '' });

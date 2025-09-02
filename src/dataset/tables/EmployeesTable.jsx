@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import AssignEmployeeTask from '../../components/modals/employees/AssignEmployeeTask';
 import EmployeeDetails from '../../components/modals/employees/EmployeeDetails';
 import AddNewEmployeeModal from '../../components/modals/employees/AddNewEmployeeModal';
-import { useAuth } from '../../context/AuthContext';
+import { useToken } from '../../store/authStore';
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
@@ -13,9 +13,9 @@ import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 
 
-const EmployeeTable = ({ }) => {
+const EmployeeTable = ({ activeTab }) => {
 
-  const { token } = useAuth();
+    const  token  = useToken();
 
   const [isAssignTaskModalOpen, setAssignTaskModalOpen] = useState(false);
   const [isAssignEmployeeModalOpen, setAssignEmployeeModalOpen] = useState(false);
@@ -56,6 +56,13 @@ const EmployeeTable = ({ }) => {
       allEmp();
     }
   }, [token]);
+
+    // 🔹 Filter employees based on tab
+  const filteredEmployees = getAllEmployee.filter((emp) => {
+    if (activeTab === "All Employees") return true;
+    return emp.role?.toLowerCase() === activeTab.toLowerCase();
+  });
+
 
   const handleAssignTaskModalToggle = () => {
     setAssignTaskModalOpen((prev) => !prev);
@@ -111,48 +118,55 @@ const EmployeeTable = ({ }) => {
       </div>
 
       <div className="overflow-x-auto rounded-lg border">
-        <table className="w-full text-left text-sm bg-primary_white">
-          <thead className=" border-b text-primary_blue font-semibold md:text-[14px] ">
-            <tr className=''>
-              <th className="px-4 py-2">S/N</th>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Position</th>
-              <th className="px-4 py-2">Date Added</th>
-              <th className="px-4 py-2">Phone Number</th>
-              <th className="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-            ) : (
-              getAllEmployee.map((emp, index) => (
-                <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {(currentPage - 1) * perPage + index + 1}
-                  </td>      <td className="px-4 py-3 flex items-center gap-2">
-                    <img
-                      src={emp.image}
-                      alt={emp.fullName}
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className=" text-[#484848] md:text-[14px] font-medium">{emp.fullName}</div>
-                      <div className="text-xs text-[#A3A3A3] text-[12px] font-medium">{emp.email}</div>
+         <table className="w-full text-left text-sm bg-primary_white">
+        <thead className="border-b text-primary_blue font-semibold md:text-[14px]">
+          <tr>
+            <th className="px-4 py-2">S/N</th>
+            <th className="px-4 py-2">Name</th>
+            <th className="px-4 py-2">Position</th>
+            <th className="px-4 py-2">Date Added</th>
+            <th className="px-4 py-2">Phone Number</th>
+            <th className="px-4 py-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ? (
+            Array.from({ length: 8 }).map((_, idx) => (
+              <EmployeeSkeletonRow key={idx} />
+            ))
+          ) : filteredEmployees.length > 0 ? (
+            filteredEmployees.map((emp, index) => (
+              <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
+                <td className="px-4 py-3 text-xs md:text-[14px] text-[#767676]">
+                  {(currentPage - 1) * perPage + index + 1}
+                </td>
+                <td className="px-4 py-3 flex items-center gap-2">
+                  <img
+                    src={emp.image}
+                    alt={emp.fullName}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className="text-[#484848] md:text-[14px] font-medium">
+                      {emp.fullName}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.role}</td>
-                  <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">
-                    {emp.creationDateTime
-                      ? new Date(emp.creationDateTime).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
+                    <div className="text-xs text-[#A3A3A3]">
+                      {emp.email}
+                    </div>
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-[#767676]">{emp.role}</td>
+                <td className="px-4 py-3 text-[#767676]">
+                  {emp.creationDateTime
+                    ? new Date(emp.creationDateTime).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
                       })
-                      : 'N/A'}
-                  </td>
-                  <td className="px-4 py-3 md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
-                  <td className="px-4 py-3 ">
+                    : "N/A"}
+                </td>
+                <td className="px-4 py-3 text-[#767676]">{emp.phone}</td>
+  <td className="px-4 py-3 ">
                     {/* Menu Dropdown */}
                     <div className="relative">
                       <Menu as="div" className="relative inline-block text-left">
@@ -220,12 +234,17 @@ const EmployeeTable = ({ }) => {
                         </Menu.Items>
                       </Menu>
                     </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                  </td>              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" className="text-center py-4 text-gray-500">
+                No employees found for {activeTab}.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
       </div>
 
       <div className="flex justify-between items-center mt-4 text-sm text-gray-600">

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { X, Plus } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 import DetailsSkeleton from '../../DetailsSkeleton';
 
 const LeadDetailsModal = ({ onClose, leadId }) => {
     const [activeTab, setActiveTab] = useState('basic');
-    const { token } = useAuth();
+    const  token  = useToken();
     const [loading, setLoading] = useState(true);
 
 

@@ -1,6 +1,6 @@
 import { Plus, X, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 
 const paymentTerms = [
@@ -10,7 +10,7 @@ const paymentTerms = [
 ];
 
 const CreateLpoModal = ({ onClose }) => {
-    const { token } = useAuth();
+    const  token  = useToken();
 
     const [leads, setLeads] = useState([]);
     const [productsList, setProductsList] = useState([]);

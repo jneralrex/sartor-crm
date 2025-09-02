@@ -1,16 +1,17 @@
 import { Download, Ellipsis, } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import { Menu } from '@headlessui/react';
 import CustomerDetails from '../../components/modals/customer/CustomerDetails';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
+import { useToken, useUserId } from '../../store/authStore';
 
 const CustomerstTable = ({ onClose }) => {
-    const { token } = useAuth();
+    const token  = useToken();
+    const userId = useUserId
     const [getAllCustomer, setGetAllCustomer] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -107,7 +108,8 @@ const CustomerstTable = ({ onClose }) => {
                     <tbody>
                         {loading ? (
                             Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-                        ) : (filteredCustomers.map((emp, index) => (
+                        ) : filteredCustomers.length > 0 ?
+                         (filteredCustomers.map((emp, index) => (
                             <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
                                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                                     {(currentPage - 1) * perPage + index + 1}
@@ -192,7 +194,10 @@ const CustomerstTable = ({ onClose }) => {
                                 </td>
                             </tr>
                         ))
-                        )}
+                        ) : (<tr>
+                            <td colSpan="7" className="text-center py-4 text-red-500">
+                            No Customer Found
+                            </td></tr>)}
                     </tbody>
                 </table>
             </div>

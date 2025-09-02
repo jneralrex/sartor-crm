@@ -12,22 +12,35 @@ import labelIcon from './../assets/images/label.png'
 import lposIcon from './../assets/images/money.png'
 import logo from '../assets/images/logo.png';
 import productIcon from '../assets/images/product.png';
+import { useUserRole } from '../store/authStore';
+
 
 const menuItems = [
-  { label: 'Overview', path: 'overview', icon: overViewIcon, isEmoji: false },
-  { label: 'Task Manager', path: 'task-manager', icon: taskManagerIcon, isEmoji: false },
-  { label: 'Employees', path: 'employees', icon: employeesIcon, isEmoji: false },
-  { label: 'LPOs', path: 'lpos', icon: lposIcon, isEmoji: false },
-  { label: 'Leads', path: 'leads', icon: leadIcon, isEmoji: false },
-  { label: 'Products', path: 'products', icon: productIcon, isEmoji: false },
-  { label: 'Customers', path: 'customers', icon: customerIcon, isEmoji: false },
-  { label: 'Invoices', path: 'invoices', icon: invoicesIcon, isEmoji: false },
-  { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, isEmoji: false },
+  { label: 'Overview', path: 'overview', icon: overViewIcon, roles: ['admin', 'Merchandiser', 'Sales Rep', 'Inventory Manager', 'Manager'] },
+  { label: 'Stocks', path:'stocks', icon: overViewIcon, roles: ['Inventory Manager'] },
+  { label: 'Suppliers', path:'suppliers', icon: overViewIcon, roles: ['Inventory Manager'] },
+  { label: 'Vehicles', path:'vehicles', icon: overViewIcon, roles: ['Inventory Manager'] },
+  { label: 'QR code', path:'qr-code', icon: overViewIcon, roles: ['Inventory Manager'] },
+  { label: 'Stock Levels', path:'stock-levels', icon: overViewIcon, roles: ['Inventory Manager'] },
+  { label: 'Task Manager', path: 'task-manager', icon: taskManagerIcon, roles: ['admin', 'Sales Rep', 'Manager', 'Merchandiser'] },
+  {label: 'Orders', path: 'orders', icon: overViewIcon, roles: ['admin',]},
+  { label: 'Sales Rep', path:'sales-rep', icon: overViewIcon, roles: ['Manager'] },
+  { label: 'Merchandisers', path:'merchandisers', icon: overViewIcon, roles: ['Manager'] },
+  { label: 'Employees', path: 'employees', icon: employeesIcon, roles: ['admin'] },
+  { label: 'LPOs', path: 'lpos', icon: lposIcon, roles: ['Sales Rep', 'Manager'] },
+  { label: 'Leads', path: 'leads', icon: leadIcon, roles: ['admin','Sales Rep', 'Manager'] },
+  { label: 'Products', path: 'products', icon: productIcon, roles: ['inventory', 'Merchandiser'] },
+  { label: 'Customers', path: 'customers', icon: customerIcon, roles: ['Sales Rep'] },
+  { label: 'Invoices', path: 'invoices', icon: invoicesIcon, roles: ['admin', 'Manager', 'Sales Rep'] },
+  { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, roles: ['Sales Rep'] },
 ];
+
 
 const Drawer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const userRole = useUserRole(); // get user role from zustand
+
 
   useEffect(() => {
     setIsOpen(false); // Auto-close drawer on route change (mobile)
@@ -73,35 +86,33 @@ const Drawer = () => {
           <div className="flex items-center justify-between mb-10">
             <img src={logo} alt="Logo" className="w-auto h-6" />
             <span className="bg-gray-100 text-blue-700 px-2 py-1 rounded text-xs font-semibold">
-              Super-Admin
+              {userRole || "Guest"}
             </span>
           </div>
 
+        
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto hide-scrollbar w-full md:mt-2">
             <ul className="space-y-4 mt-2">
-              {menuItems.map((item) => (
-                <li key={item.path}>
-                  <Link
-                    to={item.path}
-                    className={`flex items-center space-x-2 text-sm font-medium px-2 py-1 rounded-md w-full h-[48px] 
-                      ${location.pathname === item.path
-                        ? 'text-primary_blue bg-primary_grey border-l-4 border-primary_blue font-medium text-[16px]'
-                        : 'text-[#484848] hover:bg-primary_grey font-medium text-[16px]'}
-                    `}
-                  >
-                    <span>
-                      {item.isEmoji ? (
-                        item.icon
-                      ) : (
-                        <img src={item.icon} alt={`${item.label} icon`} className=" " />
-                      )}
-                    </span>
-                    <span>{item.label}</span>
-
-                  </Link>
-                </li>
-              ))}
+              {menuItems
+                .filter((item) => !item.roles || item.roles.includes(userRole)) // filter by role
+                .map((item) => (
+                  <li key={item.path}>
+                    <Link
+                      to={item.path}
+                      className={`flex items-center space-x-2 text-sm font-medium px-2 py-1 rounded-md w-full h-[48px] 
+                        ${location.pathname.includes(item.path)
+                          ? 'text-primary_blue bg-primary_grey border-l-4 border-primary_blue font-medium text-[16px]'
+                          : 'text-[#484848] hover:bg-primary_grey font-medium text-[16px]'}
+                      `}
+                    >
+                      <span>
+                        <img src={item.icon} alt={`${item.label} icon`} />
+                      </span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </nav>
         </div>
@@ -116,3 +127,5 @@ const Drawer = () => {
 };
 
 export default Drawer;
+
+

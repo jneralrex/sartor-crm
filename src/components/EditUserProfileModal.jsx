@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import instance from '../utils/axiosInstance';
+import { useUserId } from '../store/authStore';
 
 const roleOptions = [
   "Manager",
@@ -12,8 +13,9 @@ const roleOptions = [
 ];
 
 const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
+  const userId = useUserId(); // Custom hook to get user ID
   const [formData, setFormData] = useState({
-    id: "", 
+    id: userId,
     fullName: "",
     email: "",
     phone: "",
@@ -33,7 +35,7 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
   useEffect(() => {
     if (userData) {
       setFormData({
-        id: userData._id || "", // changed from _id to id
+        id: userId || "", // changed from _id to id
         fullName: userData.fullName || "",
         email: userData.email || "",
         phone: userData.phone || "",
@@ -58,26 +60,26 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
     }));
   };
 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { id, ...rest } = formData;
       const res = await instance.put('user/edit', { id, ...rest });
 
-    if (res.status === 200) {
-  const updatedUser = res.data?.data;
+      if (res.status === 200) {
+        const updatedUser = res.data?.data;
 
-  setSnackbar({
-    type: 'success',
-    message: <span>Profile updated successfully!</span>,
-  });
+        setSnackbar({
+          type: 'success',
+          message: <span>Profile updated successfully! You will be logged out, please log in again</span>,
+        });
 
-  setTimeout(() => {
-    setSnackbar(null);
-    onUserUpdate && onUserUpdate(updatedUser); // Pass up
-    onClose(); // Close modal
-  }, 1500);
-}
+        setTimeout(() => {
+          setSnackbar(null);
+          onUserUpdate && onUserUpdate(updatedUser); // Pass up
+          onClose(); // Close modal
+        }, 2000);
+      }
     } catch (error) {
       setSnackbar({
         type: 'error',
@@ -157,7 +159,7 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block mb-1 text-gray-700">Role</label>
             <select
               name="role"
@@ -171,7 +173,7 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
                 <option key={index} value={role}>{role}</option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           <button
             type="submit"

@@ -1,35 +1,30 @@
-// UserActionNav.jsx
 import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { Bell } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from '../context/AuthContext';
 import NotificationModal from "./modals/userAction/NotificationModal";
 import EditPersonalInfoModal from "./modals/userAction/EditPersonalInfoModal";
 import SystemSettingModal from "./modals/userAction/SystemSettingModal";
 import EditUserProfileModal from './EditUserProfileModal';
+import { useFullName, useEmail, useLogout, useSetAuth, useImage } from '../store/authStore';
 
 const UserActionNav = () => {
-  const { user, logout, setUser } = useAuth();
+  const fullName = useFullName();
+  const email = useEmail();
+  const logout = useLogout();
+  const image = useImage();
+  const setAuth = useSetAuth();
   const navigate = useNavigate();
+
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isSystemSettingModalOpen, setSystemSettingModalOpen] = useState(false);
   const [isUserEditModalOpen, setUserEditModalOpen] = useState(false);
-  const [userFromStorage, setUserFromStorage] = useState({});
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData && userData !== "undefined") {
-      setUserFromStorage(JSON.parse(userData));
-    }
-  }, []);
 
   const handleUserUpdate = (updatedUser) => {
-    setUser(updatedUser); // ✅ this updates everything automatically
+    setAuth(updatedUser); // updates Zustand state safely
   };
-
 
   const handleLogout = () => {
     logout();
@@ -40,8 +35,8 @@ const UserActionNav = () => {
     <div className="max-w-[300px] md:max-w-[400px] md:gap-2 flex items-center justify-end absolute right-0 top-3 md:top-0 md:relative">
       <div>
         <img
-          src={userFromStorage.image || ""}
-          alt="User"
+          src={image} // optional: add avatar later
+          alt={fullName }
           className="rounded-full size-10 bg-[#D9D9D9] object-cover"
         />
       </div>
@@ -49,8 +44,9 @@ const UserActionNav = () => {
       <Menu as="div" className="relative inline-block text-left z-10">
         <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
           <div className="flex flex-col text-left">
-            <span className="text-[14px] font-semibold">{userFromStorage.fullName || "User"}</span>
-            <span className="text-[12px] text-gray-500">{userFromStorage.email || ""}</span>
+            <span className="text-[14px] font-semibold">{fullName  || "User"}</span>
+            
+            <span className="text-[12px] text-gray-500">{email || ""}</span>
           </div>
           <ChevronDownIcon className="w-4 h-4 text-black/60" />
         </Menu.Button>
@@ -117,10 +113,10 @@ const UserActionNav = () => {
       {isSystemSettingModalOpen && (
         <SystemSettingModal onClose={() => setSystemSettingModalOpen(false)} />
       )}
-       {isUserEditModalOpen && (
+      {isUserEditModalOpen && (
         <EditUserProfileModal
           onClose={() => setUserEditModalOpen(false)}
-          userData={user}
+          userData={{ fullName, email }}
           onUserUpdate={handleUserUpdate}
         />
       )}

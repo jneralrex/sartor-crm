@@ -4,7 +4,7 @@ import { Menu } from '@headlessui/react'
 import { useEffect, useState } from 'react';
 import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
 import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
-import { useAuth } from '../../context/AuthContext';
+import { useToken, useUserId } from '../../store/authStore';
 import instance from '../../utils/axiosInstance';
 import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
 import ConfirmModal from '../../components/ConfirmationPopUp';
@@ -14,7 +14,8 @@ import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 
 const LposTable = () => {
-  const { token } = useAuth();
+  const  token  = useToken();
+  const userId = useUserId();
   const [getAllLpos, setGetAllLpos] = useState([]);
   const [isViewLpoModalOpen, setViewLpoModalOpen] = useState(false);
   const [isCreateLopModalOpen, setCreateLpoModal] = useState(false);
@@ -23,7 +24,7 @@ const LposTable = () => {
   const [isEditLpoModalOpen, setEditLpoModalOpen] = useState(false);
   const [lpoToDelete, setLpoToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
 
   // Pagination state
@@ -37,8 +38,8 @@ const LposTable = () => {
         setLoading(true);
 
     try {
-      const res = await instance.get(`lpos?page=${page}&limit=${perPage}`);
-
+      // const res = await instance.get(`lpos?page=${page}&limit=${perPage}`);
+      const res = await instance.get(`lpo/user/${userId}?page=${page}&limit=${perPage}`,)
       const { data, totalPages } = res.data.data;
       console.log(res.data);
       setGetAllLpos(res.data.data.lpos);
@@ -114,7 +115,8 @@ const LposTable = () => {
           <tbody>
              {loading ? (
               Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-            ) : (filteredLPOs.map((lpo, index) => (
+            ) : filteredLPOs.length > 0 ? 
+            (filteredLPOs.map((lpo, index) => (
               <tr key={lpo._id} className="border-b hover:bg-gray-50 text-start">
                 <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                   {(currentPage - 1) * perPage + index + 1}
@@ -203,7 +205,12 @@ const LposTable = () => {
                 </td>
                </tr>
               ))
-            )}
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center py-4 text-red-500">
+                  No LPOs found.
+                  </td>
+                  </tr>)}
           </tbody>
         </table>
       </div>

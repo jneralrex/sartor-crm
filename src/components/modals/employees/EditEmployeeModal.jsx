@@ -1,7 +1,7 @@
 import { X } from 'lucide-react';
 import React, { useState } from 'react';
 import EmployeeModuleModals from './EmployeeModuleModals';
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 
 
@@ -15,7 +15,7 @@ const roleOptions = [
 ];
 
 const EditEmployeeModal = ({ onClose }) => {
-      const { token } = useAuth();
+    const  token  = useToken();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [snackbar, setSnackbar] = useState(null);
     const [addNewEmployeeDetails, setAddNewEmployeeDetails] = useState({

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react'
 import TaskNotesModal from '../taskManager/TaskNotesModal';
 import { X } from 'lucide-react';
 import instance from '../../../utils/axiosInstance';
-import { useAuth } from '../../../context/AuthContext';
 import DetailsSkeleton from '../../DetailsSkeleton';
+import { useToken } from '../../../store/authStore';
 
 const CustomerDetails = ({ onClose, customerId }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [singleEmployee, setSingleEmployee] = useState({});
-    const { token } = useAuth();
+    const  token  = useToken();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

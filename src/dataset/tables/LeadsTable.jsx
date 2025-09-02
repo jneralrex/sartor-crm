@@ -3,14 +3,15 @@ import { useEffect, useState } from 'react';
 import AddLeadModal from '../../components/modals/leads/AddLeadModal';
 import { Menu } from '@headlessui/react';
 import LeadDetailsModal from '../../components/modals/leads/LeadDetailsModal';
-import { useAuth } from '../../context/AuthContext';
 import instance from '../../utils/axiosInstance';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
+import { useToken, useUserId } from '../../store/authStore';
 
 const LeadsTable = () => {
-  const { token } = useAuth();
+    const  token  = useToken();
+    const  userId  = useUserId();
 
   const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false);
   const [editingLeadId, setEditingLeadId] = useState(null);
@@ -51,7 +52,8 @@ const LeadsTable = () => {
 const allLeads = async (page = 1) => {
   setLoading(true);
   try {
-    const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
+    // const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
+    const res = await instance.get(`lead/user/${userId}?page=${page}&limit=${perPage}`, );
     console.log(res);
 
     // Correct destructuring according to your response structure
@@ -126,7 +128,8 @@ const allLeads = async (page = 1) => {
           <tbody>
             {loading ? (
               Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-            ) : (
+            ) : filteredEmployees.length > 0 ? 
+            (
               filteredEmployees.map((emp, index) => (
                 <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
@@ -223,7 +226,13 @@ const allLeads = async (page = 1) => {
                   </td>
                 </tr>
               ))
-            )}
+            ) :  (
+    <tr>
+      <td colSpan="8" className="text-center py-4 text-red-500">
+        No Leads found.
+      </td>
+    </tr>
+  )}
           </tbody>
         </table>
       </div>

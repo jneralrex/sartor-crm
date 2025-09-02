@@ -2,7 +2,7 @@ import { Download, Ellipsis, Plus, X, ChevronLeft, FileText, Calendar, Box, Fact
 import search from '../../assets/images/search.png';
 import { useEffect, useState, useRef } from 'react';
 import ProductDetailsModal from '../../components/modals/labelgen/ProductDetailsModal';
-import { useAuth } from '../../context/AuthContext';
+import { useToken } from '../../store/authStore';
 import instance from '../../utils/axiosInstance';
 import { Menu } from '@headlessui/react';
 import QRCode from 'react-qr-code';
@@ -12,7 +12,7 @@ import LabelModal from '../../components/modals/labelgen/LabelModal';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 
 const LabelGenTable = () => {
-  const { token } = useAuth();
+    const  token  = useToken();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [getAllBatch, setGetAllBatch] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

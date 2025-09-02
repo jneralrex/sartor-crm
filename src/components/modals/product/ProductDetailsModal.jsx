@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import { X } from 'lucide-react';
 import instance from '../../../utils/axiosInstance';
 import DetailsSkeleton from '../../DetailsSkeleton';
 
 const ProductDetailsModal = ({ onClose, productId }) => {
-  const { token } = useAuth();
+    const  token  = useToken();
 
   const [singleProduct, setSingleProduct] = useState({});
   const [loading, setLoading] = useState(true);

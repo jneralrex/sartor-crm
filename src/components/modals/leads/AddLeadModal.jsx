@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
-import { useAuth } from '../../../context/AuthContext';
+import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 
 const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
   const [activeTab, setActiveTab] = useState('basic');
-  const { token } = useAuth();
+    const  token  = useToken();
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
   const [addLeads, setAddLeads] = useState({
