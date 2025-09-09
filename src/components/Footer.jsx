@@ -19,7 +19,7 @@ const Footer = () => {
           <ul className="space-y-2">
             <li>Customer Support</li>
             <li>Delivery Status</li>
-            <li>Terms & Conditions</li>
+            <li><Link to='/privacy-policy'> Terms & Conditions </Link></li>
           </ul>
         </div>
         <div>

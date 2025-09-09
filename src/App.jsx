@@ -26,6 +26,7 @@ import BodyLayout from './components/BodyLayout';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PrivateRoute from './store/PrivateRoutes';
+import TermsOfUse from './pages/TermsOfUse';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const router = createBrowserRouter(
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
 
         <Route path="login" element={<LoginPage />} />
         <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="terms-condition" element={<TermsOfUse />} />
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
 
       {/* PROTECTED DASHBOARD ROUTES */}

@@ -1,152 +1,116 @@
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const PrivacyPolicy = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="bg-white text-gray-800 px-6 md:px-20 py-12">
       <div className="max-w-5xl mx-auto">
 
-        {/* Go Back Button */}
-        <div className="mb-6">
+        {/* Top Navigation & PDF Download */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
           <button
             onClick={() => navigate(-1)}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
           >
             ← Go Back
           </button>
+
+          
         </div>
 
-        <h1 className="text-4xl font-bold mb-6 text-center text-blue-900">
+        <h1 className="text-4xl font-bold text-center text-blue-900 mb-2">
           Privacy Policy
         </h1>
-        <p className="text-sm text-gray-500 mb-8 text-center">
+        <p className="text-sm text-gray-500 text-center mb-10">
           Effective Date: January 1, 2025
         </p>
 
         {/* Sections */}
         <Section title="1. Information We Collect">
           <ul className="list-disc pl-6 space-y-2">
-            <li>
-              <strong>Information You Provide:</strong> name, email, phone,
-              business info, payment details.
-            </li>
-            <li>
-              <strong>Automatically Collected:</strong> IP, browser, device,
-              pages visited, cookies.
-            </li>
-            <li>
-              <strong>From Third Parties:</strong> analytics tools, payment
-              processors, integrations.
-            </li>
+            <li><strong>Personal Information:</strong> Name, email address, phone number, company details, job title, billing details (when applicable).</li>
+            <li><strong>Account Information:</strong> Login credentials for platforms such as Sartor CRM, LMS, or other SaaS products.</li>
+            <li><strong>Usage Data:</strong> IP address, browser type, device information, pages visited, time spent on site, and referral source.</li>
+            <li><strong>Marketing Data:</strong> Newsletter sign-ups, lead magnet downloads, consultation bookings, and waitlist registrations.</li>
+            <li><strong>Support Interactions:</strong> Messages via chatbot “Peter,” contact forms, or support tickets.</li>
           </ul>
         </Section>
 
         <Section title="2. How We Use Your Information">
           <ul className="list-disc pl-6 space-y-2">
-            <li>To deliver and manage our SaaS and consulting services.</li>
-            <li>To personalize your experience and improve our platforms.</li>
-            <li>
-              To send updates, newsletters, and promotional material (opt-out
-              available).
-            </li>
-            <li>To comply with legal and regulatory obligations.</li>
+            <li>Provide and improve our services (CRM, LMS, Blockchain solutions, consulting).</li>
+            <li>Personalise your experience on our website and platforms.</li>
+            <li>Send newsletters, resources, and marketing communications (only if you opt-in).</li>
+            <li>Respond to inquiries, support requests, or consulting calls.</li>
+            <li>Process payments and fulfil contractual obligations.</li>
+            <li>Detect, prevent, and address fraud or security issues.</li>
+            <li>Comply with legal and regulatory requirements.</li>
           </ul>
         </Section>
 
-        <Section title="3. How We Share Your Information">
-          <p>
-            Sartor does <strong>not sell</strong> your data. We may share it
-            with:
-          </p>
-          <ul className="list-disc pl-6 space-y-2 mt-2">
-            <li>Trusted third-party service providers</li>
-            <li>Business affiliates (under confidentiality agreements)</li>
-            <li>Legal or regulatory bodies as required by law</li>
-            <li>Buyers/investors in case of merger or acquisition</li>
+        <Section title="3. Sharing of Information">
+          <p>We do not sell your personal information. We may share data with:</p>
+          <ul className="list-disc pl-6 mt-2 space-y-2">
+            <li><strong>Service Providers:</strong> Hosting, email marketing, payment processors, analytics, and customer support tools.</li>
+            <li><strong>Business Partners:</strong> For joint webinars, co-hosted events, or strategic collaborations (only with your consent).</li>
+            <li><strong>Legal Obligations:</strong> If required by law, regulation, or court order.</li>
           </ul>
         </Section>
 
         <Section title="4. Cookies & Tracking">
-          <p>
-            We use cookies and similar tools to improve user experience, track
-            traffic, and personalize content. You may disable cookies in your
-            browser settings.
-          </p>
+          <p>We use cookies and similar technologies to:</p>
+          <ul className="list-disc pl-6 mt-2 space-y-2">
+            <li>Improve site functionality and user experience.</li>
+            <li>Analyze traffic and site usage.</li>
+            <li>Deliver relevant ads and remarketing campaigns.</li>
+          </ul>
+          <p className="mt-2">You can disable cookies in your browser settings, but some features may not function properly.</p>
         </Section>
 
         <Section title="5. Data Retention">
-          <p>
-            We retain your data as long as necessary for service delivery,
-            legal, and operational purposes. You can request deletion of your
-            data at any time.
-          </p>
+          <p>We retain your data only as long as necessary to fulfil the purposes outlined in this Policy or as required by law.</p>
         </Section>
 
-        <Section title="6. Data Security">
-          <p>
-            We implement technical and organizational measures to protect your
-            data, but no system is 100% secure. Protect your account credentials
-            at all times.
-          </p>
+        <Section title="6. Security">
+          <p>We implement industry-standard safeguards, including encryption, access controls, and monitoring. However, no system is 100% secure, and we cannot guarantee absolute protection.</p>
         </Section>
 
         <Section title="7. Your Rights">
-          <p>Under NDPR and other laws, you may:</p>
-          <ul className="list-disc pl-6 space-y-2 mt-2">
-            <li>Access or update your data</li>
-            <li>Request data deletion or correction</li>
-            <li>Object to certain processing</li>
-            <li>Withdraw consent at any time</li>
+          <p>Depending on your jurisdiction, you may have rights to:</p>
+          <ul className="list-disc pl-6 mt-2 space-y-2">
+            <li>Access, update, or delete your personal information.</li>
+            <li>Opt out of marketing communications at any time.</li>
+            <li>Request data portability.</li>
+            <li>Lodge a complaint with a data protection authority.</li>
           </ul>
-          <p className="mt-2">
-            Contact us at{" "}
-            <a
-              className="text-blue-600 underline"
-              href="mailto:privacy@sartor.ng"
-            >
-              privacy@sartor.ng
-            </a>
+        </Section>
+
+        <Section title="8. International Users">
+          <p>Our services are based in Nigeria but accessible globally (including Canada and other jurisdictions). By using our services, you consent to the transfer of your information to Nigeria and other countries where we operate.</p>
+        </Section>
+
+        <Section title="9. Children’s Privacy">
+          <p>Our services are not directed to individuals under 18. We do not knowingly collect data from minors.</p>
+        </Section>
+
+        <Section title="10. Updates">
+          <p>We may update this Privacy Policy periodically. The “Effective Date” at the top will reflect changes.</p>
+        </Section>
+
+        <Section title="11. Contact">
+          <p>
+            📧 Email: <a href="mailto:info@sartor.ng" className="text-blue-600 underline">info@sartor.ng</a><br />
+            📞 Phone: +234 905 488 7066<br />
+            🏢 Address: Sartor Limited, B40 NELOCAP Estate, Lokogoma District, FCT-Abuja, Nigeria
           </p>
         </Section>
 
-        <Section title="8. Children's Privacy">
-          <p>
-            Our services are not directed to users under 18. We do not knowingly
-            collect data from children.
-          </p>
-        </Section>
-
-        <Section title="9. International Users">
-          <p>
-            Your data may be transferred or processed outside Nigeria where
-            applicable service providers are located.
-          </p>
-        </Section>
-
-        <Section title="10. Changes to Policy">
-          <p>
-            We may update this policy periodically. Changes take effect upon
-            posting. Continued use of our services indicates acceptance.
-          </p>
-        </Section>
-
-        <Section title="11. Contact Us">
-          <p>
-            📧 Email:{" "}
-            <a
-              href="mailto:info@sartor.ng"
-              className="text-blue-600 underline"
-            >
-              info@sartor.ng
-            </a>
-            <br />
-            📞 Phone: +234 905 488 7066
-            <br />
-            🏢 Address: Sartor Limited, B40 NELOCAP Estate, Lokogoma District,
-            FCT-Abuja, Nigeria
-          </p>
-        </Section>
       </div>
     </div>
   );
