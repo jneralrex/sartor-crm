@@ -31,6 +31,8 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
   });
 
   const [snackbar, setSnackbar] = useState(null);
+  const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     if (userData) {
@@ -62,6 +64,7 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const { id, ...rest } = formData;
       const res = await instance.put('user/edit', { id, ...rest });
@@ -81,11 +84,15 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
         }, 2000);
       }
     } catch (error) {
+
       setSnackbar({
         type: 'error',
         message: <span>{error.response?.data?.message || 'Failed to update profile.'}</span>,
       });
       setTimeout(() => setSnackbar(null), 3000);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -159,7 +166,7 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
             />
           </div>
 
-          {/* <div>
+          <div>
             <label className="block mb-1 text-gray-700">Role</label>
             <select
               name="role"
@@ -173,14 +180,25 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
                 <option key={index} value={role}>{role}</option>
               ))}
             </select>
-          </div> */}
+          </div>
 
-          <button
-            type="submit"
-            className="bg-primary_blue text-white py-2 font-semibold"
-          >
-            Save Changes
-          </button>
+          {loading ? (
+            <button
+              type="button"
+              className="bg-gray-400 text-white py-2 font-semibold cursor-not-allowed"
+              disabled
+            >
+              Updating...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-primary_blue text-white py-2 font-semibold hover:bg-blue-600 transition"
+            >
+              Save Changes
+            </button>
+          )}
+
         </form>
       </div>
     </div>

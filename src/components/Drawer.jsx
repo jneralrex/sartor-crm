@@ -23,7 +23,7 @@ const menuItems = [
   { label: 'QR code', path:'qr-code', icon: overViewIcon, roles: ['Inventory Manager'] },
   { label: 'Stock Levels', path:'stock-levels', icon: overViewIcon, roles: ['Inventory Manager'] },
   { label: 'Task Manager', path: 'task-manager', icon: taskManagerIcon, roles: ['admin', 'Sales Rep', 'Manager', 'Merchandiser'] },
-  {label: 'Orders', path: 'orders', icon: overViewIcon, roles: ['admin',]},
+  { label: 'Orders', path: 'orders', icon: overViewIcon, roles: ['admin',]},
   { label: 'Sales Rep', path:'sales-rep', icon: overViewIcon, roles: ['Manager'] },
   { label: 'Merchandisers', path:'merchandisers', icon: overViewIcon, roles: ['Manager'] },
   { label: 'Employees', path: 'employees', icon: employeesIcon, roles: ['admin'] },

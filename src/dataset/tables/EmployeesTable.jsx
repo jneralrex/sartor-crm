@@ -37,7 +37,8 @@ const EmployeeTable = ({ activeTab }) => {
   const allEmp = async () => {
     setLoading(true);
     try {
-      const res = await instance.get("users");
+      const res = await instance.get("users?limit=all");
+      console.log(res);
       const employeesArray = res.data?.data?.data || [];
       const total = res.data?.data?.pagination?.totalPages || 1;
       setGetAllEmployee(employeesArray);
@@ -95,8 +96,6 @@ const EmployeeTable = ({ activeTab }) => {
       console.error('Error deleting employee:', err);
     }
   };
-
-
 
   return (
     <>
@@ -166,7 +165,7 @@ const EmployeeTable = ({ activeTab }) => {
                     : "N/A"}
                 </td>
                 <td className="px-4 py-3 text-[#767676]">{emp.phone}</td>
-  <td className="px-4 py-3 ">
+                  <td className="px-4 py-3 ">
                     {/* Menu Dropdown */}
                     <div className="relative">
                       <Menu as="div" className="relative inline-block text-left">
@@ -234,7 +233,8 @@ const EmployeeTable = ({ activeTab }) => {
                         </Menu.Items>
                       </Menu>
                     </div>
-                  </td>              </tr>
+                  </td>              
+                </tr>
             ))
           ) : (
             <tr>

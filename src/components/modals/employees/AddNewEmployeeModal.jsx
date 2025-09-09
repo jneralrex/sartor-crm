@@ -24,6 +24,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
     phone: "",
     role: "",
     // userRole: "",
+    password: "",
     userManagement: false,
     lpo: false,
     payment: false,
@@ -54,6 +55,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
         phone: employeeToEdit.phone || '',
         role: employeeToEdit.role || '',
         // userRole: employeeToEdit.userRole || '',
+        password: '', 
         userManagement: employeeToEdit.userManagement || false,
         lpo: employeeToEdit.lpo || false,
         payment: employeeToEdit.payment || false,
@@ -95,7 +97,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
       // Only include fields that are true or required
       const filteredAccess = Object.fromEntries(
         Object.entries(addNewEmployeeDetails).filter(([key, value]) => {
-          const coreFields = ['fullName', 'email', 'phone', 'address', 'role',];
+          const coreFields = ['fullName', 'email', 'phone', 'address', 'role', 'password'];
           return coreFields.includes(key) || value === true;
         })
       );
@@ -176,7 +178,9 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
             { label: "Full Name", name: "fullName", type: "text", placeholder: "Full Name" },
             { label: "Email Address", name: "email", type: "email", placeholder: "Email Address" },
             { label: "Employee's Phone Number", name: "phone", type: "text", placeholder: "Employee Phone Number" },
-            { label: "Employee's Address", name: "address", type: "text", placeholder: "Employee Address" }
+            { label: "Employee's Address", name: "address", type: "text", placeholder: "Employee Address" },
+            { label: "Password", name: "password", type: "password", placeholder: "Password" },
+
           ].map(({ label, name, type, placeholder }) => (
             <label key={name} className='font-medium text-[14px] text-[#1A1A1A]'>{label}
               <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
