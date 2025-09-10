@@ -5,6 +5,12 @@ import customerIcon from './../assets/images/customer.png'
 import leadIcon from './../assets/images/leads.png'
 import overViewIcon from './../assets/images/overview.png'
 import employeesIcon from './../assets/images/people.png'
+import dollar from './../assets/images/dollar.png'
+import lock from './../assets/images/lock.png'
+import twopeep from './../assets/images/twopeeps.png'
+import vehicle from './../assets/images/vehicle.png'
+import plug from './../assets/images/plug.png'
+import qr from './../assets/images/qr.png'
 import stocksIcon from './../assets/images/stocks.png'
 import taskManagerIcon from './../assets/images/taskmanager.png'
 import invoicesIcon from './../assets/images/invoice.png'
@@ -12,35 +18,35 @@ import labelIcon from './../assets/images/label.png'
 import lposIcon from './../assets/images/money.png'
 import logo from '../assets/images/logo.png';
 import productIcon from '../assets/images/product.png';
-import { useUserRole } from '../store/authStore';
+import { useRole } from '../store/authStore';
 
 
 const menuItems = [
-  { label: 'Overview', path: 'overview', icon: overViewIcon, roles: ['admin', 'Merchandiser', 'Sales Rep', 'Inventory Manager', 'Manager'] },
-  { label: 'Stocks', path:'stocks', icon: overViewIcon, roles: ['Inventory Manager'] },
-  { label: 'Suppliers', path:'suppliers', icon: overViewIcon, roles: ['Inventory Manager'] },
-  { label: 'Vehicles', path:'vehicles', icon: overViewIcon, roles: ['Inventory Manager'] },
-  { label: 'QR code', path:'qr-code', icon: overViewIcon, roles: ['Inventory Manager'] },
-  { label: 'Stock Levels', path:'stock-levels', icon: overViewIcon, roles: ['Inventory Manager'] },
-  { label: 'Task Manager', path: 'task-manager', icon: taskManagerIcon, roles: ['admin', 'Sales Rep', 'Manager', 'Merchandiser'] },
-  { label: 'Orders', path: 'orders', icon: overViewIcon, roles: ['admin',]},
-  { label: 'Sales Rep', path:'sales-rep', icon: overViewIcon, roles: ['Manager'] },
-  { label: 'Merchandisers', path:'merchandisers', icon: overViewIcon, roles: ['Manager'] },
-  { label: 'Employees', path: 'employees', icon: employeesIcon, roles: ['admin'] },
-  { label: 'LPOs', path: 'lpos', icon: lposIcon, roles: ['Sales Rep', 'Manager'] },
-  { label: 'Leads', path: 'leads', icon: leadIcon, roles: ['admin','Sales Rep', 'Manager'] },
-  { label: 'Products', path: 'products', icon: productIcon, roles: ['inventory', 'Merchandiser'] },
-  { label: 'Customers', path: 'customers', icon: customerIcon, roles: ['Sales Rep'] },
-  { label: 'Invoices', path: 'invoices', icon: invoicesIcon, roles: ['admin', 'Manager', 'Sales Rep'] },
-  { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, roles: ['Sales Rep'] },
+  { label: 'Overview', path: 'overview', icon: overViewIcon, role: ['admin', 'Merchandiser', 'Sales Rep', 'Inventory Manager', 'Manager'] },
+  { label: 'Stocks', path:'stocks', icon: dollar, role: ['Inventory Manager'] },
+  { label: 'Commission', path:'commissions', icon: stocksIcon, role: ['Inventory Manager'] },
+  { label: 'Suppliers', path:'suppliers', icon: plug, role: ['Inventory Manager'] },
+  { label: 'Vehicles', path:'vehicles', icon: vehicle, role: ['Inventory Manager'] },
+  { label: 'QR code', path:'qr-code', icon: qr, role: ['Inventory Manager'] },
+  { label: 'Stock Levels', path:'stock-levels', icon: overViewIcon, role: ['Inventory Manager'] },
+  { label: 'Task Manager', path: 'task-manager', icon: taskManagerIcon, role: ['admin', 'Sales Rep', 'Manager', 'Merchandiser'] },
+  { label: 'Orders', path: 'orders', icon: overViewIcon, role: ['admin',]},
+  { label: 'Sales Rep', path:'sales-rep', icon: twopeep, role: ['Manager'] },
+  { label: 'Merchandisers', path:'merchandisers', icon: lock, role: ['Manager'] },
+  { label: 'Employees', path: 'employees', icon: employeesIcon, role: ['admin'] },
+  { label: 'LPOs', path: 'lpos', icon: lposIcon, role: ['Sales Rep', 'Manager'] },
+  { label: 'Leads', path: 'leads', icon: leadIcon, role: ['admin','Sales Rep', 'Manager'] },
+  { label: 'Products', path: 'products', icon: productIcon, role: ['inventory', 'Merchandiser'] },
+  { label: 'Customers', path: 'customers', icon: customerIcon, role: ['Sales Rep'] },
+  { label: 'Invoices', path: 'invoices', icon: invoicesIcon, role: ['admin', 'Manager', 'Sales Rep'] },
+  { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, role: ['Sales Rep'] },
 ];
 
 
 const Drawer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const userRole = useUserRole(); // get user role from zustand
-
+  const role = useRole(); // Custom hook to get user role
 
   useEffect(() => {
     setIsOpen(false); // Auto-close drawer on route change (mobile)
@@ -86,7 +92,7 @@ const Drawer = () => {
           <div className="flex items-center justify-between mb-10">
             <img src={logo} alt="Logo" className="w-auto h-6" />
             <span className="bg-gray-100 text-blue-700 px-2 py-1 rounded text-xs font-semibold">
-              {userRole || "Guest"}
+              {role || "Guest"}
             </span>
           </div>
 
@@ -95,7 +101,7 @@ const Drawer = () => {
           <nav className="flex-1 overflow-y-auto hide-scrollbar w-full md:mt-2">
             <ul className="space-y-4 mt-2">
               {menuItems
-                .filter((item) => !item.roles || item.roles.includes(userRole)) // filter by role
+                .filter((item) => !item.role || item.role.includes(role)) // filter by role
                 .map((item) => (
                   <li key={item.path}>
                     <Link

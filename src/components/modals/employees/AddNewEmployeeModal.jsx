@@ -4,13 +4,18 @@ import EmployeeModuleModals from './EmployeeModuleModals';
 import instance from '../../../utils/axiosInstance';
 import { useToken } from '../../../store/authStore';
 
-const userRoleOptions = [
+const role = [
   "Manager",
   "Sales Rep",
   "Inventory Manager",
   "Merchandiser",
   "Employee",
 ];
+
+const userRoleOptions = [
+  "admin",
+  "user",
+]
 
 const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
   const  token  = useToken();
@@ -23,7 +28,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
     email: "",
     phone: "",
     role: "",
-    // userRole: "",
+    userRole: "",
     password: "",
     userManagement: false,
     lpo: false,
@@ -54,7 +59,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
         email: employeeToEdit.email || '',
         phone: employeeToEdit.phone || '',
         role: employeeToEdit.role || '',
-        // userRole: employeeToEdit.userRole || '',
+        userRole: employeeToEdit.userRole || '',
         password: '', 
         userManagement: employeeToEdit.userManagement || false,
         lpo: employeeToEdit.lpo || false,
@@ -97,7 +102,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
       // Only include fields that are true or required
       const filteredAccess = Object.fromEntries(
         Object.entries(addNewEmployeeDetails).filter(([key, value]) => {
-          const coreFields = ['fullName', 'email', 'phone', 'address', 'role', 'password'];
+          const coreFields = ['fullName', 'email', 'phone', 'address', 'role', 'userRole', 'password'];
           return coreFields.includes(key) || value === true;
         })
       );
@@ -197,7 +202,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
             </label>
           ))}
 
-          {/* <label className='font-medium text-[14px] text-[#1A1A1A]'>Access Role (System Role)
+          <label className='font-medium text-[14px] text-[#1A1A1A]'>Access Role (System Role)
             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
               <select
                 name="role"
@@ -207,11 +212,12 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
                 required
               >
                 <option value="">Select Access Role</option>
-                <option value="Admin">Admin</option>
-                <option value="User">User</option>
+                {role.map((opt, idx) => (
+                  <option key={idx} value={opt}>{opt}</option>
+                ))}
               </select>
             </div>
-          </label> */}
+          </label>
 
           <label className='font-medium text-[14px] text-[#1A1A1A]'>Job Role (User Role)
             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
