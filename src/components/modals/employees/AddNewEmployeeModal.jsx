@@ -29,7 +29,6 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
     phone: "",
     role: "",
     userRole: "",
-    password: "",
     userManagement: false,
     lpo: false,
     payment: false,
@@ -60,7 +59,6 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
         phone: employeeToEdit.phone || '',
         role: employeeToEdit.role || '',
         userRole: employeeToEdit.userRole || '',
-        password: '', 
         userManagement: employeeToEdit.userManagement || false,
         lpo: employeeToEdit.lpo || false,
         payment: employeeToEdit.payment || false,
@@ -184,7 +182,6 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
             { label: "Email Address", name: "email", type: "email", placeholder: "Email Address" },
             { label: "Employee's Phone Number", name: "phone", type: "text", placeholder: "Employee Phone Number" },
             { label: "Employee's Address", name: "address", type: "text", placeholder: "Employee Address" },
-            { label: "Password", name: "password", type: "password", placeholder: "Password" },
 
           ].map(({ label, name, type, placeholder }) => (
             <label key={name} className='font-medium text-[14px] text-[#1A1A1A]'>{label}
@@ -222,8 +219,8 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
           <label className='font-medium text-[14px] text-[#1A1A1A]'>Job Role (User Role)
             <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
               <select
-                name="role"
-                value={addNewEmployeeDetails.role}
+                name="userRole"
+                value={addNewEmployeeDetails.userRole}
                 onChange={handleChange}
                 className='bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'
                 required

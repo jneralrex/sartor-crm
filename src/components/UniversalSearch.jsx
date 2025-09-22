@@ -4,7 +4,9 @@ import instance from '../utils/axiosInstance';
 
 const UniversalSearch = ({
   collection,
+  searchPath,
   onResults,
+  onSearchResetPage, 
   placeholder = "Search...",
   auto = true,
   className = '',
@@ -23,13 +25,16 @@ const UniversalSearch = ({
     setError(null);
 
     try {
-      const res = await instance.post('/search', {
-        collection,
-        searchvalue: query,
-      });
+      const res = await instance.get(
+        `/${searchPath}?search=${query}`,
+        { collection, searchvalue: query }
+      );
 
       const results = res.data?.data || [];
       onResults(results);
+
+      //  Reset pagination to first page
+      if (onSearchResetPage) onSearchResetPage();
     } catch (err) {
       console.error(`Search error in ${collection}:`, err);
       setError('An error occurred while searching.');
@@ -37,6 +42,7 @@ const UniversalSearch = ({
       setLoading(false);
     }
   };
+
 
   // Debounced search for auto mode
   useEffect(() => {

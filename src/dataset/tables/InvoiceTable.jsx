@@ -33,8 +33,8 @@ const InvoiceTable = ({ }) => {
     const getAllInvoices = async (page = 1) => {
         setLoading(true);
         try {
-            // const res = await instance.get(`invoices?page=${page}&limit=${perPage}`);
-            const res = await instance.get(`invoice/user/${userId}?page=${page}&limit=${perPage}`, );
+            const res = await instance.get(`invoices?page=${page}&limit=${perPage}`);
+            // const res = await instance.get(`invoice/user/${userId}?page=${page}&limit=${perPage}`, );
             const { data, totalPages } = res.data.data;
             setGetInvoices(res.data.data.invoices);
             setTotalPages(totalPages || 1);

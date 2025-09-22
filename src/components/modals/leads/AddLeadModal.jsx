@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
-import { useToken } from '../../../store/authStore';
+import { useToken, useUserId } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 
 const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
   const [activeTab, setActiveTab] = useState('basic');
     const  token  = useToken();
+    const userId  = useUserId();
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
   const [addLeads, setAddLeads] = useState({
@@ -19,7 +20,7 @@ const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
     dealSize: "",
     status: "",
     notes: "",
-    contact: [
+       contact: [
       {
         name: "",
         email: "",

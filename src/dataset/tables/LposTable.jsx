@@ -38,8 +38,8 @@ const LposTable = () => {
         setLoading(true);
 
     try {
-      // const res = await instance.get(`lpos?page=${page}&limit=${perPage}`);
-      const res = await instance.get(`lpo/user/${userId}?page=${page}&limit=${perPage}`,)
+      const res = await instance.get(`lpos?page=${page}&limit=${perPage}`);
+      // const res = await instance.get(`lpo/user/${userId}?page=${page}&limit=${perPage}`,)
       const { data, totalPages } = res.data.data;
       console.log(res.data);
       setGetAllLpos(res.data.data.lpos);

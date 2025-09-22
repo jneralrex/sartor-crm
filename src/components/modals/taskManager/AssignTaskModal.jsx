@@ -14,7 +14,7 @@ const AssignTaskModal = ({ onClose, onSuccess }) => {
     const getEmployees = async () => {
       try {
         const res = await instance.get('users');
-        setEmployees(res.data.data.data); // Adjust if API response differs
+        setEmployees(res.data.data.data); 
       } catch (error) {
         console.error("Error fetching employees:", error);
       }
@@ -38,7 +38,7 @@ const AssignTaskModal = ({ onClose, onSuccess }) => {
       }
     } catch (error) {
       console.error("Task creation failed:", error);
-      // Optionally show toast/snackbar here
+      
     } finally {
       setLoading(false);
     }

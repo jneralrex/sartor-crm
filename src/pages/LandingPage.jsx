@@ -87,13 +87,13 @@ const LandingPage = () => {
                         />
                     </div>
 
-                    <div className="flex justify-center flex-wrap gap-6 mt-10 text-gray-300 text-sm">
+                    {/* <div className="flex justify-center flex-wrap gap-6 mt-10 text-gray-300 text-sm">
                         <span>Logo</span>
                         <span>Logo</span>
                         <span>Logo</span>
                         <span>Logo</span>
                         <span>Logo</span>
-                    </div>
+                    </div> */}
                 </section>
 
                 {/* Solutions Section */}

@@ -45,7 +45,7 @@ const EmployeeTable = ({ activeTab }) => {
       setTotalPages(total);
     } catch (error) {
       console.log(error);
-      setGetAllEmployee([]); // fallback to prevent map error
+      setGetAllEmployee([]);
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ const EmployeeTable = ({ activeTab }) => {
     }
   }, [token]);
 
-    // 🔹 Filter employees based on tab
+    // Filter employees based on tab
   const filteredEmployees = getAllEmployee.filter((emp) => {
     if (activeTab === "All Employees") return true;
     return emp.role?.toLowerCase() === activeTab.toLowerCase();
@@ -91,7 +91,7 @@ const EmployeeTable = ({ activeTab }) => {
       console.log("del", employeeToDelete)
       setIsConfirmOpen(false);
       setEmployeeToDelete(null);
-      allEmp(); // Refresh list
+      allEmp(); 
     } catch (err) {
       console.error('Error deleting employee:', err);
     }

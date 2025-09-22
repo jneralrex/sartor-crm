@@ -28,6 +28,15 @@ import "react-toastify/dist/ReactToastify.css";
 import PrivateRoute from './store/PrivateRoutes';
 import TermsOfUse from './pages/TermsOfUse';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Commissions from './pages/Commissions';
+import Vehicle from './pages/Vehicle';
+import QrCode from './pages/QrCode';
+import StockLevels from './pages/StockLevels';
+import Stock from './pages/Stock';
+import Order from './pages/Order';
+import SalesRep from './pages/SalesRep';
+import Merchandisers from './pages/Merchandisers';
+import Suppliers from './pages/Suppliers';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -53,8 +62,17 @@ const router = createBrowserRouter(
           <Route path="leads" element={<Leads />} />
           <Route path="products" element={<Product />} />
           <Route path="customers" element={<Customers />} />
+          <Route path='commissions' element={<Commissions/>} />
           <Route path="invoices" element={<Invoices />} />
+          <Route path="vehicles" element={<Vehicle />} />
           <Route path="label-gen" element={<ConvertLabelGen />} />
+          <Route path="qr-code" element={<QrCode />} />
+          <Route path="stock-levels" element={<StockLevels />} />
+          <Route path="stocks" element={<Stock />} />
+          <Route path="orders" element={<Order />} />
+          <Route path="sales-rep" element={<SalesRep />} />
+          <Route path="merchandisers" element={<Merchandisers />} />'
+          <Route path="suppliers" element={<Suppliers />} />'
         </Route>
       </Route>
     </Route>

@@ -8,10 +8,15 @@ import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { useToken, useUserId } from '../../store/authStore';
+import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
+import UniversalPagination from '../../components/UniversalPagination';
 
 const LeadsTable = () => {
-    const  token  = useToken();
-    const  userId  = useUserId();
+  const token = useToken();
+  const userId = useUserId();
+
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchActive, setSearchActive] = useState(false);
 
   const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false);
   const [editingLeadId, setEditingLeadId] = useState(null);
@@ -21,21 +26,27 @@ const LeadsTable = () => {
   const [leadToDelete, setLeadToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState();
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const perPage = 10;
+  const perPage = 100;
 
-  const filteredEmployees = getAllLeads;
+  // syncing currentPage with backend pagination
+  useEffect(() => {
+    if (pagination?.currentPage) {
+      setCurrentPage(pagination.currentPage);
+    }
+  }, [pagination]);
+
 
   const openAddLeadModal = () => {
-    setEditingLeadId(null); // clear editing id for add mode
+    setEditingLeadId(null);
     setAddLeadModalOpen(true);
   };
 
   const openEditLeadModal = (id) => {
-    setEditingLeadId(id); // set id for edit mode
+    setEditingLeadId(id);
     setAddLeadModalOpen(true);
   };
 
@@ -49,23 +60,27 @@ const LeadsTable = () => {
     setLeadDetailsModalOpen(true);
   };
 
-const allLeads = async (page = 1) => {
-  setLoading(true);
-  try {
-    // const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
-    const res = await instance.get(`lead/user/${userId}?page=${page}&limit=${perPage}`, );
-    console.log(res);
+  const allLeads = async (page = 1) => {
+    setLoading(true);
+    try {
+      // const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
+      const res = await instance.get(`leads?page=${page}&limit=${perPage}`,);
+      const paginationData = paginationNormalizer(res.data?.data?.pagination);
 
-    // Correct destructuring according to your response structure
-    const { leads, pagination } = res.data.data;
-    setGetAllLeads(leads);
-    setTotalPages(pagination?.totalPages || 1);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    setLoading(false);
-  }
-};
+      setPagination(paginationData);
+
+      console.log(res);
+
+      const { leads, } = res.data.data;
+      setGetAllLeads(leads);
+    } catch (error) {
+      console.log(error);
+      setPagination(paginationNormalizer());
+
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   const confirmDelete = async () => {
@@ -75,7 +90,6 @@ const allLeads = async (page = 1) => {
       allLeads(currentPage);
     } catch (error) {
       console.error('Failed to delete batch:', error);
-      // Consider adding a toast notification here
     } finally {
       setIsConfirmOpen(false);
       setLeadToDelete(null);
@@ -86,14 +100,28 @@ const allLeads = async (page = 1) => {
     allLeads(currentPage);
   }, [currentPage, token]);
 
+  const filteredEmployees = searchActive ? searchResults : getAllLeads;
+
+
   return (
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className="flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md">
-          <UniversalSearch
+         <UniversalSearch
             collection="lead"
+            searchPath="products"
             placeholder="Search by ID, name or email"
-            onResults={(results) => setGetAllLeads(results)}
+            onResults={(results, query) => {
+              if (query) {
+                setSearchActive(true);
+                setSearchResults(results);
+                setCurrentPage(1);
+              } else {
+                setSearchActive(false);
+                setSearchResults([]);
+                allLeads(1);
+              }
+            }}
             auto={true}
           />
         </div>
@@ -128,157 +156,129 @@ const allLeads = async (page = 1) => {
           <tbody>
             {loading ? (
               Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-            ) : filteredEmployees.length > 0 ? 
-            (
-              filteredEmployees.map((emp, index) => (
-                <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {(currentPage - 1) * perPage + index + 1}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-xs md:text-[14px] text-[#484848]">{emp.name}</div>
-                    <div className="text-xs text-[#484848]">{emp.email}</div>
-                  </td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {Array.isArray(emp.contacts) && emp.contacts.length > 0
-                      ? `${emp.contacts[0].name} - ${emp.contacts[0].phone}`
-                      : '---'}
-                  </td>
-                  <td
-                    className={`px-4 py-3 text-xs md:text-[14px] font-normal ${
-                      emp.status === 'New'
-                        ? 'text-[#000068]'
-                        : emp.status === 'Contacted'
-                        ? 'text-[#FFB400]'
-                        : emp.status === 'Closed Lost'
-                        ? 'text-[#FF3B30]'
-                        : emp.status === 'Qualified'
-                        ? 'text-[#6666D2]'
-                        : emp.status === 'Interested'
-                        ? 'text-[#768B00]'
-                        : emp.status === 'Hold'
-                        ? 'text-[#FF3B30]'
-                        : emp.status === 'In-Negotiation'
-                        ? 'text-[#A97B0E]'
-                        : emp.status === 'LPO Generated'
-                        ? 'text-[#1A1A1A]'
-                        : emp.status === 'Closed Won'
-                        ? 'text-[#00D743]'
-                        : emp.status === 'Payment Confirmed'
-                        ? 'text-[#D300D7]'
-                        : emp.status === 'Follow up'
-                        ? 'text-[#12D1E2]'
-                        : 'text-gray-500'
-                    }`}
-                  >
-                    {emp.status}
-                  </td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {new Date(emp.creationDateTime).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
-                  <td className="px-4 py-3">
-                    <Menu as="div" className="relative inline-block text-left">
-                      <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                        <Ellipsis />
-                      </Menu.Button>
+            ) : filteredEmployees.length > 0 ?
+              (
+                filteredEmployees.map((emp, index) => (
+                  <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
+                    <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                     {searchActive
+                      ? index + 1
+                      : (currentPage - 1) * perPage + index + 1
+                    }
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-medium text-xs md:text-[14px] text-[#484848]">{emp.name}</div>
+                      <div className="text-xs text-[#484848]">{emp.email}</div>
+                    </td>
+                    <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                      {Array.isArray(emp.contacts) && emp.contacts.length > 0
+                        ? `${emp.contacts[0].name} - ${emp.contacts[0].phone}`
+                        : '---'}
+                    </td>
+                    <td
+                      className={`px-4 py-3 text-xs md:text-[14px] font-normal ${emp.status === 'New'
+                          ? 'text-[#000068]'
+                          : emp.status === 'Contacted'
+                            ? 'text-[#FFB400]'
+                            : emp.status === 'Closed Lost'
+                              ? 'text-[#FF3B30]'
+                              : emp.status === 'Qualified'
+                                ? 'text-[#6666D2]'
+                                : emp.status === 'Interested'
+                                  ? 'text-[#768B00]'
+                                  : emp.status === 'Hold'
+                                    ? 'text-[#FF3B30]'
+                                    : emp.status === 'In-Negotiation'
+                                      ? 'text-[#A97B0E]'
+                                      : emp.status === 'LPO Generated'
+                                        ? 'text-[#1A1A1A]'
+                                        : emp.status === 'Closed Won'
+                                          ? 'text-[#00D743]'
+                                          : emp.status === 'Payment Confirmed'
+                                            ? 'text-[#D300D7]'
+                                            : emp.status === 'Follow up'
+                                              ? 'text-[#12D1E2]'
+                                              : 'text-gray-500'
+                        }`}
+                    >
+                      {emp.status}
+                    </td>
+                    <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                      {new Date(emp.creationDateTime).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{emp.phone}</td>
+                    <td className="px-4 py-3">
+                      <Menu as="div" className="relative inline-block text-left">
+                        <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+                          <Ellipsis />
+                        </Menu.Button>
 
-                      <Menu.Items className="absolute p-4 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                        <div className="py-1">
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={() => handleLeadDetailsModalToggle(emp._id)}
-                              >
-                                View Details
-                              </button>
-                            )}
-                          </Menu.Item>
+                        <Menu.Items className="absolute p-4 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                          <div className="py-1">
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                  onClick={() => handleLeadDetailsModalToggle(emp._id)}
+                                >
+                                  View Details
+                                </button>
+                              )}
+                            </Menu.Item>
 
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                onClick={() => openEditLeadModal(emp._id)}
-                              >
-                                Edit
-                              </button>
-                            )}
-                          </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                  onClick={() => openEditLeadModal(emp._id)}
+                                >
+                                  Edit
+                                </button>
+                              )}
+                            </Menu.Item>
 
-                          <Menu.Item>
-                            {({ active }) => (
-                              <button
-                                className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
-                                onClick={() => {
-                                  setLeadToDelete(emp._id);
-                                  setIsConfirmOpen(true);
-                                }}
-                              >
-                                Delete
-                              </button>
-                            )}
-                          </Menu.Item>
-                        </div>
-                      </Menu.Items>
-                    </Menu>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
+                                  onClick={() => {
+                                    setLeadToDelete(emp._id);
+                                    setIsConfirmOpen(true);
+                                  }}
+                                >
+                                  Delete
+                                </button>
+                              )}
+                            </Menu.Item>
+                          </div>
+                        </Menu.Items>
+                      </Menu>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="8" className="text-center py-4 text-red-500">
+                    No Leads found.
                   </td>
                 </tr>
-              ))
-            ) :  (
-    <tr>
-      <td colSpan="8" className="text-center py-4 text-red-500">
-        No Leads found.
-      </td>
-    </tr>
-  )}
+              )}
           </tbody>
         </table>
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-4 text-sm text-gray-600">
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <div className="flex items-center gap-2">
-          <button
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-            className="px-2 py-1 border rounded text-gray-500"
-          >
-            Prev
-          </button>
-
-          {[...Array(totalPages)]
-            .map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`px-2 py-1 border rounded ${
-                  currentPage === i + 1 ? 'bg-primary_blue text-white' : ''
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))
-            .slice(0, 5)}
-
-          <button
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-            className="px-2 py-1 border rounded text-gray-500"
-          >
-            Next
-          </button>
-        </div>
-      </div>
+           {!searchActive && (
+        <UniversalPagination
+          pagination={pagination || {}}
+          onPageChange={(page) => allLeads(page)}
+        />
+      )}
 
       {/* Add/Edit Lead Modal */}
       {isAddLeadModalOpen && (
         <AddLeadModal
-          leadId={editingLeadId} // null for add, id for edit
+          leadId={editingLeadId}
           onClose={closeLeadModal}
           onSuccess={() => {
             allLeads(currentPage);
