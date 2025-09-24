@@ -13,15 +13,14 @@ import tab from "../assets/images/tab.png";
 import blockChain from "../assets/images/blockchain.png";
 import ai from "../assets/images/brain.png";
 import trend from "../assets/images/trend.png";
-import monitor from "../assets/images/monitor.png";
 import list from "../assets/images/list.png";
-import magnet from "../assets/images/magnet.png";
+import magnet from "../assets/images/magnetBig.png";
 import security from "../assets/images/security.png";
 import qoute from "../assets/images/qoute.png";
 
 import phone from "../assets/images/phone.png";
 import Navbar from "../components/Navbar";
-import { Bounce, Fade, Flip, Slide } from "react-awesome-reveal";
+import { Bounce, Fade, Slide } from "react-awesome-reveal";
 
 
 const steps = [
@@ -33,8 +32,9 @@ const steps = [
 
 const images = [
     magnet,
+    list,
     security,
-    monitor,
+
 ];
 const LandingPage = () => {
 
@@ -209,32 +209,32 @@ const LandingPage = () => {
                             {/* Tabs List */}
                             <div className="flex flex-col justify-start h-full w-full">
 
-                                <ul className=" space-y-4 justify-center flex-wrap md:space-y-4 md:flex md:flex-col md:flex-grow md:justify-around">
+                                <ul className=" space-y-4 justify-center flex-wrap md:space-y-8 md:flex md:flex-col md:flex-grow md:justify-around">
                                     {partners.map((partner, index) => (
-                                        <Flip key={index} delay={index * 100} triggerOnce>
+                                        <Bounce key={index} delay={index * 100} triggerOnce>
 
-                                        <li
-                                            key={index}
-                                            onClick={() => setActiveIndex(index)}
-                                            className={` cursor-pointer  px-5 py-2 md:px-5 md:py-3 text-start items-center text-[#1A1A1A] text-[14px] font-semibold md:text-[24px] border rounded-md transition-all duration-200 ${index === activeIndex
-                                                ? " border-blue-800 text-black"
-                                                : "border-gray-500 text-black hover:bg-gray-200"
-                                                }`}
-                                        >
-                                            <div className="flex flex-col items-start md:flex-row md:items-center gap-5">
-                                                <div>
-                                                    <img src={partner.smallImage} alt={partner.alt} className="size-8 md:size-16" />
-                                                </div>
-                                                <div>
+                                            <li
+                                                key={index}
+                                                onClick={() => setActiveIndex(index)}
+                                                className={` cursor-pointer  px-5 py-2 md:px-5 md:py-3 text-start items-center text-[#1A1A1A] text-[14px] font-semibold md:text-[24px] border rounded-md transition-all duration-200 ${index === activeIndex
+                                                    ? " border-blue-800 text-black"
+                                                    : "border-gray-500 text-black hover:bg-gray-200"
+                                                    }`}
+                                            >
+                                                <div className="flex flex-col items-start md:flex-row md:items-center gap-5">
                                                     <div>
-                                                        {partner.name}
+                                                        <img src={partner.smallImage} alt={partner.alt} className="size-8 md:size-16" />
                                                     </div>
-                                                    <div className="text-[#767676] md:text-[18px] text-[10px]">  {partner.footnote}</div>
+                                                    <div>
+                                                        <div>
+                                                            {partner.name}
+                                                        </div>
+                                                        <div className="text-[#767676] md:text-[18px] text-[10px]">  {partner.footnote}</div>
 
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </li>
-                                        </Flip>
+                                            </li>
+                                        </Bounce>
                                     ))}
                                 </ul>
                             </div>
@@ -242,50 +242,72 @@ const LandingPage = () => {
                     </div>
                 </section>
 
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-10 p-8 max-w-7xl mx-auto px-4 py-12">
+                <section>
+                    <h2 className="text-center text-3xl font-semibold mb-2 ">Why Choose Sartor CRM</h2>
 
-                    {/* LEFT IMAGE */}
-                    <div className="w-full lg:w-1/2 flex justify-center">
-                        <img
-                            src={images[activeStep]}
-                            alt="Step Illustration"
-                            className="w-72 h-72 object-contain transition-all duration-500"
-                        />
-                    </div>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-10 p-8 max-w-7xl mx-auto px-4 py-12">
 
-                    {/* RIGHT STEPS */}
-                    <div className="w-full lg:w-1/2 flex flex-col relative">
-                        {steps.map((step, index) => (
-                            <div
-                                key={step.id}
-                                className="flex items-center mb-6 relative"
-                            >
-                                {/* Circle */}
-                                <div
-                                    className={`w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold transition-all duration-300 z-10
-                                        ${activeStep === index ? "border-green-500 bg-[#000068] text-white" : "border-[#000068] bg-[#000068] text-white"} `}
-                                >
-                                    {step.id}
-                                </div>
+                        {/* LEFT IMAGE */}
+                        <div className="w-full lg:w-1/2 flex flex-col justify-center items-center">
+                            <img
+                                src={images[activeStep]}
+                                alt="Step Illustration"
+                                className="size-40 lg:size-72 object-contain transition-all duration-500"
+                            />
 
-                                {/* Text */}
-                                <p
-                                    className={`ml-4 text-lg font-medium transition-all duration-300 `}
-                                >
-                                    {step.text}
-                                </p>
 
-                                {/* Vertical Line */}
-                                {index < steps.length - 1 && (
+                            <div className="flex gap-2 justify-center mt-2">
+
+                                {steps.map((step, index) => (
                                     <div
-                                        className={`absolute left-[15px] top-8 w-[2px] h-8 
-                                         ${activeStep > index ? "bg-green-500" : "bg-gray-300"}`}
-                                    ></div>
-                                )}
+                                        key={step.id}
+                                        className="flex  flex-row items-center mb-6 "
+                                    >
+                                        {/* Circle */}
+                                        <div
+                                            className={`size-2 flex items-center justify-center rounded-full border-2 font-bold transition-all duration-300 z-10
+                                        ${activeStep === index ? " bg-[#000068] border-[#000068]" : "border-[#E8E8E8] bg-[#E8E8E8] "} `}
+                                        >
+                                        </div>
+
+                                    </div>))}
                             </div>
-                        ))}
+                        </div>
+
+                        {/* RIGHT STEPS */}
+                        <div className="w-full lg:w-1/2 flex flex-col relative lg:top-10">
+                            {steps.map((step, index) => (
+                                <div
+                                    key={step.id}
+                                    className="flex items-center mb-6 md:mb-20 relative"
+                                >
+                                    {/* Circle */}
+                                    <div
+                                        className={`w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold transition-all duration-300 z-10
+                                        ${activeStep === index ? "border-green-500 bg-[#000068] text-white" : "border-[#000068] bg-[#000068] text-white"} `}
+                                    >
+                                        {step.id}
+                                    </div>
+
+                                    {/* Text */}
+                                    <p
+                                        className={`ml-4 text-lg font-medium transition-all duration-300 `}
+                                    >
+                                        {step.text}
+                                    </p>
+
+                                    {/* Vertical Line */}
+                                    {index < steps.length - 1 && (
+                                        <div
+                                            className={`absolute left-[15px] top-8 w-[2px] h-8 md:h-[80px] 
+                                         ${activeStep > index ? "bg-green-500" : "bg-gray-300"}`}
+                                        ></div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
+                </section>
 
 
                 {/* Testimonials */}
@@ -296,13 +318,13 @@ const LandingPage = () => {
                     <div className="grid md:grid-cols-3 gap-10 mb-10 md:mb-20">
                         {testimonials.map((t, idx) => (
                             <Slide key={idx} direction="left" delay={idx * 100} triggerOnce>
-                                
-                            <div key={idx} className="text-sm">
-                                <img src={qoute} alt="Qoute" srcset="" className="mb-5"/>
-                                <p className="text-gray-700 md:mb-4">"{t.quote}"</p>
-                                <p className="text-gray-600 font-medium">{t.name}</p>
-                                <p className="text-gray-400">{t.role}</p>
-                            </div>
+
+                                <div key={idx} className="text-sm">
+                                    <img src={qoute} alt="Qoute" srcset="" className="mb-5" />
+                                    <p className="text-gray-700 md:mb-4">"{t.quote}"</p>
+                                    <p className="text-gray-600 font-medium">{t.name}</p>
+                                    <p className="text-gray-400">{t.role}</p>
+                                </div>
                             </Slide>
                         ))}
                     </div>

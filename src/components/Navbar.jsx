@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logo from '../assets/images/logo.png';
 import { Link } from 'react-router-dom';
 import { HiOutlineMenu } from 'react-icons/hi';
-import { IoClose } from 'react-icons/io5'; // Close icon
+import { IoClose } from 'react-icons/io5'; 
 
 const Navbar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,7 +34,7 @@ const Navbar = () => {
           </ul>
           <Link
             to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
-            className="bg-[#00A859] text-white px-1 py-1 md:px-5 md:py-2 md:text-sm md:h-[51px] lg:w-[179px] text-center flex items-center justify-center rounded-xl"
+            className="bg-[#00A859] hover:bg-green-600 text-white  px-6 py-2 rounded-xl font-medium text-[12px] lg:text-[14px]"
             target="_blank"
             rel="noopener noreferrer"
           >
