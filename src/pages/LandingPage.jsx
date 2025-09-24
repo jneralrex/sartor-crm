@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import smallbar from "../assets/images/smallbar.png";
+import t360 from "../assets/images/360.png";
+import crmplus from "../assets/images/crmplus.png";
+import navigator from "../assets/images/navigator.png";
+import chain from "../assets/images/sartorchain.png";
 import pippics from "../assets/images/pippics.png";
 import bar from "../assets/images/bar.png";
 import industry from "../assets/images/industry.png";
@@ -8,17 +11,43 @@ import company from "../assets/images/company.webp";
 import cream from "../assets/images/cream.png";
 import tab from "../assets/images/tab.png";
 import blockChain from "../assets/images/blockchain.png";
-import ai from "../assets/images/ai.png";
+import ai from "../assets/images/brain.png";
 import trend from "../assets/images/trend.png";
 import monitor from "../assets/images/monitor.png";
 import list from "../assets/images/list.png";
-import security from "../assets/images/security.png";
 import magnet from "../assets/images/magnet.png";
+import security from "../assets/images/security.png";
+import qoute from "../assets/images/qoute.png";
 
 import phone from "../assets/images/phone.png";
 import Navbar from "../components/Navbar";
+import { Bounce, Fade, Flip, Slide } from "react-awesome-reveal";
 
+
+const steps = [
+    { id: 1, text: "Capture and Assign Leads" },
+    { id: 2, text: "Track Orders and Inventory" },
+    { id: 3, text: "Verify Authenticity with a Scan" },
+
+];
+
+const images = [
+    magnet,
+    security,
+    monitor,
+];
 const LandingPage = () => {
+
+    const [activeStep, setActiveStep] = useState(0);
+
+    // Auto-slide every 3 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setActiveStep((prev) => (prev + 1) % steps.length);
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
+
     const testimonials = [
         {
             quote: "OMG! I cannot believe that I have got a brand new landing page after getting Omega. It was super easy to edit and publish.",
@@ -43,6 +72,35 @@ const LandingPage = () => {
         { title: "Building a Smarter Workforce with Digital Training Tools", image: tab },
     ];
 
+
+    const solutions = [
+        {
+            title: "Sartor Sales Navigator",
+            description: "Essential sales and inventory management",
+            image: navigator,
+            alt: "Sales Navigator"
+        },
+        {
+            title: "SartorChain",
+            description: "AI + Blockchain product authentication",
+            image: chain,
+            alt: "SartorChain"
+        },
+        {
+            title: "Navigator Plus",
+            description: "Advanced merchandising and lead generation",
+            image: crmplus,
+            alt: "Navigator Plus"
+        },
+        {
+            title: "CRM 360",
+            description: "The complete ecosystem",
+            image: t360,
+            alt: "CRM 360"
+        }
+    ];
+
+
     // Partner Tabs Logic
     const partners = [
         { name: "Blockchain-Backed Security", footnote: "immutable records of every transaction", image: pippics, smallImage: blockChain, alt: "Blockchain image" },
@@ -52,38 +110,40 @@ const LandingPage = () => {
     const [activeIndex, setActiveIndex] = useState(0);
 
     return (
-        <div className="min-h-screen font-[sfpro]">
+        <div className="min-h-screen font-[sfpro] max-w-[1444px]">
             <Navbar />
 
 
-            <div className="px-4 md:px-20 pt-[50px] md:pt-[150px]">
+            <div className="px-4 md:px-20 pt-[80px] md:pt-[150px]">
 
-                <section className="bg-[#0a0a8f] text-white text-center py-16 px-4 flex flex-col justify-center items-center relative">
+                <section className="bg-[#0a0a8f] text-white text-center py-10 px-4 flex flex-col justify-center items-center relative max-w-[1200px] rounded-lg">
+                    <div className="max-w-[1089px]">
 
-                    <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                        Where Sales Meet Trust. Powered By AI And Blockchain.
-                    </h1>
-                    <p className="max-w-2xl mx-auto text-base md:text-lg mb-6">
-                        Streamline sales, protect your products, and scale your distribution with one intelligent platform.
-                    </p>
-                    <div className="flex justify-center space-x-4 mb-10">
-                        <Link
-                            to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-[#00A859] hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-md">
-                            Get a free demo
-                        </Link>
-                        <Link className="bg-white hover:bg-gray-100 text-[#0a0a8f] font-semibold px-6 py-2 rounded-md">
-                            Join Waitlist
-                        </Link>
+                        <h1 className="sm:max-w-[580px] md:max-w-[800px] font-bold mb-4 sm:text-[42px] md:text-[60px]">
+                            Where Sales Meet Trust. Powered By AI And Blockchain.
+                        </h1>
+                        <p className="sm:max-w-[350px] lg:max-w-[550px] mx-auto text-[12px] lg:text-[20px] mb-6 font-medium">
+                            Streamline sales, protect your products, and scale your distribution with one intelligent platform.
+                        </p>
+                        <div className="flex flex-col sm:flex-row justify-center gap-[10px] mb-5 ">
+                            <Link
+                                to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="bg-[#00A859] hover:bg-green-600 text-white  px-6 py-2 rounded-xl font-medium">
+                                Get a free demo
+                            </Link>
+                            <Link className="bg-white hover:bg-gray-100 text-[#0a0a8f]  px-6 py-2 rounded-xl font-medium">
+                                Join Waitlist
+                            </Link>
+                        </div>
                     </div>
 
                     <div className="flex justify-center">
                         <img
                             src={bar}
                             alt="Dashboard Overview"
-                            className="w-full max-w-5xl rounded-xl shadow-lg"
+                            className="w-full max-w-[1089px] rounded-xl shadow-lg"
                         />
                     </div>
 
@@ -97,74 +157,47 @@ const LandingPage = () => {
                 </section>
 
                 {/* Solutions Section */}
-                <section className=" py-8 md:py-16 px-4 text-center">
 
-
-                    <div className="max-w-2xl md:max-w-[400px] md:text-left mb-10">
-                        <h2 className="text-2xl md:text-3xl font-semibold mb-4">
+                <section className="py-8 md:py-16 px-4 text-center max-w-[1199px] mx-auto">
+                    <div className="md:max-w-[400px] text-left mb-10">
+                        <h2 className="text-2xl md:text-4xl font-semibold mb-4">
                             Solutions for Every Step of Your Distribution Journey
                         </h2>
-                        <button className="bg-[#00A859] hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-md mt-4">
-                            Learn More
-                        </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                        {/* Card 1 */}
-                        <div className="bg-white p-6 rounded-xl shadow">
-                            <img
-                                src={smallbar}
-                                alt="Sales Navigator"
-                                className="w-full h-auto rounded-md mb-4"
-                            />
-                            <h3 className="text-lg font-semibold mb-1">Sartor Sales Navigator</h3>
-                            <p className="text-gray-600">Essential sales and inventory management</p>
-                        </div>
-
-                        {/* Card 2 */}
-                        <div className="bg-white p-6 rounded-xl shadow">
-                            <img
-                                src={smallbar}
-                                alt="SartorChain"
-                                className="w-full h-auto rounded-md mb-4"
-                            />
-                            <h3 className="text-lg font-semibold mb-1">SartorChain</h3>
-                            <p className="text-gray-600">AI + Blockchain product authentication</p>
-                        </div>
-
-                        {/* Card 3 */}
-                        <div className="bg-white p-6 rounded-xl shadow">
-                            <img
-                                src={smallbar}
-                                alt="Navigator Plus"
-                                className="w-full h-auto rounded-md mb-4 "
-                            />
-                            <h3 className="text-lg font-semibold mb-1">Navigator Plus</h3>
-                            <p className="text-gray-600">Advanced merchandising and lead generation</p>
-                        </div>
-
-                        {/* Card 4 */}
-                        <div className="bg-white p-6 rounded-xl shadow">
-                            <img
-                                src={smallbar}
-                                alt="CRM 360"
-                                className="w-full h-auto rounded-md mb-4"
-                            />
-                            <h3 className="text-lg font-semibold mb-1">CRM 360</h3>
-                            <p className="text-gray-600">The complete ecosystem</p>
-                        </div>
+                    {/* Grid container outside the loop */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto">
+                        {solutions.map((solution, index) => (
+                            <Fade key={index} direction="left" delay={index * 100} triggerOnce>
+                                <div className="bg-white p-6 rounded-xl shadow max-w-[580px] max-h-[496px] border-[2px] hover:border-[#00A859]">
+                                    <img
+                                        src={solution.image}
+                                        alt={solution.alt}
+                                        className="rounded-md mb-4 h-auto w-full"
+                                    />
+                                    <div className="text-left">
+                                        <h3 className="text-lg font-semibold mb-1">{solution.title}</h3>
+                                        <p className="text-gray-600">{solution.description}</p>
+                                        <button className="bg-[#00A859] hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-xl mt-4">
+                                            Learn More
+                                        </button>
+                                    </div>
+                                </div>
+                            </Fade>
+                        ))}
                     </div>
                 </section>
 
 
-                <section className=" text-black py-8 md:py-16 px-6 md:px-20">
-                    <div className="max-w-6xl mx-auto">
-                        <h2 className="text-center text-3xl font-semibold mb-2 md:mb-12">Why Choose CRM</h2>
-                        <div className="flex flex-col-reverse md:grid md:grid-cols-2  gap-[5px] md:gap-10 items-stretch">
+
+                <section className=" text-black py-8 md:py-16 md:px-20">
+                    <div className="max-w-[1200px]">
+                        <h2 className="text-center text-3xl font-semibold mb-2 md:mb-12">Why Choose Sartor CRM</h2>
+                        <div className="flex flex-col lg:grid lg:grid-cols-2  gap-[5px] md:gap-10 items-stretch mx-auto w-full">
 
 
                             {/* Dynamic Images */}
-                            <div className=" h-[350px] md:max-h-full w-full">
+                            <div className=" h-[350px] md:h-full w-full mb-5 md:mb-0">
                                 <img
                                     src={partners[activeIndex].image}
                                     alt={partners[activeIndex].name}
@@ -174,10 +207,12 @@ const LandingPage = () => {
 
 
                             {/* Tabs List */}
-                            <div className="flex flex-col justify-start h-full">
+                            <div className="flex flex-col justify-start h-full w-full">
 
-                                <ul className=" flex gap-2 justify-center flex-wrap md:space-y-4 md:flex md:flex-col md:flex-grow md:justify-around">
+                                <ul className=" space-y-4 justify-center flex-wrap md:space-y-4 md:flex md:flex-col md:flex-grow md:justify-around">
                                     {partners.map((partner, index) => (
+                                        <Flip key={index} delay={index * 100} triggerOnce>
+
                                         <li
                                             key={index}
                                             onClick={() => setActiveIndex(index)}
@@ -186,7 +221,7 @@ const LandingPage = () => {
                                                 : "border-gray-500 text-black hover:bg-gray-200"
                                                 }`}
                                         >
-                                            <div className="flex items-center gap-5">
+                                            <div className="flex flex-col items-start md:flex-row md:items-center gap-5">
                                                 <div>
                                                     <img src={partner.smallImage} alt={partner.alt} className="size-8 md:size-16" />
                                                 </div>
@@ -199,6 +234,7 @@ const LandingPage = () => {
                                                 </div>
                                             </div>
                                         </li>
+                                        </Flip>
                                     ))}
                                 </ul>
                             </div>
@@ -206,64 +242,50 @@ const LandingPage = () => {
                     </div>
                 </section>
 
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-10 p-8 max-w-7xl mx-auto px-4 py-12">
 
-
-
-
-
-                <section className="max-w-7xl mx-auto px-4 py-12">
-                    <h2 className="text-2xl font-semibold text-center mb-10">How Sartor CRM Works</h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                        {/* Left: Image */}
-                        <div className="flex justify-center hidden md:block">
-                            <img
-                                src={monitor} 
-                                alt="How Sartor CRM Works"
-                                className="rounded-lg shadow-lg max-w-full"
-                            />
-                        </div>
-
-                        {/* Right: Steps */}
-                        <div className="space-y-8">
-                            {/* Step 1 */}
-                            <div className="flex items-start">
-                                <div className="flex-shrink-0">
-                                    <div className="h-10 w-10 rounded-full bg-[#000068] text-white flex items-center justify-center font-bold text-lg">1</div>
-                                </div>
-                                <div className="ml-4">
-                                    <img src={magnet} alt="magnet" className="size-8" />
-                                    <h3 className="text-lg font-semibold">Capture and Assign Leads</h3>
-                                    <p className="text-gray-600 text-sm mt-1">Lorem ipsum dolor sit amet consectetur. Ultricies eu morbi etiam ut urna.</p>
-                                </div>
-                            </div>
-
-                            {/* Step 2 */}
-                            <div className="flex items-start">
-                                <div className="flex-shrink-0">
-                                    <div className="h-10 w-10 rounded-full bg-[#000068] text-white flex items-center justify-center font-bold text-lg">2</div>
-                                </div>
-                                <div className="ml-4">
-                                    <img src={list} alt="list" className="size-8" />
-                                    <h3 className="text-lg font-semibold">Track Orders and Inventory</h3>
-                                    <p className="text-gray-600 text-sm mt-1">Lorem ipsum dolor sit amet consectetur. Ultricies eu morbi etiam ut urna.</p>
-                                </div>
-                            </div>
-
-                            {/* Step 3 */}
-                            <div className="flex items-start">
-                                <div className="flex-shrink-0">
-                                    <div className="h-10 w-10 rounded-full bg-[#000068] text-white flex items-center justify-center font-bold text-lg">3</div>
-                                </div>
-                                <div className="ml-4">
-                                    <img src={security} alt="security" className="size-8" />
-                                    <h3 className="text-lg font-semibold">Verify Authenticity with a Scan</h3>
-                                    <p className="text-gray-600 text-sm mt-1">Lorem ipsum dolor sit amet consectetur. Ultricies eu morbi etiam ut urna.</p>
-                                </div>
-                            </div>
-                        </div>
+                    {/* LEFT IMAGE */}
+                    <div className="w-full lg:w-1/2 flex justify-center">
+                        <img
+                            src={images[activeStep]}
+                            alt="Step Illustration"
+                            className="w-72 h-72 object-contain transition-all duration-500"
+                        />
                     </div>
-                </section>
+
+                    {/* RIGHT STEPS */}
+                    <div className="w-full lg:w-1/2 flex flex-col relative">
+                        {steps.map((step, index) => (
+                            <div
+                                key={step.id}
+                                className="flex items-center mb-6 relative"
+                            >
+                                {/* Circle */}
+                                <div
+                                    className={`w-8 h-8 flex items-center justify-center rounded-full border-2 font-bold transition-all duration-300 z-10
+                                        ${activeStep === index ? "border-green-500 bg-[#000068] text-white" : "border-[#000068] bg-[#000068] text-white"} `}
+                                >
+                                    {step.id}
+                                </div>
+
+                                {/* Text */}
+                                <p
+                                    className={`ml-4 text-lg font-medium transition-all duration-300 `}
+                                >
+                                    {step.text}
+                                </p>
+
+                                {/* Vertical Line */}
+                                {index < steps.length - 1 && (
+                                    <div
+                                        className={`absolute left-[15px] top-8 w-[2px] h-8 
+                                         ${activeStep > index ? "bg-green-500" : "bg-gray-300"}`}
+                                    ></div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
 
                 {/* Testimonials */}
@@ -273,12 +295,15 @@ const LandingPage = () => {
                     </h2>
                     <div className="grid md:grid-cols-3 gap-10 mb-10 md:mb-20">
                         {testimonials.map((t, idx) => (
+                            <Slide key={idx} direction="left" delay={idx * 100} triggerOnce>
+                                
                             <div key={idx} className="text-sm">
-                                <div className="text-4xl text-blue-800 font-serif md:mb-4">”</div>
+                                <img src={qoute} alt="Qoute" srcset="" className="mb-5"/>
                                 <p className="text-gray-700 md:mb-4">"{t.quote}"</p>
                                 <p className="text-gray-600 font-medium">{t.name}</p>
                                 <p className="text-gray-400">{t.role}</p>
                             </div>
+                            </Slide>
                         ))}
                     </div>
 
@@ -286,7 +311,7 @@ const LandingPage = () => {
                 </section>
 
                 {/* Pricing Section */}
-                <section className="py-10 px-4 text-center">
+                <section className="py-10 px-4 text-center mb-10">
                     <h2 className="text-2xl md:text-3xl font-semibold mb-4">
                         Simple, Transparent Pricing
                     </h2>
@@ -300,24 +325,6 @@ const LandingPage = () => {
                         View Pricing
                     </button>
                 </section>
-
-
-                {/* Startup Insights Section */}
-                <section className="py-24">
-                    <div className="max-w-3xl mx-auto text-center bg-white md:bg-gray-100 rounded-lg py-10 px-6 md:px-12 shadow">
-                        <h2 className="text-2xl md:text-3xl font-semibold mb-4">
-                            Equip Yourself with Essential<br className="hidden md:block" /> Startup Insights
-                        </h2>
-                        <p className="text-gray-700 mb-6 leading-relaxed text-sm md:text-base">
-                            Download our exclusive Free Startup Checklist — a comprehensive guide to navigating the early stages
-                            of building a successful product-based business in emerging markets.
-                        </p>
-                        <button className="bg-green-500 hover:bg-green-600 text-[white] font-semibold px-6 py-2 rounded-md shadow">
-                            Get the Free Checklist
-                        </button>
-                    </div>
-                </section>
-
 
             </div>
         </div>
