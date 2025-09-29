@@ -32,7 +32,7 @@ const SartorCrm = () => {
 
     const [activeStep, setActiveStep] = useState(0);
 
-    
+
     useEffect(() => {
         const interval = setInterval(() => {
             setActiveStep((prev) => (prev + 1) % steps.length);
@@ -58,10 +58,7 @@ const SartorCrm = () => {
 
                 {/* Sample Leads Table Preview */}
                 <div className="bg-gray-50 rounded-xl shadow-md p-6 max-w-5xl mx-auto">
-                    <div className="flex justify-between items-center mb-4">
-                        <h2 className="text-lg font-semibold">Leads</h2>
-                        <button className="bg-indigo-600 text-white px-3 py-1 rounded-md text-sm">Download CSV</button>
-                    </div>
+
                     <div className="overflow-x-auto">
                         <img src={tabel} alt="" srcset="" />
                     </div>
@@ -150,7 +147,7 @@ const SartorCrm = () => {
                         {steps.map((step, index) => (
                             <div
                                 key={step.id}
-                                className="flex  mb-6 lg:mb-8 relative "
+                                className="flex items-center mb-6 lg:mb-8 relative "
                             >
                                 {/* Circle */}
                                 <div

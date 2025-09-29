@@ -5,7 +5,6 @@ import logo from '../../assets/images/logo.png';
 import instance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import useAuthStore from '../../store/authStore';
-import axios from 'axios';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +24,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("auth/login", loginDetails);
+      const res = await instance.post("auth/login", loginDetails);
       const response = res.data;
 
       if (!response.status) {

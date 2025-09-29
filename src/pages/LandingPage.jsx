@@ -66,11 +66,7 @@ const LandingPage = () => {
         },
     ];
 
-    const blogPosts = [
-        { title: "How Smart CRM Tools Can Transform Sales in Product-Based Businesses", image: cream },
-        { title: "Fighting Fakes: How AI and Blockchain Are Securing Product Authenticity", image: phone },
-        { title: "Building a Smarter Workforce with Digital Training Tools", image: tab },
-    ];
+    
 
 
     const solutions = [
@@ -85,14 +81,16 @@ const LandingPage = () => {
             title: "SartorChain",
             description: "AI + Blockchain product authentication",
             image: chain,
-            alt: "SartorChain"
+            alt: "SartorChain",
+            link: "/sartor-chain"
         
         },
         {
             title: "Navigator Plus",
             description: "Advanced merchandising and lead generation",
             image: crmplus,
-            alt: "Navigator Plus"
+            alt: "Navigator Plus",
+             link: "/sales-navigator-plus"
         },
         {
             title: "CRM 360",
@@ -293,6 +291,7 @@ const LandingPage = () => {
                                     </div>
 
                                     {/* Text */}
+
                                     <p
                                         className={`ml-4 text-lg font-medium transition-all duration-300 `}
                                     >

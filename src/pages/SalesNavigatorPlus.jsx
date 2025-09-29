@@ -8,10 +8,10 @@ import { useState, useEffect } from "react";
 import check from "../assets/images/check.png";
 
 const steps = [
-    { id: 1, text: "Sales Task Management" },
-    { id: 2, text: "Generate Local Purchase Orders (LPOs)" },
-    { id: 3, text: "Track Fulfillment Status" },
-    { id: 4, text: "Automate commission payout" },
+    { id: 1, text: " Capture and qualify leads." },
+    { id: 2, text: "Assign tasks and monitor field execution." },
+    { id: 3, text: "Track merchandising and HCP engagement." },
+    { id: 4, text: "Optimize strategy with powerful analytics." },
 
 ];
 
@@ -23,12 +23,12 @@ const images = [
 ];
 
 const checks = [
-    { id: 1, text: "Faster order processing", image: check },
-    { id: 2, text: "Real-time inventory visibility", image: check },
-    { id: 3, text: "Transparent commission tracking", image: check },
+    { id: 1, text: "Prioritize high-value leads", image: check },
+    { id: 2, text: "Maximize retail execution", image: check },
+    { id: 3, text: "Streamline HCP relationships", image: check },
 ]
 
-const SalesNavigator = () => {
+const SalesNavigatorPlus = () => {
 
     const [activeStep, setActiveStep] = useState(0);
 
@@ -43,13 +43,12 @@ const SalesNavigator = () => {
         <div className="px-4 md:px-0 pt-[60px] md:pt-[100px] min-h-screen font-[sfpro] max-w-[1444px]">
 
             <section className="bg-white px-6 py-16 md:px-16 max-w-[992px] mx-auto">
-                <h1 className="text-[40px] lg:text-[58px] text-center text-[#000068] mb-4 font-semibold">Sales Navigator</h1>
-                <p className="text-center text-[#1E1E1E] text-[32px] md:text-[38px] mb-6 font-semibold">Streamline Sales And Operations</p>
+                <h1 className="text-[40px] lg:text-[58px] text-center text-[#000068] mb-4 font-semibold">Sales Navigator Plus</h1>
+                <p className="text-center text-[#1E1E1E] text-[32px] md:text-[38px] mb-6 font-semibold">Advance Your Sales Strategy</p>
                 <div className="max-w-[352px] md:max-w-[480px] mx-auto">
 
                     <p className="text-center text-[#1E1E1E] text-[16px] sm:text-[18px] mb-8">
-                        Sartor Sales Navigator unifies sales, inventory, and fulfillment into one intuitive platform—so your teams stay aligned, productive, and ready to grow.
-                    </p>
+                        Sartor Sales Navigator Plus adds powerful lead generation, merchandising, and healthcare engagement capabilities to help you win more business.                    </p>
 
                     <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
                         <button className="bg-[#00A859] hover:bg-green-600 text-white px-6 py-2 rounded-xl font-medium">Request a Demo</button>
@@ -59,6 +58,7 @@ const SalesNavigator = () => {
 
                 {/* Sample Leads Table Preview */}
                 <div className="bg-gray-50 rounded-xl shadow-md p-6 max-w-5xl mx-auto">
+
                     <div className="overflow-x-auto">
                         <img src={tabel} alt="" srcset="" />
                     </div>
@@ -81,10 +81,9 @@ const SalesNavigator = () => {
                     <img src={salesLady} alt="User learning" className="rounded-lg w-full h-auto" />
                 </div>
                 <div className="md:w-1/2 md:pl-12">
-                    <h2 className="font-semibold mb-4 text-[#1E1E1E] lg:max-w-[520px] text-[28px] sm:text-2xl lg:text-[38px] lg:leading-[50px]">Disconnected Systems Slow You Down</h2>
+                    <h2 className="font-semibold mb-4 text-[#1E1E1E] lg:max-w-[520px] text-[28px] sm:text-2xl lg:text-[38px] lg:leading-[50px]">Leads Lost, Opportunities Missed</h2>
                     <p className="text-gray-600 md:max-w-[520px] text-[17px] sm:text-[14px] lg:text-[18px]">
-                        Manual spreadsheets and isolated tools make it hard to track sales activities, manage inventory, and ensure smooth order fulfillment. The result? Delays, errors, and missed revenue opportunities.
-                    </p>
+                        Without a clear view of your pipeline or field activities, promising leads slip away and merchandising performance remains invisible. Competitors get ahead while your team chases scattered information.                    </p>
                 </div>
             </section>
 
@@ -95,8 +94,8 @@ const SalesNavigator = () => {
 
                     <div className="flex flex-col-reverse text-start sm:flex-row items-center justify-between gap-8 bg-black text-white p-6 rounded-xl shadow-xl">
                         <div className="md:w-1/2 flex flex-col text-start  w-full">
-                            <h3 className="text-xl font-semibold mb-3">Sales Task Management</h3>
-                            <p className="text-sm text-gray-300 mb-6">Assign, prioritize, and track sales activities.</p>
+                            <h3 className="text-xl font-semibold mb-3">Lead Generation & Scoring</h3>
+                            <p className="text-sm text-gray-300 mb-6">Identify and focus on your best prospects.</p>
                             <div className="flex gap-4">
                                 <button className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-full">◀</button>
                                 <button className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-full">▶</button>
@@ -104,6 +103,7 @@ const SalesNavigator = () => {
                         </div>
 
                         <div className="md:w-1/2">
+
                             <img src={sliderTable} alt="" srcset="" />
                         </div>
                     </div>
@@ -149,7 +149,7 @@ const SalesNavigator = () => {
                         {steps.map((step, index) => (
                             <div
                                 key={step.id}
-                                className="flex items-center mb-6 md:mb-20 relative"
+                                className="flex mb-6 lg:mb-8 relative items-center"
                             >
                                 {/* Circle */}
                                 <div
@@ -161,7 +161,7 @@ const SalesNavigator = () => {
 
                                 {/* Text */}
                                 <p
-                                    className={`ml-4 text-lg font-medium transition-all duration-300 `}
+                                    className={`ml-4 text-[12px] lg:text-[21px] md:max-w-[200px] lg:max-w-[408px] font-medium transition-all duration-300 `}
                                 >
                                     {step.text}
                                 </p>
@@ -206,5 +206,5 @@ const SalesNavigator = () => {
     );
 };
 
-export default SalesNavigator;
+export default SalesNavigatorPlus;
 
