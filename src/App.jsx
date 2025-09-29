@@ -38,6 +38,7 @@ import SalesRep from './pages/SalesRep';
 import Merchandisers from './pages/Merchandisers';
 import Suppliers from './pages/Suppliers';
 import SalesNavigator from './pages/SalesNavigator';
+import SartorCrm from './pages/SartorCrm';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<BodyLayout />}>
         <Route index element={<LandingPage />} />
         <Route path="sales-navigator" element={<SalesNavigator />}/>
+        <Route path="sartor-crm-360" element={<SartorCrm />}/>
       </Route>
 
         <Route path="login" element={<LoginPage />} />

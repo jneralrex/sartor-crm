@@ -86,6 +86,7 @@ const LandingPage = () => {
             description: "AI + Blockchain product authentication",
             image: chain,
             alt: "SartorChain"
+        
         },
         {
             title: "Navigator Plus",
@@ -97,7 +98,8 @@ const LandingPage = () => {
             title: "CRM 360",
             description: "The complete ecosystem",
             image: t360,
-            alt: "CRM 360"
+            alt: "CRM 360",
+            link: "/sartor-crm-360"
         }
     ];
 
