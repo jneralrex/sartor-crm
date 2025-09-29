@@ -37,6 +37,7 @@ import Order from './pages/Order';
 import SalesRep from './pages/SalesRep';
 import Merchandisers from './pages/Merchandisers';
 import Suppliers from './pages/Suppliers';
+import SalesNavigator from './pages/SalesNavigator';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
       {/* PUBLIC ROUTES */}
       <Route path="/" element={<BodyLayout />}>
         <Route index element={<LandingPage />} />
+        <Route path="sales-navigator" element={<SalesNavigator />}/>
       </Route>
 
         <Route path="login" element={<LoginPage />} />

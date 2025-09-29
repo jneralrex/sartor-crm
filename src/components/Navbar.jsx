@@ -17,10 +17,12 @@ const Navbar = () => {
         
         {/* Logo + CRM */}
         <div className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2">
           <img src={logo} alt="Sartor Logo" className="w-[50px] md:w-[100px]" />
           <span className="bg-[#00A859] md:bg-[#000068] text-white text-[10px] md:text-sm font-semibold px-2 py-[2px] md:px-3 md:py-[3px] rounded-full">
             CRM
           </span>
+        </Link>
         </div>
 
         {/* Desktop Nav */}

@@ -78,7 +78,8 @@ const LandingPage = () => {
             title: "Sartor Sales Navigator",
             description: "Essential sales and inventory management",
             image: navigator,
-            alt: "Sales Navigator"
+            alt: "Sales Navigator",
+            link: "/sales-navigator"
         },
         {
             title: "SartorChain",
@@ -104,18 +105,17 @@ const LandingPage = () => {
     // Partner Tabs Logic
     const partners = [
         { name: "Blockchain-Backed Security", footnote: "immutable records of every transaction", image: pippics, smallImage: blockChain, alt: "Blockchain image" },
-        { name: "DORA AI Verification", footnote: "invisible finger print verified instantly", image: industry, smallImage: ai },
-        { name: "Ai-Powered Forecasting", footnote: "smarter demands planning and distribution", image: company, smallImage: trend },
+        { name: "DORA AI Verification", footnote: "invisible finger print verified instantly", image: industry, smallImage: ai, alt: "AI image" },
+        { name: "Ai-Powered Forecasting", footnote: "smarter demands planning and distribution", image: company, smallImage: trend, alt: "Trend image" },
     ];
     const [activeIndex, setActiveIndex] = useState(0);
 
     return (
-        <div className="min-h-screen font-[sfpro] max-w-[1444px]">
-            <Navbar />
 
 
-            <div className="px-4 md:px-20 pt-[80px] md:pt-[150px]">
-
+            <div className="px-4 md:px-20 pt-[80px] md:pt-[150px] min-h-screen font-[sfpro] max-w-[1444px]">
+               
+                {/* Hero Section */}
                 <section className="bg-[#0a0a8f] text-white text-center py-10 px-4 flex flex-col justify-center items-center relative max-w-[1200px] rounded-lg">
                     <div className="max-w-[1089px]">
 
@@ -157,7 +157,6 @@ const LandingPage = () => {
                 </section>
 
                 {/* Solutions Section */}
-
                 <section className="py-8 md:py-16 px-4 text-center max-w-[1199px] mx-auto">
                     <div className="md:max-w-[400px] text-left mb-10">
                         <h2 className="text-2xl md:text-4xl font-semibold mb-4">
@@ -178,9 +177,11 @@ const LandingPage = () => {
                                     <div className="text-left">
                                         <h3 className="text-lg font-semibold mb-1">{solution.title}</h3>
                                         <p className="text-gray-600">{solution.description}</p>
+                                        <Link to={solution.link ? solution.link : "/"}>
                                         <button className="bg-[#00A859] hover:bg-green-600 text-white font-semibold px-6 py-2 rounded-xl mt-4">
                                             Learn More
                                         </button>
+                                        </Link>
                                     </div>
                                 </div>
                             </Fade>
@@ -188,8 +189,7 @@ const LandingPage = () => {
                     </div>
                 </section>
 
-
-
+                {/* Why Choose Sartor CRM Section */}
                 <section className=" text-black py-8 md:py-16 md:px-20">
                     <div className="max-w-[1200px]">
                         <h2 className="text-center text-3xl font-semibold mb-2 md:mb-12">Why Choose Sartor CRM</h2>
@@ -242,6 +242,7 @@ const LandingPage = () => {
                     </div>
                 </section>
 
+                {/* How It Works Section */}
                 <section>
                     <h2 className="text-center text-3xl font-semibold mb-2 ">Why Choose Sartor CRM</h2>
 
@@ -309,7 +310,6 @@ const LandingPage = () => {
                     </div>
                 </section>
 
-
                 {/* Testimonials */}
                 <section className="bg-white px-6 py-5 md:py-10 max-w-7xl mx-auto">
                     <h2 className="text-center text-2xl font-semibold text-gray-900 mb-12">
@@ -343,13 +343,12 @@ const LandingPage = () => {
                     <p className="text-gray-600 mb-6">
                         no hidden fees.
                     </p>
-                    <button className="bg-green-500 hover:bg-green-600 text-[white] font-semibold px-6 py-2 rounded-md shadow">
+                    <button className="bg-[#00A859] hover:bg-green-600 text-[white] font-semibold px-6 py-2 rounded-xl shadow">
                         View Pricing
                     </button>
                 </section>
 
             </div>
-        </div>
     );
 };
 
