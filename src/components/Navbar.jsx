@@ -59,7 +59,7 @@ const Navbar = () => {
             className="bg-[#00A859] p-1 rounded-md"
           >
             {isMobileMenuOpen ? (
-              <IoClose className="text-white text-lg" />
+              <IoClose className="text-white text-lg size-[25px] " />
             ) : (
               <HiOutlineMenu className="text-white text-lg size-[25px] " />
             )}

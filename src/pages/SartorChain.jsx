@@ -41,23 +41,23 @@ const features = [
     "Easy, affordable rollout for any size business"
 ];
 
-   const testimonials = [
-        {
-            quote: "OMG! I cannot believe that I have got a brand new landing page after getting Omega. It was super easy to edit and publish.",
-            name: "Diego Montes",
-            role: "Web Developer",
-        },
-        {
-            quote: "Working with Omega has transformed my workflow. The components are intuitive and allow for rapid prototyping!",
-            name: "Sofia Chen",
-            role: "UI/UX Designer",
-        },
-        {
-            quote: "Omega has simplified our product management. Total game changer.",
-            name: "Liam Patel",
-            role: "Product Manager",
-        },
-    ];
+const testimonials = [
+    {
+        quote: "OMG! I cannot believe that I have got a brand new landing page after getting Omega. It was super easy to edit and publish.",
+        name: "Diego Montes",
+        role: "Web Developer",
+    },
+    {
+        quote: "Working with Omega has transformed my workflow. The components are intuitive and allow for rapid prototyping!",
+        name: "Sofia Chen",
+        role: "UI/UX Designer",
+    },
+    {
+        quote: "Omega has simplified our product management. Total game changer.",
+        name: "Liam Patel",
+        role: "Product Manager",
+    },
+];
 
 const FAQItem = ({ question, answer }) => {
     const [open, setOpen] = useState(false);
@@ -69,14 +69,14 @@ const FAQItem = ({ question, answer }) => {
                 className={`w-full px-4 py-6 gap-4 flex  focus:outline-none ${open ? 'bg-[#000068] text-white rounded-tl-[4px] rounded-tr-[16px] rounded-bl-[4px] rounded-br-[16px] border-l-[6px] border-[#9191FF]' : 'bg-[#fbfbfe] rounded-tl-[4px] rounded-tr-[16px] rounded-bl-[4px] rounded-br-[16px] border-l-[6px] text-[#170F49]'}`}
             >
                 <span >{open ? <ChevronDown /> : <ChevronUp />}</span>
-               <div  className="flex flex-col items-start text-left gap-5 ">
-                 <span className="text-sm font-medium">{question}</span>
-            {open && (
-                <div>
-                    {answer}
+                <div className="flex flex-col items-start text-left gap-5 ">
+                    <span className="text-sm font-medium">{question}</span>
+                    {open && (
+                        <div>
+                            {answer}
+                        </div>
+                    )}
                 </div>
-            )}
-               </div>
             </button>
         </div>
     );
@@ -98,7 +98,7 @@ const SartorChain = () => {
 
             <section className="bg-white px-6 py-16 md:px-16 max-w-[992px] mx-auto">
                 <h1 className="text-[40px] lg:text-[58px] text-center text-[#000068] mb-4 font-semibold">SartorChain</h1>
-                <p className="text-center text-[#1E1E1E] text-[32px] md:text-[38px] mb-6 font-semibold"> Invisible Fingerprints. Instant Verification.</p>
+                <p className="text-center text-[#1E1E1E] text-[32px] md:text-[38px] mb-6 font-semibold max-w-[510px] mx-auto"> Invisible Fingerprints. Instant Verification.</p>
                 <div className="max-w-[352px] md:max-w-[480px] mx-auto">
 
                     <p className="text-center text-[#1E1E1E] text-[16px] sm:text-[18px] mb-8">
@@ -242,13 +242,13 @@ const SartorChain = () => {
                 </div>
             </section>
 
-             <section className="max-w-4xl mx-auto px-4 py-10 space-y-12">
+            <section className="max-w-4xl mx-auto px-4 py-10 space-y-12">
 
                 {/* DORA AI Section */}
                 <section className="text-center w-full max-w-[600px] mx-auto">
                     <div className="flex items-center justify-center text-center gap-4">
                         <img src={brain} alt="Brain representing AI" className="size-8 mb-4" />
-                    <div className="text-lg font-semibold mb-2 lg:text-[30px] text-center"> Powered by DORA AI</div>
+                        <div className="text-lg font-semibold mb-2 lg:text-[30px] text-center"> Powered by DORA AI</div>
                     </div>
                     <p className="text-gray-700 max-w-md mx-auto text-sm lg:text-[16px] leading-[30px]">
                         Our proprietary AI engine, DORA, learns and adapts to detect unique fingerprints with up to 95% accuracy, even if labels are slightly worn or faded.
@@ -308,28 +308,28 @@ const SartorChain = () => {
                 </section>
             </section>
 
-             {/* Testimonials */}
-                            <section className="bg-white px-6 py-5 md:py-10 max-w-7xl mx-auto">
-                                <h2 className="text-center text-2xl font-semibold text-gray-900 mb-12">
-                                    Client Success Stories
-                                </h2>
-                                <div className="grid md:grid-cols-3 gap-10 mb-10 md:mb-20">
-                                    {testimonials.map((t, idx) => (
-                                        <Slide key={idx} direction="left" delay={idx * 100} triggerOnce>
-            
-                                            <div key={idx} className="text-sm">
-                                                <img src={qoute} alt="Qoute" srcset="" className="mb-5" />
-                                                <p className="text-gray-700 md:mb-4">"{t.quote}"</p>
-                                                <p className="text-gray-600 font-medium">{t.name}</p>
-                                                <p className="text-gray-400">{t.role}</p>
-                                            </div>
-                                        </Slide>
-                                    ))}
-                                </div>
-            
-            
-                            </section>
-            
+            {/* Testimonials */}
+            <section className="bg-white px-6 py-5 md:py-10 max-w-7xl mx-auto">
+                <h2 className="text-center text-2xl font-semibold text-gray-900 mb-12">
+                    Client Success Stories
+                </h2>
+                <div className="grid md:grid-cols-3 gap-10 mb-10 md:mb-20">
+                    {testimonials.map((t, idx) => (
+                        <Slide key={idx} direction="left" delay={idx * 100} triggerOnce>
+
+                            <div key={idx} className="text-sm">
+                                <img src={qoute} alt="Qoute" srcset="" className="mb-5" />
+                                <p className="text-gray-700 md:mb-4">"{t.quote}"</p>
+                                <p className="text-gray-600 font-medium">{t.name}</p>
+                                <p className="text-gray-400">{t.role}</p>
+                            </div>
+                        </Slide>
+                    ))}
+                </div>
+
+
+            </section>
+
 
             <section className="py-10 px-4 text-center max-w-[431px] mx-auto space-y-1.5 mb-20">
                 <h2 className="text-[32px] max-w-[216px] md:max-w-[431px] mx-auto md:text-[42px] font-semibold leading-10">
@@ -345,16 +345,14 @@ const SartorChain = () => {
 
             <section className="py-10 px-4 text-center max-w-[1199px] mx-auto space-y-1.5 bg-[#F5F5F5] rounded-xl mb-20">
                 <h2 className="text-[20px] max-w-[216px] md:max-w-[490px] mx-auto md:text-[42px] font-semibold md:leading-[50px]">
-                   Print covert labels. Scan with any smartphone. Verify in seconds.
+                    Print covert labels. Scan with any smartphone. Verify in seconds.
                 </h2>
-               
+
                 <button className="bg-[#00A859] hover:bg-green-600 text-[white] font-semibold py-3 rounded-xl shadow max-w-[254px] w-full">
                     Try it Today!
                 </button>
             </section>
 
-
-           
         </div>
     );
 };
