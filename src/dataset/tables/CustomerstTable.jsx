@@ -30,7 +30,7 @@ const CustomerstTable = ({ onClose }) => {
 
         try {
             const res = await instance.get(`customers?limit=${perPage}`);
-            console.log(res.data);
+            console.log(res);
 
 
             const customerArray = res.data?.data?.data || [];

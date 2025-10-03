@@ -63,24 +63,21 @@ const LeadsTable = () => {
   const allLeads = async (page = 1) => {
     setLoading(true);
     try {
-      // const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
-      const res = await instance.get(`leads?page=${page}&limit=${perPage}`,);
+      const res = await instance.get(`leads?page=${page}&limit=${perPage}`);
+      console.log('Fetched leads:', res);
       const paginationData = paginationNormalizer(res.data?.data?.pagination);
-
       setPagination(paginationData);
 
-      console.log(res);
-
-      const { leads, } = res.data.data;
+      const { leads } = res.data.data;
       setGetAllLeads(leads);
     } catch (error) {
       console.log(error);
       setPagination(paginationNormalizer());
-
     } finally {
       setLoading(false);
     }
   };
+
 
 
   const confirmDelete = async () => {
@@ -97,8 +94,10 @@ const LeadsTable = () => {
   };
 
   useEffect(() => {
-    allLeads(currentPage);
-  }, [currentPage, token]);
+  allLeads(currentPage);
+}, [currentPage]);
+
+
 
   const filteredEmployees = searchActive ? searchResults : getAllLeads;
 
@@ -107,7 +106,7 @@ const LeadsTable = () => {
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className="flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md">
-         <UniversalSearch
+          <UniversalSearch
             collection="lead"
             searchPath="products"
             placeholder="Search by ID, name or email"
@@ -161,10 +160,10 @@ const LeadsTable = () => {
                 filteredEmployees.map((emp, index) => (
                   <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
                     <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                     {searchActive
-                      ? index + 1
-                      : (currentPage - 1) * perPage + index + 1
-                    }
+                      {searchActive
+                        ? index + 1
+                        : (currentPage - 1) * perPage + index + 1
+                      }
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-xs md:text-[14px] text-[#484848]">{emp.name}</div>
@@ -177,28 +176,28 @@ const LeadsTable = () => {
                     </td>
                     <td
                       className={`px-4 py-3 text-xs md:text-[14px] font-normal ${emp.status === 'New'
-                          ? 'text-[#000068]'
-                          : emp.status === 'Contacted'
-                            ? 'text-[#FFB400]'
-                            : emp.status === 'Closed Lost'
-                              ? 'text-[#FF3B30]'
-                              : emp.status === 'Qualified'
-                                ? 'text-[#6666D2]'
-                                : emp.status === 'Interested'
-                                  ? 'text-[#768B00]'
-                                  : emp.status === 'Hold'
-                                    ? 'text-[#FF3B30]'
-                                    : emp.status === 'In-Negotiation'
-                                      ? 'text-[#A97B0E]'
-                                      : emp.status === 'LPO Generated'
-                                        ? 'text-[#1A1A1A]'
-                                        : emp.status === 'Closed Won'
-                                          ? 'text-[#00D743]'
-                                          : emp.status === 'Payment Confirmed'
-                                            ? 'text-[#D300D7]'
-                                            : emp.status === 'Follow up'
-                                              ? 'text-[#12D1E2]'
-                                              : 'text-gray-500'
+                        ? 'text-[#000068]'
+                        : emp.status === 'Contacted'
+                          ? 'text-[#FFB400]'
+                          : emp.status === 'Closed Lost'
+                            ? 'text-[#FF3B30]'
+                            : emp.status === 'Qualified'
+                              ? 'text-[#6666D2]'
+                              : emp.status === 'Interested'
+                                ? 'text-[#768B00]'
+                                : emp.status === 'Hold'
+                                  ? 'text-[#FF3B30]'
+                                  : emp.status === 'In-Negotiation'
+                                    ? 'text-[#A97B0E]'
+                                    : emp.status === 'LPO Generated'
+                                      ? 'text-[#1A1A1A]'
+                                      : emp.status === 'Closed Won'
+                                        ? 'text-[#00D743]'
+                                        : emp.status === 'Payment Confirmed'
+                                          ? 'text-[#D300D7]'
+                                          : emp.status === 'Follow up'
+                                            ? 'text-[#12D1E2]'
+                                            : 'text-gray-500'
                         }`}
                     >
                       {emp.status}
@@ -268,11 +267,12 @@ const LeadsTable = () => {
       </div>
 
       {/* Pagination */}
-           {!searchActive && (
+      {!searchActive && (
         <UniversalPagination
           pagination={pagination || {}}
-          onPageChange={(page) => allLeads(page)}
+          onPageChange={(page) => setCurrentPage(page)}
         />
+
       )}
 
       {/* Add/Edit Lead Modal */}

@@ -1,11 +1,15 @@
 import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
-import { useToken } from '../../../store/authStore';
+import { useToken,useRole } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 import DetailsSkeleton from '../../DetailsSkeleton';
 
 const LpoDetailsModal = ({ onClose, lpoId }) => {
     const  token  = useToken();
+    
+    
+    
+
 
     const [singleLpo, setSingleLpo] = useState({});
     const [loading, setLoading] = useState(true);
@@ -101,7 +105,9 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                         Amount
 
                         <span className='text-[#484848] mt-2'>
-                            {singleLpo?.totalAmount || 'NA'}
+                            {Array.isArray(singleLpo.products)
+                                ? singleLpo.products.reduce((sum, item) => sum + (Number(item.amount) || 0), 0)
+                                : 'NA'}
 
                         </span>
                     </label>
@@ -122,14 +128,15 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                         LPO Status
 
                         <span className='text-[#484848] mt-2'>
-                            Delivered
+                                                        {singleLpo?.lpo?.status || 'NA'}
+
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Status
 
                         <span className=' text-primary_blue mt-2 cursor-pointer'>
-                            Paid
+                       {singleLpo?.status || 'NA'}
                         </span>
                     </label>
 
@@ -177,11 +184,8 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                     Delivery Status
 
                     <span className='text-[#484848] mt-2 flex items-center gap-5'>
-                        <div>Packaging</div>
-                        <div className='border border-primary_blue w-[40px]' />
-                        <div>In Transit</div>
-                        <div className='border border-primary_blue w-[40px]' />
-                        <div className='line-through'>Delivered</div>
+                                                    {singleLpo?.deliveryStaus || 'NA'}
+
                     </span>
                 </label>
 

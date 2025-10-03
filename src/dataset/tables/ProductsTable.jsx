@@ -50,7 +50,7 @@ const ProductsTable = () => {
       const res = await instance.get(`products?page=${page}&limit=${perPage}`);
       const products = res.data?.data?.data || [];
       const paginationData = paginationNormalizer(res.data?.data?.pagination);
-
+      console.log("Fetched products:", products);
       setGetAllProducts(products);
       setPagination(paginationData);
     } catch (error) {
@@ -87,6 +87,11 @@ const ProductsTable = () => {
   const handleAddBatchModalToggle = (productId) => {
     setAddBatchProductId(productId);
     setIsAddBatchModalOpen(true);
+  };
+
+  const handleViewBatches = (productId) => {
+    setViewBatchProductId(productId);
+    setIsViewBatchesOpen(true);
   };
 
   // search or normal

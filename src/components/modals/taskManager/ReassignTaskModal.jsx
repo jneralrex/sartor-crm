@@ -1,65 +1,153 @@
-import { ArrowLeft, X } from 'lucide-react';
-import React, { useState } from 'react'
-import SearchableSelect from '../../SearchableSelect';
+import { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
+import instance from '../../../utils/axiosInstance';
 
-const ReassignTaskModal = ({ onClose }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const ReassignTaskModal = ({ task, onClose, onSuccess }) => {
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    const handleModalToggle = () => {
-        setIsModalOpen((prev) => !prev);
+  const [formData, setFormData] = useState({
+    id: '',
+    adminID: '',
+    title: '',
+    description: '',
+    dueDate: '',
+  });
+
+  useEffect(() => {
+    const getEmployees = async () => {
+      try {
+        const res = await instance.get('users');
+        setEmployees(res.data.data.data || []);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+      }
     };
 
-    const handleSelect = (e) => {
-        e.preventDefault()
-        // console.log('Selected:', value);
-    };
-    return (
-        <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-            <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
-                <div className='flex items-center gap-5'>
+    getEmployees();
 
-                    <button
-                        onClick={onClose}
-                        className=""
-                    >
-                        <ArrowLeft />
-                    </button>
-                    <div>
-                        <h2 className="text-sm md:text-[20px] font-semibold text-[#1A1A1A] mb-1">Assignee Details</h2>
-                    </div>
-                </div>
-                <div>
+    if (task) {
+      setFormData({
+        id: task._id || '',
+        adminID: task?.user?._id || '',
+        title: task?.title || task?.taskName || '',
+        description: task?.description || task?.task || '',
+        dueDate: task?.dueDate
+          ? new Date(task.dueDate).toISOString().slice(0, 16)
+          : '',
+      });
+    }
+  }, [task]);
 
-                    <form action="" className='flex flex-col gap-5 mt-5'>
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-                        <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Batch Quantity
-                            <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                                <SearchableSelect
-                                    options={['Lagos', 'Abuja', 'Kano', 'Ibadan', 'Port Harcourt']}
-                                    onChange={handleSelect}
-                                />              </div>
-                        </label>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const payload = {
+        id: formData.id,
+        adminID: formData.adminID,
+        title: formData.title,
+        description: formData.description,
+        dueDate: formData.dueDate,
+      };
 
+      const res = await instance.put(`/task/edit/`, payload);
+      console.log('Task updated:', res.data);
 
-                        <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Description
-                            <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                                <input type="text" placeholder='Description' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
-                            </div>
-                        </label>
-                        <label htmlFor="" className='font-medium text-[14px] text-[#1A1A1A]'>Select A Due Date
-                            <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center'>
-                                <input type="text" placeholder='Due Date' className='outline-none bg-transparent placeholder:text-xs placeholder:font-medium placeholder:text-[#484848] w-full' />
-                            </div>
-                        </label>
-                        <button className='bg-primary_blue  text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold h-[52px]' onClick={onClose} >
-                            Assign
-                        </button>
-                    </form>
-                </div>
-            </div>
-            {/* Modal */}
+      onSuccess?.(res.data.data?.[0] || {});
+      onClose();
+    } catch (error) {
+      console.error('Error updating task:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+      <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
+        <div className='flex items-center justify-between'>
+          <h2 className="text-sm md:text-[20px] font-semibold text-[#1A1A1A]">Assignee Details</h2>
+          <button onClick={onClose}><X /></button>
         </div>
-    )
-}
 
-export default ReassignTaskModal
+        <form className='flex flex-col gap-5 mt-5' onSubmit={handleSubmit}>
+          {/* Select Employee */}
+          <label className='font-medium text-[14px] text-[#1A1A1A]'>
+            Select Employee
+            <select
+              className="mt-1 bg-[#F5F5F5] rounded-lg h-[48px] px-4 text-sm outline-none w-full"
+              name="adminID"
+              value={formData.adminID}
+              onChange={handleChange}
+              required
+            >
+              <option value="">-- Select Employee --</option>
+              {employees.map(emp => (
+                <option key={emp._id} value={emp._id}>
+                  {emp.fullName}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {/* Title */}
+          <label className='font-medium text-[14px] text-[#1A1A1A]'>
+            Title
+            <input
+              type="text"
+              name="title"
+              className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] px-4 text-sm outline-none w-full'
+              value={formData.title}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          {/* Description */}
+          <label className='font-medium text-[14px] text-[#1A1A1A]'>
+            Description
+            <textarea
+              name="description"
+              rows="3"
+              placeholder='Description'
+              className='mt-1 bg-[#F5F5F5] rounded-lg px-4 py-2 text-sm outline-none w-full resize-none'
+              value={formData.description}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          {/* Due Date */}
+          <label className='font-medium text-[14px] text-[#1A1A1A]'>
+            Due Date
+            <input
+              type='datetime-local'
+              name="dueDate"
+              className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] px-4 text-sm outline-none w-full'
+              value={formData.dueDate}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className='bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold h-[52px]'
+            disabled={loading}
+          >
+            {loading ? 'Updating...' : 'Reassign Task'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default ReassignTaskModal;

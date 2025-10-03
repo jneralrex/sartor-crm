@@ -1,0 +1,288 @@
+<!--Zoho Campaigns Web-Optin Form's Header Code Starts Here-->
+
+<script type="text/javascript" src="https://zgnp-zngp.maillist-manage.com/js/optin.min.js" onload="setupSF('sf3z05a5285314f3b89b89b26a2bf155c7bbba4f0d62e24d923d64d4389fab34c25d','ZCFORMVIEW',false,'light',false,'0')"></script>
+<script type="text/javascript">
+	function runOnFormSubmit_sf3z05a5285314f3b89b89b26a2bf155c7bbba4f0d62e24d923d64d4389fab34c25d(th){
+		/*Before submit, if you want to trigger your event, "include your code here"*/
+	};
+</script>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background-color: #f5f5f5;
+  padding: 40px 20px;
+}
+
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  padding: 60px 80px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.form-header h1 {
+  color: #1a1a4d;
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.form-header p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.form-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"] {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  color: #333;
+  background-color: #fafafa;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #1db574;
+  background-color: #fff;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  gap: 12px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 16px 32px;
+  background-color: #1db574;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submit-button:hover {
+  background-color: #18a065;
+}
+
+.download-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.success-message {
+  display: none;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #d4f4e8;
+  border: 2px solid #1db574;
+  padding: 16px 24px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.success-message-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #1a8a5d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.error-message {
+  display: none;
+  background-color: #fff5f5;
+  border: 1px solid #ffd3d3;
+  color: #d20000;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: 40px 30px;
+  }
+  
+  .form-header h1 {
+    font-size: 28px;
+  }
+  
+  .form-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 30px 20px;
+  }
+  
+  .form-header h1 {
+    font-size: 24px;
+  }
+}
+</style>
+
+<!--Zoho Campaigns Web-Optin Form's Header Code Ends Here-->
+
+<div id="sf3z05a5285314f3b89b89b26a2bf155c7bbba4f0d62e24d923d64d4389fab34c25d" data-type="signupform">
+  <div class="form-container">
+    <div class="form-header">
+      <h1>Download Your Free Business Startup Checklist</h1>
+      <p>Fill out the form below to get instant access to your exclusive Business Startup Checklist</p>
+    </div>
+    
+    <div id="Zc_SignupSuccess" class="success-message">
+      <div class="success-message-content">
+        <img src="https://zgnp-zngp.maillist-manage.com/images/challangeiconenable.jpg" alt="Success" width="24">
+        <span id="signupSuccessMsg">Thank you for Signing Up</span>
+      </div>
+    </div>
+    
+    <form method="POST" id="zcampaignOptinForm" action="https://zgnp-zngp.maillist-manage.com/weboptin.zc" target="_zcSignup">
+      <div id="errorMsgDiv" class="error-message">
+        Please correct the marked field(s) below.
+      </div>
+      
+      <div class="form-fields">
+        <div class="form-group">
+          <label for="EMBED_FORM_NAME_LABEL">First Name *</label>
+          <input 
+            type="text" 
+            name="LASTNAME" 
+            id="EMBED_FORM_NAME_LABEL"
+            changeitem="SIGNUP_FORM_FIELD"
+            placeholder=""
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="EMBED_FORM_EMAIL_LABEL">Email Address *</label>
+          <input 
+            type="email" 
+            name="CONTACT_EMAIL" 
+            id="EMBED_FORM_EMAIL_LABEL"
+            changeitem="SIGNUP_FORM_FIELD"
+            placeholder=""
+            required
+          >
+        </div>
+      </div>
+      
+      <div class="checkbox-group">
+        <input type="checkbox" id="marketing_consent" name="marketing_consent">
+        <label for="marketing_consent">
+          I agree to receive marketing communications and understand that I can unsubscribe at any time
+        </label>
+      </div>
+      
+      <button type="button" class="submit-button" name="SIGNUP_SUBMIT_BUTTON" id="zcWebOptin">
+        <svg class="download-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+        </svg>
+        Download Free Checklist Now
+      </button>
+      
+      <!-- Hidden fields for Zoho -->
+      <input type="hidden" id="fieldBorder" value="">
+      <input type="hidden" id="submitType" name="submitType" value="optinCustomView">
+      <input type="hidden" id="emailReportId" name="emailReportId" value="">
+      <input type="hidden" id="formType" name="formType" value="QuickForm">
+      <input type="hidden" name="zx" id="cmpZuid" value="135b0b665">
+      <input type="hidden" name="zcvers" value="3.0">
+      <input type="hidden" name="oldListIds" id="allCheckedListIds" value="">
+      <input type="hidden" id="mode" name="mode" value="OptinCreateView">
+      <input type="hidden" id="zcld" name="zcld" value="115345f56cd34ae54">
+      <input type="hidden" id="zctd" name="zctd" value="115345f56cd34ab91">
+      <input type="hidden" id="document_domain" value="">
+      <input type="hidden" id="zc_Url" value="zgnp-zngp.maillist-manage.com">
+      <input type="hidden" id="new_optin_response_in" value="1">
+      <input type="hidden" id="duplicate_optin_response_in" value="0">
+      <input type="hidden" name="zc_trackCode" id="zc_trackCode" value="ZCFORMVIEW">
+      <input type="hidden" id="zc_formIx" name="zc_formIx" value="3z05a5285314f3b89b89b26a2bf155c7bbba4f0d62e24d923d64d4389fab34c25d">
+      <input type="hidden" id="viewFrom" value="URL_ACTION">
+      <span style="display: none" id="dt_CONTACT_EMAIL">1,true,6,Contact Email,2</span>
+      <span style="display: none" id="dt_FIRSTNAME">1,false,1,First Name,2</span>
+      <span style="display: none" id="dt_LASTNAME">1,false,1,Last Name,2</span>
+    </form>
+  </div>
+  <img src="https://zgnp-zngp.maillist-manage.com/images/spacer.gif" id="refImage" onload="referenceSetter(this)" style="display:none;">
+</div>
+
+<input type="hidden" id="signupFormType" value="QuickForm_Horizontal">
+<div id="zcOptinOverLay" oncontextmenu="return false" style="display:none;text-align: center; background-color: rgb(0, 0, 0); opacity: 0.5; z-index: 100; position: fixed; width: 100%; top: 0px; left: 0px; height: 100%;"></div>
+<div id="zcOptinSuccessPopup" style="display:none;z-index: 9999;width: 800px; height: 40%;top: 84px;position: fixed; left: 50%; transform: translateX(-50%);background-color: #FFFFFF;border-color: #E6E6E6; border-style: solid; border-width: 1px; box-shadow: 0 1px 10px #424242;padding: 35px;">
+  <span style="position: absolute;top: -16px;right:-14px;z-index:99999;cursor: pointer;" id="closeSuccess">
+    <img src="https://zgnp-zngp.maillist-manage.com/images/videoclose.png">
+  </span>
+  <div id="zcOptinSuccessPanel"></div>
+</div>

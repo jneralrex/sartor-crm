@@ -4,7 +4,7 @@ import { Menu } from '@headlessui/react'
 import { useEffect, useState } from 'react';
 import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
 import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
-import { useToken, useUserId } from '../../store/authStore';
+import { useRole, useToken, useUserId } from '../../store/authStore';
 import instance from '../../utils/axiosInstance';
 import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
 import ConfirmModal from '../../components/ConfirmationPopUp';
@@ -25,6 +25,9 @@ const LposTable = () => {
   const [lpoToDelete, setLpoToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+
+    const role = useRole();
+    const isSuperAdmin = role === 'Super-Admin';
 
 
   // Pagination state
@@ -171,6 +174,8 @@ const LposTable = () => {
                               </button>
                             )}
                           </Menu.Item>
+                          {isSuperAdmin && (
+                            <>
                           <Menu.Item>
                             {({ active }) => (
                               <button
@@ -197,6 +202,8 @@ const LposTable = () => {
                               </button>
                             )}
                           </Menu.Item>
+                          </>
+                          )}
                         </div>
                       </Menu.Items>
                     </Menu>

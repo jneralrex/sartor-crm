@@ -46,7 +46,7 @@ const Overview = () => {
   return (
     <>
       <nav className='outlet-frame'>
-        <h1 className='outlet-title'>Overview</h1>
+        <h1 className='outlet-title'>Over view</h1>
         <div>
           <UserActionNav />
         </div>

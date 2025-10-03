@@ -23,33 +23,33 @@ import { useRole } from '../store/authStore';
 
 const menuItems = [
   { label: 'Overview', path: 'overview', icon: overViewIcon, role: ['Super-Admin', 'Merchandiser', 'Sales Rep', 'Inventory Manager', 'Manager'] },
-  { label: 'Stocks', path:'stocks', icon: dollar, role: ['Super-Admin', 'Inventory Manager'] },
-  { label: 'Commission', path:'commissions', icon: stocksIcon, role: ['Sales Rep', 'Super-Admin', 'Inventory Manager'] },
-  { label: 'Suppliers', path:'suppliers', icon: plug, role: ['Super-Admin', 'Inventory Manager'] },
-  { label: 'Vehicles', path:'vehicles', icon: vehicle, role: ['Super-Admin', 'Inventory Manager'] },
-  { label: 'QR code', path:'qr-code', icon: qr, role: ['Super-Admin', 'Inventory Manager'] },
-  { label: 'Stock Levels', path:'stock-levels', icon: overViewIcon, role: ['Super-Admin','Inventory Manager'] },
   { label: 'Task Manager', path: 'task-manager', icon: taskManagerIcon, role: ['Super-Admin', 'Sales Rep', 'Manager', 'Merchandiser'] },
-  { label: 'Orders', path: 'orders', icon: overViewIcon, role: ['Super-Admin',]},
-  { label: 'Sales Rep', path:'sales-rep', icon: twopeep, role: ['Super-Admin','Manager'] },
-  { label: 'Merchandisers', path:'merchandisers', icon: lock, role: ['Super-Admin','Manager'] },
   { label: 'Employees', path: 'employees', icon: employeesIcon, role: ['Super-Admin',] },
-  { label: 'LPOs', path: 'lpos', icon: lposIcon, role: ['Super-Admin', 'Sales Rep', 'Manager'] },
+  { label: 'Orders', path: 'orders', icon: overViewIcon, role: ['Super-Admin',]},
   { label: 'Leads', path: 'leads', icon: leadIcon, role: ['Super-Admin','Sales Rep', 'Manager'] },
-  { label: 'Products', path: 'products', icon: productIcon, role: ['Super-Admin', 'inventory', 'Merchandiser'] },
-  { label: 'Customers', path: 'customers', icon: customerIcon, role: ['Super-Admin','Sales Rep'] },
-  { label: 'Invoices', path: 'invoices', icon: invoicesIcon, role: ['Super-Admin', 'Manager', 'Sales Rep'] },
-  { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, role: ['Super-Admin', 'Sales Rep'] },
+  { label: 'Customers', path: 'customers', icon: customerIcon, role: ['Sales Rep'] },
+  { label: 'Invoices', path: 'invoices', icon: invoicesIcon, role: ['Super-Admin', 'Inventory Manager', 'Manager', 'Sales Rep'] },
+  { label: 'Merchandisers', path:'merchandisers', icon: lock, role: ['Manager'] },
+  { label: 'LPOs', path: 'lpos', icon: lposIcon, role: [ 'Inventory Manager','Sales Rep', 'Manager'] },
+  { label: 'Commission', path:'commissions', icon: stocksIcon, role: ['Sales Rep', 'Super-Admin', 'Inventory Manager'] },
+  { label: 'Stocks', path:'stocks', icon: dollar, role: ['Super-Admin', 'Inventory Manager'] },
+  { label: 'Suppliers', path:'suppliers', icon: plug, role: [ 'Inventory Manager'] },
+  { label: 'Vehicles', path:'vehicles', icon: vehicle, role: ['Inventory Manager'] },
+  { label: 'QR code', path:'qr-code', icon: qr, role: [ 'Inventory Manager'] },
+  { label: 'Stock Levels', path:'stock-levels', icon: overViewIcon, role: ['Inventory Manager'] },
+  { label: 'Sales Rep', path:'sales-rep', icon: twopeep, role: ['Manager'] },
+  { label: 'Products', path: 'products', icon: productIcon, role: ['Merchandiser'] },
+  { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, role: ["",] },
 ];
 
 
 const Drawer = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const role = useRole(); // Custom hook to get user role
+  const role = useRole(); 
 
   useEffect(() => {
-    setIsOpen(false); // Auto-close drawer on route change (mobile)
+    setIsOpen(false); 
   }, [location.pathname]);
 
   const toggleSidebar = () => setIsOpen(!isOpen);

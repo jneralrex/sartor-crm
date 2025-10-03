@@ -1,4 +1,3 @@
-// components/UniversalPagination.jsx
 const UniversalPagination = ({ pagination, onPageChange }) => {
   if (!pagination) return null; 
 

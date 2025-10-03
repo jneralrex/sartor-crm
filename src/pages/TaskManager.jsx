@@ -8,7 +8,9 @@ import TaskDetailsModal from "../components/modals/taskManager/TaskDetailsModal"
 import task from "../assets/images/task.png";
 import EditTaskModal from "../components/modals/taskManager/EditTask";
 import ConfirmModal from "../components/ConfirmationPopUp";
-import { useToken } from "../store/authStore";
+import { useToken, useRole, useUserRole } from "../store/authStore";
+import { paginationNormalizer } from "../utils/pagination/paginationNormalizer";
+import UniversalPagination from "../components/UniversalPagination";
 
 const categories = [
   "All",
@@ -37,7 +39,10 @@ const statusColor = {
 };
 
 const TaskManager = () => {
-    const  token  = useToken();
+  const token = useToken();
+  const role = useRole();
+
+  console.log("role", role)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -49,8 +54,26 @@ const TaskManager = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [pagination, setPagination] = useState();
+  const [searchActive, setSearchActive] = useState(false);
+
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPage = 100;
+
+
+  // syncing currentPage with backend pagination
+  useEffect(() => {
+    if (pagination?.currentPage) {
+      setCurrentPage(pagination.currentPage);
+    }
+  }, [pagination]);
+
+  const isSuperAdmin = role === 'Super-Admin';
 
   const handleModalToggle = () => setIsModalOpen((prev) => !prev);
+
 
   const handleStatusModalToggle = (taskId) => {
     setSelectedTaskId(taskId);
@@ -64,10 +87,14 @@ const TaskManager = () => {
     setIsEditModalOpen(true);
   };
 
-  const getTask = async () => {
+  const getTask = async (page = 1) => {
     try {
-      const res = await instance.get("tasks?limit=1000");
+      const res = await instance.get(`tasks?page=${page}&limit=${perPage}`);
+      console.log(res);
       const { tasks, analytics } = res.data.data;
+
+      const paginationData = paginationNormalizer(res.data?.data?.pagination);
+      setPagination(paginationData);
 
       setStatusCounts(analytics?.statusCounts || {});
 
@@ -100,7 +127,7 @@ const TaskManager = () => {
 
       setIsConfirmOpen(false);
       setTaskToDelete(null);
-      getTask(); 
+      getTask();
     } catch (err) {
       console.error('Error deleting employee:', err);
     }
@@ -111,12 +138,15 @@ const TaskManager = () => {
   }, [token]);
 
   useEffect(() => {
+    getTask(currentPage);
+  }, [currentPage, token]);
+
+  useEffect(() => {
     const currentCategory = categories[selectedIndex];
     const currentTasks = categorizedTasks.find((t) => t.name === currentCategory)?.posts || [];
     console.log(`Clicked category: ${currentCategory}`, currentTasks);
   }, [selectedIndex]);
 
-  console.log(taskToDelete)
 
   return (
     <>
@@ -147,12 +177,18 @@ const TaskManager = () => {
                 </Tab>
               ))}
             </TabList>
-            <button
-              className="bg-primary_blue text-white text-[12px] p-1 md:px-4 md:py-2 rounded-md md:text-sm"
-              onClick={handleModalToggle}
-            >
-              Assign Task
-            </button>
+            {
+              isSuperAdmin && (
+
+                <button
+                  className="bg-primary_blue text-white text-[12px] p-1 md:px-4 md:py-2 rounded-md md:text-sm"
+                  onClick={handleModalToggle}
+                >
+                  Assign Task
+                </button>
+              )
+
+            }
           </div>
 
           {/* Stats */}
@@ -211,29 +247,34 @@ const TaskManager = () => {
                             ? new Date(post.creationDateTime).toLocaleDateString()
                             : ""}
                         </p>
-                        <div className="flex justify-between">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation(); // prevent triggering onClick for status modal
-                              handleEditClick(post._id);
-                            }}
-                            className="mt-3 text-primary_blue text-sm underline"
-                          >
-                            Edit
-                          </button>
+                        {
+                          isSuperAdmin && (
 
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setTaskToDelete(post._id);
-                              setIsConfirmOpen(true);
+                            <div className="flex justify-between">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditClick(post._id);
+                                }}
+                                className="mt-3 text-primary_blue text-sm underline"
+                              >
+                                Edit
+                              </button>
 
-                            }}
-                            className="mt-3 text-red-500 text-sm underline"
-                          >
-                            Delete
-                          </button>
-                        </div>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTaskToDelete(post._id);
+                                  setIsConfirmOpen(true);
+
+                                }}
+                                className="mt-3 text-red-500 text-sm underline"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )
+                        }
                       </div>
                     ))
                   ) : (
@@ -246,15 +287,22 @@ const TaskManager = () => {
         </TabGroup>
       </div>
 
-    {isModalOpen && (
-  <AssignTaskModal
-    onClose={handleModalToggle}
-    onSuccess={() => {
-      getTask();
-      setIsModalOpen(false);
-    }}
-  />
-)}
+      {!searchActive && (
+        <UniversalPagination
+          pagination={pagination || {}}
+          onPageChange={(page) => getTask(page)}
+        />
+      )}
+
+      {isModalOpen && (
+        <AssignTaskModal
+          onClose={handleModalToggle}
+          onSuccess={() => {
+            getTask();
+            setIsModalOpen(false);
+          }}
+        />
+      )}
 
 
       {isStatusModalOpen && (
@@ -286,7 +334,7 @@ const TaskManager = () => {
         />
       )}
 
-      
+
       <ConfirmModal
         isOpen={isConfirmOpen}
         onClose={() => setIsConfirmOpen(false)}
