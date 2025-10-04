@@ -42,7 +42,6 @@ const TaskManager = () => {
   const token = useToken();
   const role = useRole();
 
-  console.log("role", role)
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -71,6 +70,7 @@ const TaskManager = () => {
   }, [pagination]);
 
   const isSuperAdmin = role === 'Super-Admin';
+  const isSalesRep = role === 'Sales Rep';
 
   const handleModalToggle = () => setIsModalOpen((prev) => !prev);
 
@@ -178,7 +178,7 @@ const TaskManager = () => {
               ))}
             </TabList>
             {
-              isSuperAdmin && (
+              !isSalesRep && (
 
                 <button
                   className="bg-primary_blue text-white text-[12px] p-1 md:px-4 md:py-2 rounded-md md:text-sm"
