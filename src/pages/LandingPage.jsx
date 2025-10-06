@@ -345,7 +345,9 @@ const LandingPage = () => {
                         no hidden fees.
                     </p>
                     <button className="bg-[#00A859] hover:bg-green-600 text-[white] font-semibold px-6 py-2 rounded-xl shadow">
-                        View Pricing
+                    <Link to='/pricing'>
+                    View Pricing
+                    </Link>
                     </button>
                 </section>
 

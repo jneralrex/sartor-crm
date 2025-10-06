@@ -6,9 +6,9 @@ import x from '../assets/images/x.png';
 import instagram from '../assets/images/instagram.png';
 
  const socialMedias = [
-    { logo: x, alt: "Social media (X)", link: "" },
+    { logo: x, alt: "Social media (X)", link: "https://x.com/Sartorlimited?t=06jfjJM5bhOEq-xjKGbs2g&s=09" },
     { logo: instagram, alt: "Social media (Instagram)", link: "" },
-    { logo: linkedin, alt: "Social media (LinkedIn)", link: "" },
+    { logo: linkedin, alt: "Social media (LinkedIn)", link: "https://www.linkedin.com/company/sartorlimited/" },
   ]
 
 const Footer = () => {
@@ -21,7 +21,9 @@ const Footer = () => {
           <ul className="space-y-2">
             <li>About Us</li>
             <li>Our Services</li>
-            <li>Pricing</li>
+            <li><Link to='/pricing'>
+            Pricing
+            </Link></li>
           </ul>
         </div>
         <div>
@@ -53,7 +55,9 @@ const Footer = () => {
 
          <div className="flex space-x-2 mt-2 md:mt-0">
           {socialMedias.map((social, key ) => (
+            <Link to={social.link} key={key} target="_blank" rel="noopener noreferrer">
             <img src={social.logo} alt={social.alt} srcset="" key={key} className='size-5'/>
+            </Link>
           ))}
         </div>
       </div>

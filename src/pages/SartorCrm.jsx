@@ -6,6 +6,7 @@ import magnet from "../assets/images/magnetBig.png";
 import security from "../assets/images/security.png";
 import { useState, useEffect } from "react";
 import check from "../assets/images/check.png";
+import { Link } from "react-router-dom";
 
 const steps = [
     { id: 1, text: "Manage sales, orders, and merchandising in one place." },
@@ -51,7 +52,13 @@ const SartorCrm = () => {
                         Sartor CRM 360 combines all your critical workflows into a single, integrated solution—so you can operate with clarity, confidence, and speed.                    </p>
 
                     <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
-                        <button className="bg-[#00A859] hover:bg-green-600 text-white px-6 py-2 rounded-xl font-medium">Request a Demo</button>
+                        <button className="bg-[#00A859] hover:bg-green-600 text-white px-6 py-2 rounded-xl font-medium"> 
+                            <Link
+                                to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                Request a Demo
+                            </Link></button>
                         <button className="bg-[#000068] hover:bg-[#010181] text-white px-6 py-2 rounded-xl font-medium">Try it for Free</button>
                     </div>
                 </div>
@@ -185,7 +192,9 @@ const SartorCrm = () => {
                     Per user
                 </p>
                 <button className="bg-[#00A859] hover:bg-green-600 text-[white] font-semibold py-3 rounded-xl shadow max-w-[254px] w-full">
+                    <Link to='/pricing'>
                     See Pricing
+                    </Link>
                 </button>
             </section>
 

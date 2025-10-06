@@ -11,6 +11,7 @@ import brain from "../assets/images/brain.png";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import qoute from "../assets/images/qoute.png";
 import { Slide } from "react-awesome-reveal";
+import { Link } from "react-router-dom";
 
 
 const steps = [
@@ -105,7 +106,13 @@ const SartorChain = () => {
                         With SartorChain, every product gets a unique, undetectable identifier. Verification is as simple as a smartphone scan—no specialized equipment, no guesswork.                    </p>
 
                     <div className="flex flex-col sm:flex-row justify-center gap-4 mb-10">
-                        <button className="bg-[#00A859] hover:bg-green-600 text-white px-6 py-2 rounded-xl font-medium">Request a Demo</button>
+                        <button className="bg-[#00A859] hover:bg-green-600 text-white px-6 py-2 rounded-xl font-medium">
+                             <Link
+                                to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                Request a Demo
+                            </Link></button>
                         <button className="bg-[#000068] hover:bg-[#010181] text-white px-6 py-2 rounded-xl font-medium">Try it for Free</button>
                     </div>
                 </div>
@@ -339,7 +346,9 @@ const SartorChain = () => {
                     Per user
                 </p>
                 <button className="bg-[#00A859] hover:bg-green-600 text-[white] font-semibold py-3 rounded-xl shadow max-w-[254px] w-full">
+                   <Link to='/pricing'>
                     See Pricing
+                   </Link>
                 </button>
             </section>
 
