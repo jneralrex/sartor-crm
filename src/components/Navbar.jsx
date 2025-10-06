@@ -27,7 +27,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-6 relative">
+        <div className="hidden md:flex items-center space-x-6 relative w-[66.5%] justify-between">
           <ul className="flex space-x-3 lg:space-x-6 text-gray-700 text-sm font-medium">
             <li><Link to="/">Home</Link></li>
 
@@ -44,7 +44,7 @@ const Navbar = () => {
               </span>
 
               {isSolutionsOpen && (
-                <div className="absolute left-0 top-full bg-white shadow-lg rounded-lg w-48 py-2 z-50">
+                <div className="absolute left-0 top-full bg-white shadow-lg rounded-lg w-48 p-2 z-50">
                   <Link
                     to="/sales-navigator"
                     className="md:text-[16px] block px-4 py-2 hover:bg-gray-100 text-gray-700"
