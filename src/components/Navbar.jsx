@@ -27,7 +27,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-6 relative w-[66.5%] justify-between">
+        <div className="hidden md:flex items-center space-x-6 relative w-[66.5%] lg:w-[63%] justify-between">
           <ul className="flex space-x-3 lg:space-x-6 text-gray-700 text-sm font-medium">
             <li><Link to="/">Home</Link></li>
 
