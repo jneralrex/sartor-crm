@@ -73,6 +73,7 @@ const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
     }
   }, [leadId]);
 
+  console.log(addLeads)
 
   const handleChange = (e) => {
     setAddLeads({ ...addLeads, [e.target.name]: e.target.value });
@@ -295,11 +296,6 @@ const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
               </div>
             </>
           )}
-
-
-
-
-
 
           <button
             type="submit"

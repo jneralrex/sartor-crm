@@ -83,7 +83,8 @@ const LeadsTable = () => {
   const confirmDelete = async () => {
     if (!leadToDelete) return;
     try {
-      await instance.delete(`lead/delete/${leadToDelete}`);
+      const res = await instance.delete(`lead/delete/${leadToDelete}`);
+      console.log(res)
       allLeads(currentPage);
     } catch (error) {
       console.error('Failed to delete batch:', error);

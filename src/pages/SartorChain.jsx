@@ -26,6 +26,8 @@ const images = [
     magnet,
     list,
     security,
+    magnet
+    
 
 ];
 
