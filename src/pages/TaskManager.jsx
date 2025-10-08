@@ -14,8 +14,8 @@ import UniversalPagination from "../components/UniversalPagination";
 
 const categories = [
   "All",
-  "To-Do",
   "Assigned",
+  "Pending",
   "Confirmed",
   "Completed",
   "Unconfirmed",
@@ -23,7 +23,7 @@ const categories = [
 ];
 
 const categoryMap = {
-  pending: "To-Do",
+  pending: "Pending",
   assigned: "Assigned",
   confirmed: "Confirmed",
   completed: "Completed",

@@ -5,39 +5,64 @@ import instance from "../../utils/axiosInstance";
 import EmployeeSkeletonRow from "../../components/EmployeeSkeletonRow";
 import ConfirmModal from "../../components/ConfirmationPopUp";
 import { useToken } from "../../store/authStore";
+import { paginationNormalizer } from "../../utils/pagination/paginationNormalizer";
+import UniversalPagination from "../../components/UniversalPagination";
+import UniversalSearch from "../../components/UniversalSearch";
 
 const CommissionsTable = () => {
   const token = useToken();
   const [commissions, setCommissions] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [pagination, setPagination] = useState();
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchActive, setSearchActive] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
-const fetchCommissions = async () => {
-  setLoading(true);
-  try {
-    const res = await instance.get(`/commission`);
-    console.log("Commission response:", res);
 
-    const commissionData = res.data?.data?.data;
+  const perPage = 100;
 
-    const commissionArray = Array.isArray(commissionData)
-      ? commissionData
-      : commissionData
-      ? [commissionData]
-      : [];
 
-    setCommissions(commissionArray);
-  } catch (error) {
-    console.error("Error fetching commissions:", error);
-  } finally {
-    setLoading(false);
-  }
-};
- 
+  // syncing currentPage with backend pagination
+  useEffect(() => {
+    if (pagination?.currentPage) {
+      setCurrentPage(pagination.currentPage);
+    }
+  }, [pagination]);
+
+  const fetchCommissions = async (page = 1) => {
+    setLoading(true);
+    try {
+      const res = await instance.get(`/commission/?page${page}limit=${perPage}`);
+      console.log("Commission response:", res);
+
+      const commissionData = res.data?.data?.data;
+
+      const commissionArray = Array.isArray(commissionData)
+        ? commissionData
+        : commissionData
+          ? [commissionData]
+          : [];
+
+      setCommissions(commissionArray);
+      const paginationData = paginationNormalizer(
+        res.data?.pagination || res.data?.data?.pagination || res.data?.data?.data?.pagination
+      );
+      setPagination(paginationData);
+    } catch (error) {
+      setPagination(paginationNormalizer());
+
+      console.error("Error fetching commissions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     fetchCommissions();
   }, [token]);
+
+  const commissionToRender = searchActive ? searchResults : commissions;
 
   return (
     <>
@@ -46,6 +71,28 @@ const fetchCommissions = async () => {
         <h2 className="text-lg font-semibold text-primary_blue">
           Commissions
         </h2>
+
+         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
+          {/* <UniversalSearch
+            collection="commission"
+            searchPath="commissions"
+            placeholder="Search"
+            onResults={(results, query, paginationData) => {
+              if (query) {
+
+                setSearchResults(results || []);
+                setSearchActive(true);
+                setCurrentPage(paginationData);
+              } else {
+                setSearchActive(false);
+                setSearchResults([]);
+                fetchCommissions(1);
+
+              }
+            }}
+            auto={true}
+          /> */}
+        </div>
         <div className="flex gap-2">
           <button className="flex items-center bg-primary_blue h-[40px] w-[140px] justify-center rounded-md">
             <Download className="text-white h-4" />
@@ -64,7 +111,7 @@ const fetchCommissions = async () => {
               <th className="px-4 py-2">Price</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Date Created</th>
-              <th className="px-4 py-2">Action</th>
+              {/* <th className="px-4 py-2">Action</th> */}
             </tr>
           </thead>
           <tbody>
@@ -72,8 +119,8 @@ const fetchCommissions = async () => {
               Array.from({ length: 8 }).map((_, idx) => (
                 <EmployeeSkeletonRow key={idx} />
               ))
-            ) : commissions.length > 0 ? (
-              commissions.map((commission, index) => (
+            ) : commissionToRender.length > 0 ? (
+              commissionToRender.map((commission, index) => (
                 <tr
                   key={commission._id}
                   className="border-b hover:bg-gray-50 text-start"
@@ -88,18 +135,17 @@ const fetchCommissions = async () => {
                     {commission.price}
                   </td>
                   <td
-                   className={`px-4 py-3 text-xs md:text-[14px] font-medium ${
-  commission.status === true || commission.status === "true" 
-    ? "text-green-500" 
-    : "text-red-500"
-}`}
+                    className={`px-4 py-3 text-xs md:text-[14px] font-medium ${commission.status === true || commission.status === "true"
+                        ? "text-green-500"
+                        : "text-red-500"
+                      }`}
                   >
-{commission.status === true || commission.status === "true" ? "Active" : "Inactive"}
+                    {commission.status === true || commission.status === "true" ? "Active" : "Inactive"}
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] text-[#484848]">
                     {new Date(commission.creationDateTime).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-3">
+                  {/* <td className="px-4 py-3">
                     <Menu as="div" className="relative inline-block text-left">
                       <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
                         <Ellipsis />
@@ -109,13 +155,12 @@ const fetchCommissions = async () => {
                           <Menu.Item>
                             {({ active }) => (
                               <button
-                                className={`${
-                                  active ? "bg-gray-100 rounded-md" : ""
-                                } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                // onClick={() => {
-                                //   setCommissionToDelete(commission._id);
-                                //   setIsConfirmOpen(true);
-                                // }}
+                                className={`${active ? "bg-gray-100 rounded-md" : ""
+                                  } group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                              // onClick={() => {
+                              //   setCommissionToDelete(commission._id);
+                              //   setIsConfirmOpen(true);
+                              // }}
                               >
                                 View Details
                               </button>
@@ -124,7 +169,7 @@ const fetchCommissions = async () => {
                         </div>
                       </Menu.Items>
                     </Menu>
-                  </td>
+                  </td> */}
                 </tr>
               ))
             ) : (
@@ -137,15 +182,14 @@ const fetchCommissions = async () => {
           </tbody>
         </table>
       </div>
-
-      {/* Delete Confirmation Modal */}
-      {/* <ConfirmModal
-        isOpen={isConfirmOpen}
-        onClose={() => setIsConfirmOpen(false)}
-        onConfirm={handleDeleteCommission}
-        title="Delete Commission"
-        message="Are you sure you want to delete this commission? This action is irreversible."
-      /> */}
+      
+            {/* Pagination */}
+            {pagination && (
+                <UniversalPagination
+                    pagination={pagination}
+                    onPageChange={(page) => setCurrentPage(page)}
+                />
+            )}
     </>
   );
 };

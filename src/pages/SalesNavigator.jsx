@@ -42,7 +42,7 @@ const SalesNavigator = () => {
         return () => clearInterval(interval);
     }, []);
     return (
-        <div className="px-4 md:px-0 pt-[60px] md:pt-[100px] min-h-screen font-[sfpro] max-w-[1444px]">
+        <div className="px-4 md:px-0 pt-[60px] md:pt-[100px] min-h-screen font-[sfpro] max-w-[1444px] mx-auto">
 
             <section className="bg-white px-6 py-16 md:px-16 max-w-[992px] mx-auto">
                 <h1 className="text-[40px] lg:text-[58px] text-center text-[#000068] mb-4 font-semibold">Sales Navigator</h1>

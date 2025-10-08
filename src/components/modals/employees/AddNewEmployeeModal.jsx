@@ -117,7 +117,7 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
         setLoading(false);
       }
 
-      if (res.status === 200 || res.status === 201) {
+      if (res.data.status) {
         const newEmployeeData = res.data?.data;
 
         setSnackbar({
@@ -141,17 +141,18 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
         throw new Error(res.data?.message || "Failed to save employee.");
       }
     } catch (error) {
-      console.log("API error:", error?.response || error);
-      setSnackbar({
-        type: 'error',
-        message: (
-          <span className="flex items-center gap-2">
-            {error.response?.data?.message || 'Failed to save employee.'}
-          </span>
-        ),
-      });
-      setTimeout(() => setSnackbar(null), 3000);
-    }
+  console.error("API error:", error);
+
+  setSnackbar({
+    type: 'error',
+    message: (
+      <span className="flex items-center gap-2">
+        {error.message || "Something went wrong"}
+      </span>
+    ),
+  });
+  setTimeout(() => setSnackbar(null), 3000);
+}
     finally {
       setLoading(false);
     }

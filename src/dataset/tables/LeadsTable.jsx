@@ -15,8 +15,6 @@ const LeadsTable = () => {
   const token = useToken();
   const userId = useUserId();
 
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchActive, setSearchActive] = useState(false);
 
   const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false);
   const [editingLeadId, setEditingLeadId] = useState(null);
@@ -27,6 +25,8 @@ const LeadsTable = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState();
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchActive, setSearchActive] = useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -68,7 +68,7 @@ const LeadsTable = () => {
       const paginationData = paginationNormalizer(res.data?.data?.pagination);
       setPagination(paginationData);
 
-      const { leads } = res.data.data;
+      const leads = res.data?.data.leads || [];
       setGetAllLeads(leads);
     } catch (error) {
       console.log(error);
@@ -99,26 +99,28 @@ const LeadsTable = () => {
 
 
 
-  const filteredEmployees = searchActive ? searchResults : getAllLeads;
+  const filteredLeads = searchActive ? searchResults : getAllLeads;
 
 
   return (
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className="flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md">
-          <UniversalSearch
+           <UniversalSearch
             collection="lead"
-            searchPath="products"
-            placeholder="Search by ID, name or email"
-            onResults={(results, query) => {
+            searchPath="leads"
+            placeholder="Search"
+            onResults={(results, query, paginationData) => {
               if (query) {
+
+                setSearchResults(results || []);
                 setSearchActive(true);
-                setSearchResults(results);
-                setCurrentPage(1);
+                setCurrentPage(paginationData);
               } else {
                 setSearchActive(false);
                 setSearchResults([]);
                 allLeads(1);
+
               }
             }}
             auto={true}
@@ -155,9 +157,9 @@ const LeadsTable = () => {
           <tbody>
             {loading ? (
               Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-            ) : filteredEmployees.length > 0 ?
+            ) : filteredLeads.length > 0 ?
               (
-                filteredEmployees.map((emp, index) => (
+                filteredLeads.map((emp, index) => (
                   <tr key={emp._id} className="border-b hover:bg-gray-50 text-start">
                     <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                       {searchActive
@@ -267,12 +269,11 @@ const LeadsTable = () => {
       </div>
 
       {/* Pagination */}
-      {!searchActive && (
+       {pagination && (
         <UniversalPagination
-          pagination={pagination || {}}
+          pagination={pagination}
           onPageChange={(page) => setCurrentPage(page)}
         />
-
       )}
 
       {/* Add/Edit Lead Modal */}

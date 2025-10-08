@@ -14,7 +14,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="flex justify-between items-center px-4 py-2 md:py-5 md:px-20 bg-white shadow-md font-[sfpro] fixed w-full max-w-[1444px] h-[56px] md:h-[92px] z-50">
+      <nav className="flex justify-between items-center px-4 py-2 md:py-5 md:px-20 bg-white shadow-md font-[sfpro] fixed w-full h-[56px] md:h-[92px] z-50">
 
         {/* Logo + CRM */}
         <div className="flex items-center space-x-2">
@@ -26,9 +26,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-6 relative w-[66.5%] lg:w-[63%] justify-between">
-          <ul className="flex space-x-3 lg:space-x-6 text-gray-700 text-sm font-medium">
+          <ul className="hidden md:flex space-x-3 lg:space-x-6 text-gray-700 text-sm font-medium">
             <li><Link to="/">Home</Link></li>
 
             {/* Solutions Dropdown */}
@@ -76,16 +74,18 @@ const Navbar = () => {
             <li><Link to="/pricing">Pricing</Link></li>
             <li><a href="#">Resources</a></li>
           </ul>
+        {/* Desktop Nav */}
+        {/* <div className="hidden md:flex items-center space-x-6 relative justify-between"> */}
 
           <Link
             to="https://calendly.com/nwachukwuconfidence/30min_sartorcrm_demo"
-            className="bg-[#00A859] hover:bg-green-600 text-white px-6 py-2 rounded-xl font-medium text-[12px] lg:text-[14px]"
+            className="hidden md:block bg-[#00A859] hover:bg-green-600 text-white px-6 py-2 rounded-xl font-medium text-[12px] lg:text-[14px]"
             target="_blank"
             rel="noopener noreferrer"
           >
             Book a Demo
           </Link>
-        </div>
+        {/* </div> */}
 
         {/* Mobile Nav Button */}
         <div className="flex md:hidden items-center space-x-2">

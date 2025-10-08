@@ -26,6 +26,7 @@ const LoginPage = () => {
     try {
       const res = await instance.post("auth/login", loginDetails);
       const response = res.data;
+      console.log(res)
 
       if (!response.status) {
         toast.error(response?.message);

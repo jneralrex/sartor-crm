@@ -68,13 +68,13 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
     try {
       const { id, ...rest } = formData;
       const res = await instance.put('user/edit', { id, ...rest });
-
-      if (res.status === 200) {
+      console.log(res)
+      if (res.data.status) {
         const updatedUser = res.data?.data;
 
         setSnackbar({
           type: 'success',
-          message: <span>Profile updated successfully! You will be logged out, please log in again</span>,
+          message: <span>{res?.data?.message || "Something went wrong, try again!"}</span>,
         });
 
         setTimeout(() => {
@@ -87,7 +87,7 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
 
       setSnackbar({
         type: 'error',
-        message: <span>{error.response?.data?.message || 'Failed to update profile.'}</span>,
+        message: <span>{error.message || 'Failed to update profile.'}</span>,
       });
       setTimeout(() => setSnackbar(null), 3000);
     }

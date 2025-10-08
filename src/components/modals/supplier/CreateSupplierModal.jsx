@@ -1,9 +1,9 @@
 import { X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import instance from '../../../utils/axiosInstance';
 import { useToken } from '../../../store/authStore';
 
-const CreateSupplierModal = ({ onClose, onSuccess }) => {
+const CreateSupplierModal = ({ onClose, onSuccess, editMode = false, supplierToEdit = null }) => {
   const token = useToken();
   const [snackbar, setSnackbar] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -20,67 +20,92 @@ const CreateSupplierModal = ({ onClose, onSuccess }) => {
     branch: ''
   });
 
+  // Prefill data in edit mode
+  useEffect(() => {
+    if (editMode && supplierToEdit) {
+      setSupplierData({
+        name: supplierToEdit.name || '',
+        product: supplierToEdit.product || '',
+        contactName: supplierToEdit.contactName || '',
+        contactRole: supplierToEdit.contactRole || '',
+        contactNumber: supplierToEdit.contactNumber || '',
+        phone: supplierToEdit.phone || '',
+        address: supplierToEdit.address || '',
+        email: supplierToEdit.email || '',
+        branch: supplierToEdit.branch || '',
+      });
+    }
+  }, [editMode, supplierToEdit]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSupplierData(prev => ({ ...prev, [name]: value }));
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const res = await instance.post('/supplier', supplierData);
-    console.log(res);
+    try {
+      const url = editMode
+        ? `/supplier/edit/${supplierToEdit._id}`
+        : '/supplier';
+      const method = editMode ? 'put' : 'post';
 
-    if (res.data.status === true || res.data.message === "Supplier created successfully") {
+      const res = await instance[method](url, supplierData);
+      console.log('Supplier response:', res);
+
+      const successMsg = editMode
+        ? 'Supplier updated successfully!'
+        : 'Supplier created successfully!';
+
+      if (res.data.status === true || res.data.message.includes('successfully')) {
+        setSnackbar({ type: 'success', message: successMsg });
+
+        if (onSuccess) onSuccess(res.data?.data);
+
+        if (!editMode) {
+          setSupplierData({
+            name: '',
+            product: '',
+            contactName: '',
+            contactRole: '',
+            contactNumber: '',
+            phone: '',
+            address: '',
+            email: '',
+            branch: ''
+          });
+        }
+
+        setTimeout(() => {
+          setSnackbar(null);
+          onClose();
+        }, 1500);
+      } else {
+        throw new Error('Failed to save supplier');
+      }
+    } catch (error) {
+      console.error(error);
       setSnackbar({
-        type: 'success',
-        message: 'Supplier created successfully!',
+        type: 'error',
+        message: error.response?.data?.message || 'An error occurred',
       });
-
-      // Optional callback
-      if (onSuccess) onSuccess(res.data?.data);
-
-      // Clear form
-      setSupplierData({
-        name: '',
-        product: '',
-        contactName: '',
-        contactRole: '',
-        contactNumber: '',
-        phone: '',
-        address: '',
-        email: '',
-        branch: ''
-      });
-
-      // Close modal after 1.5s
-      setTimeout(() => {
-        setSnackbar(null);
-        onClose();
-      }, 1500);
-    } else {
-      throw new Error('Failed to create supplier');
+      setTimeout(() => setSnackbar(null), 3000);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-    setSnackbar({
-      type: 'error',
-      message: error.response?.data?.message || 'An error occurred',
-    });
-    setTimeout(() => setSnackbar(null), 3000);
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
       {snackbar && (
-        <div className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md 
-          ${snackbar.type === 'error' ? 'bg-red-100 text-red-700 border border-red-400' : 'bg-green-100 text-green-700 border border-green-400'}`}>
+        <div
+          className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md 
+          ${snackbar.type === 'error'
+              ? 'bg-red-100 text-red-700 border border-red-400'
+              : 'bg-green-100 text-green-700 border border-green-400'}`}
+        >
           {snackbar.message}
         </div>
       )}
@@ -88,7 +113,7 @@ const CreateSupplierModal = ({ onClose, onSuccess }) => {
       <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
         <div className="flex items-center justify-between">
           <h2 className="text-[20px] font-semibold text-[#1A1A1A]">
-            Add New Supplier
+            {editMode ? 'Edit Supplier' : 'Add New Supplier'}
           </h2>
           <button onClick={onClose}>
             <X />
@@ -130,12 +155,30 @@ const CreateSupplierModal = ({ onClose, onSuccess }) => {
           >
             {loading ? (
               <>
-                <svg className="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
                 </svg>
-                Creating...
+                {editMode ? 'Updating...' : 'Creating...'}
               </>
+            ) : editMode ? (
+              'Update Supplier'
             ) : (
               'Create Supplier'
             )}

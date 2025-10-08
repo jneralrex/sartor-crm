@@ -1,4 +1,4 @@
-import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
+import { Download, Ellipsis, } from 'lucide-react';
 import search from '../../assets/images/search.png';
 import { useEffect, useState } from 'react';
 import { Menu } from '@headlessui/react'
@@ -24,13 +24,13 @@ const InvoiceTable = ({ }) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState();
-  const [searchActive, setSearchActive] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
-
-
-  // Pagination state
+  const [searchActive, setSearchActive] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+
   const perPage = 100;
+
 
   // syncing currentPage with backend pagination
   useEffect(() => {
@@ -41,7 +41,6 @@ const InvoiceTable = ({ }) => {
 
   const isInventoryManager = role === 'Inventory Manager';
 
-  const filteredInvoice = getInvoices;
 
   const getAllInvoices = async (page = 1) => {
     setLoading(true);
@@ -49,14 +48,18 @@ const InvoiceTable = ({ }) => {
       const res = await instance.get(`invoices?page=${page}&limit=${perPage}`);
       // const res = await instance.get(`invoice/user/${userId}?page=${page}&limit=${perPage}`, );
       setGetInvoices(res.data.data.invoices);
-      const paginationData = paginationNormalizer(res.data?.data?.pagination);
-      console.log("Fetched products:", products);
+      console.log(res)
+      const paginationData = paginationNormalizer(
+        res.data?.pagination || res.data?.data?.pagination || res.data?.data?.data?.pagination
+      );
       setPagination(paginationData);
 
       console.log(res);
 
     } catch (error) {
       console.error('Error fetching invoices:', error);
+      setPagination(paginationNormalizer());
+
     } finally {
       setLoading(false);
     }
@@ -77,18 +80,17 @@ const InvoiceTable = ({ }) => {
   };
 
 
-  useEffect(() => {
-    getAllInvoices(currentPage);
-  }, [currentPage, token]);
-
   const handleViewInvoiceModalToggle = (id) => {
     setSelectedInvoiceId(id);
     setViewLpoModalOpen(true);
   };
 
-    useEffect(() => {
-  getAllInvoices(currentPage);
-}, [currentPage]);
+  useEffect(() => {
+    getAllInvoices(currentPage);
+  }, [currentPage]);
+
+  const filteredInvoice = searchActive ? searchResults : getInvoices;
+
 
 
   return (
@@ -97,16 +99,19 @@ const InvoiceTable = ({ }) => {
         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
           <UniversalSearch
             collection="invoice"
-            placeholder="Search by ID, name or email"
-            onResults={(results, query) => {
+            searchPath="invoices"
+            placeholder="Search"
+            onResults={(results, query, paginationData) => {
               if (query) {
+
+                setSearchResults(results || []);
                 setSearchActive(true);
-                setSearchResults(results);
-                setCurrentPage(1);
+                setCurrentPage(paginationData);
               } else {
                 setSearchActive(false);
                 setSearchResults([]);
-                allProducts(1);
+                getAllInvoices(1);
+
               }
             }}
             auto={true}
@@ -152,16 +157,16 @@ const InvoiceTable = ({ }) => {
                   </td>
                   <td
                     className={`px-4 py-3 text-xs md:text-[14px] font-normal ${invoice.status === 'Paid'
-                        ? 'text-[#33DF69]'
-                        : invoice.status === 'Cancelled'
-                          ? 'text-[#FF6259]'
-                          : invoice.status === 'Overdue'
-                            ? 'text-[#000068]'
-                            : invoice.status === 'Partially Paid'
-                              ? 'text-[#7474E1]'
-                              : invoice.status === 'Pending'
-                                ? 'text-[#FFB400]'
-                                : 'text-gray-500'
+                      ? 'text-[#33DF69]'
+                      : invoice.status === 'Cancelled'
+                        ? 'text-[#FF6259]'
+                        : invoice.status === 'Overdue'
+                          ? 'text-[#000068]'
+                          : invoice.status === 'Partially Paid'
+                            ? 'text-[#7474E1]'
+                            : invoice.status === 'Pending'
+                              ? 'text-[#FFB400]'
+                              : 'text-gray-500'
                       }`}
                   >
                     {invoice.status}
@@ -242,13 +247,12 @@ const InvoiceTable = ({ }) => {
       </div>
 
       {/* Pagination */}
-       {!searchActive && (
+      {pagination && (
         <UniversalPagination
-          pagination={pagination || {}}
-          onPageChange={(page) => getAllInvoices(page)}
+          pagination={pagination}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       )}
-
 
 
       {isViewInvoiceModalOpen && (<InvoiceDetailsModal onClose={() => {

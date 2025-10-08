@@ -50,7 +50,7 @@ const ProductsTable = () => {
       const res = await instance.get(`products?page=${page}&limit=${perPage}`);
       const products = res.data?.data?.data || [];
       const paginationData = paginationNormalizer(res.data?.data?.pagination);
-      console.log("Fetched products:", products);
+      console.log("Fetched products:", res);
       setGetAllProducts(products);
       setPagination(paginationData);
     } catch (error) {
@@ -104,16 +104,18 @@ const ProductsTable = () => {
           <UniversalSearch
             collection="product"
             searchPath="products"
-            placeholder="Search by ID, name or email"
-            onResults={(results, query) => {
+            placeholder="Search"
+            onResults={(results, query, paginationData) => {
               if (query) {
+
+                setSearchResults(results || []);
                 setSearchActive(true);
-                setSearchResults(results);
-                setCurrentPage(1);
+                setCurrentPage(paginationData);
               } else {
                 setSearchActive(false);
                 setSearchResults([]);
                 allProducts(1);
+
               }
             }}
             auto={true}
@@ -149,17 +151,17 @@ const ProductsTable = () => {
           </thead>
           <tbody>
             {loading ? (
-              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-            ) : (
+              Array.from({ length: 8 }).map((_, idx) => (
+                <EmployeeSkeletonRow key={idx} />
+              ))
+            ) : productsToRender.length > 0 ? (
               productsToRender.map((prod, index) => (
                 <tr key={prod._id} className="border-b hover:bg-gray-50 text-start">
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                     {searchActive
                       ? index + 1
-                      : (currentPage - 1) * perPage + index + 1
-                    }
+                      : (currentPage - 1) * perPage + index + 1}
                   </td>
-
                   <td className="px-4 py-3 flex items-center gap-2">
                     <div className="text-xs md:text-[14px] font-medium text-[#484848] flex items-center gap-2">
                       <input type="checkbox" /> {prod.productName}
@@ -170,8 +172,12 @@ const ProductsTable = () => {
                       ? [...new Set(prod.batches.map((b) => b?.supplier?.name).filter(Boolean))].join(', ')
                       : 'N/A'}
                   </td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.status || 'N/A'}</td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.sellingPrice}</td>
+                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                    {prod.status || 'N/A'}
+                  </td>
+                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                    {prod.sellingPrice}
+                  </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                     {Array.isArray(prod.restocks) && prod.restocks.length > 0
                       ? new Date(Math.max(...prod.restocks.map((r) => new Date(r.date)))).toLocaleDateString()
@@ -179,89 +185,31 @@ const ProductsTable = () => {
                         ? new Date(prod.expiryDate).toLocaleDateString()
                         : 'N/A'}
                   </td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">{prod.quantity}</td>
+                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
+                    {prod.quantity}
+                  </td>
                   <td className="px-4 py-3">
-                    <div className="relative">
-                      <Menu as="div" className="relative inline-block text-left">
-                        <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                          <Ellipsis />
-                        </Menu.Button>
-                        <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                          <div className="py-1">
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => handleViewProductDetailModalToggle(prod._id)}
-                                >
-                                  View Details
-                                </button>
-                              )}
-                            </Menu.Item>
-                          </div>
-                          <div>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => {
-                                    setProductToEdit(prod);
-                                    setIsEditProductModalOpen(true);
-                                  }}
-                                >
-                                  Edit
-                                </button>
-                              )}
-                            </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => handleAddBatchModalToggle(prod._id)}
-                                >
-                                  Add Batch
-                                </button>
-                              )}
-                            </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => handleViewBatches(prod._id)}
-                                >
-                                  View Batches
-                                </button>
-                              )}
-                            </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
-                                  onClick={() => {
-                                    setProductToDelete(prod._id);
-                                    setIsConfirmOpen(true);
-                                  }}
-                                >
-                                  Delete
-                                </button>
-                              )}
-                            </Menu.Item>
-                          </div>
-                        </Menu.Items>
-                      </Menu>
-                    </div>
+                    {/* menu dropdown here */}
+                    ...
                   </td>
                 </tr>
               ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="text-center py-4 text-red-500">
+                  No Products Found
+                </td>
+              </tr>
             )}
           </tbody>
+
         </table>
       </div>
 
-      {!searchActive && (
+      {pagination && (
         <UniversalPagination
-          pagination={pagination || {}}
-          onPageChange={(page) => allProducts(page)}
+          pagination={pagination}
+          onPageChange={(page) => setCurrentPage(page)}
         />
       )}
 

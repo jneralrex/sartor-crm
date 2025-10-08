@@ -113,11 +113,11 @@ const LandingPage = () => {
     return (
 
 
-            <div className="px-4 md:px-20 pt-[80px] md:pt-[150px] min-h-screen font-[sfpro] max-w-[1444px]">
+            <div className="px-4 md:px-20 pt-[80px] md:pt-[150px] min-h-screen font-[sfpro]">
                
                 {/* Hero Section */}
-                <section className="bg-[#0a0a8f] text-white text-center py-10 px-4 flex flex-col justify-center items-center relative max-w-[1200px] rounded-lg">
-                    <div className="max-w-[1089px]">
+                <section className="bg-[#0a0a8f] text-white text-center py-10 px-4 items-center relative rounded-lg max-w-[1444px] mx-auto">
+                    <div className="max-w-[1444px] mx-auto flex flex-col justify-center items-center">
 
                         <h1 className="sm:max-w-[580px] md:max-w-[800px] font-bold mb-4 sm:text-[42px] md:text-[60px]">
                             Where Sales Meet Trust. Powered By AI And Blockchain.
@@ -157,7 +157,7 @@ const LandingPage = () => {
                 </section>
 
                 {/* Solutions Section */}
-                <section className="py-8 md:py-16 px-4 text-center max-w-[1199px] mx-auto">
+                <section className="py-8 md:py-16 px-4 text-center max-w-[1444px] mx-auto">
                     <div className="md:max-w-[400px] text-left mb-10">
                         <h2 className="text-2xl md:text-4xl font-semibold mb-4">
                             Solutions for Every Step of Your Distribution Journey
@@ -168,7 +168,7 @@ const LandingPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mx-auto">
                         {solutions.map((solution, index) => (
                             <Fade key={index} direction="left" delay={index * 100} triggerOnce>
-                                <div className="bg-white p-6 rounded-xl shadow max-w-[580px] max-h-[496px] border-[2px] hover:border-[#00A859]">
+                                <div className="bg-white p-6 rounded-xl shadow border-[2px] hover:border-[#00A859]">
                                     <img
                                         src={solution.image}
                                         alt={solution.alt}
@@ -190,8 +190,7 @@ const LandingPage = () => {
                 </section>
 
                 {/* Why Choose Sartor CRM Section */}
-                <section className=" text-black py-8 md:py-16 md:px-20">
-                    <div className="max-w-[1200px]">
+                <section className=" text-black py-8 md:py-16 md:px-20 max-w-[1444px] mx-auto">
                         <h2 className="text-center text-3xl font-semibold mb-2 md:mb-12">Why Choose Sartor CRM</h2>
                         <div className="flex flex-col lg:grid lg:grid-cols-2  gap-[5px] md:gap-10 items-stretch mx-auto w-full">
 
@@ -239,7 +238,6 @@ const LandingPage = () => {
                                 </ul>
                             </div>
                         </div>
-                    </div>
                 </section>
 
                 {/* How It Works Section */}

@@ -5,8 +5,8 @@ import instance from '../../../utils/axiosInstance';
 
 const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
   const [activeTab, setActiveTab] = useState('basic');
-    const  token  = useToken();
-    const userId  = useUserId();
+  const token = useToken();
+  const userId = useUserId();
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
   const [addLeads, setAddLeads] = useState({
@@ -20,7 +20,7 @@ const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
     dealSize: "",
     status: "",
     notes: "",
-       contact: [
+    contact: [
       {
         name: "",
         email: "",
@@ -218,36 +218,88 @@ const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
               <Textarea label="Notes" name="notes" value={addLeads.notes} onChange={handleChange} />
             </>
           )}
-
           {activeTab === 'contact' && (
             <>
-              <Input label="Contact Person" name="name" value={addLeads.contact[0]?.name || ''} onChange={(e) => handleContactChange(e, 0)} />
-              <Input label="Email" name="email" value={addLeads.contact[0]?.email || ''} onChange={(e) => handleContactChange(e, 0)} />
-              <Input label="Phone Number" name="phone" value={addLeads.contact[0]?.phone || ''} onChange={(e) => handleContactChange(e, 0)} />
-              <Select
-                label="Role"
-                name="role"
-                value={addLeads.contact[0]?.role || ''}
-                onChange={(e) => handleContactChange(e, 0)}
-                options={[
-                  "Owner / Founder",
-                  "CEO / Managing Director",
-                  "Chief Operating Officer (COO)",
-                  "Chief Financial Officer (CFO) / Financial Officer",
-                  "General Manager / Branch Manager",
-                  "Procurement / Purchasing Manager",
-                  "Sales / Marketing Manager",
-                  "Store Manager / Supervisor",
-                  "Superintendent Pharmacist / Pharmacist",
-                  "Other (e.g., Matron, Doctor, Nurse, Secretary, Head Chef)",
-                ]}
-              />
-              <div className="text-[#A3A3A3] flex justify-center items-center gap-2 text-sm cursor-pointer">
+              {addLeads.contact.map((person, index) => (
+                <div key={index} className="mb-6 border-b border-gray-200 pb-4 relative">
+
+                  {/* Remove button */}
+                  {addLeads.contact.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = addLeads.contact.filter((_, i) => i !== index);
+                        setAddLeads({ ...addLeads, contact: updated });
+                      }}
+                      className="absolute top-0 right-0 text-red-500 hover:text-red-600"
+                    >
+                      <X size={16} />
+                    </button>
+                  )}
+
+                  {/* Input fields for each contact */}
+                  <Input
+                    label="Contact Person"
+                    name="name"
+                    value={person.name}
+                    onChange={(e) => handleContactChange(e, index)}
+                  />
+                  <Input
+                    label="Email"
+                    name="email"
+                    value={person.email}
+                    onChange={(e) => handleContactChange(e, index)}
+                  />
+                  <Input
+                    label="Phone Number"
+                    name="phone"
+                    value={person.phone}
+                    onChange={(e) => handleContactChange(e, index)}
+                  />
+                  <Select
+                    label="Role"
+                    name="role"
+                    value={person.role}
+                    onChange={(e) => handleContactChange(e, index)}
+                    options={[
+                      "Owner / Founder",
+                      "CEO / Managing Director",
+                      "Chief Operating Officer (COO)",
+                      "Chief Financial Officer (CFO) / Financial Officer",
+                      "General Manager / Branch Manager",
+                      "Procurement / Purchasing Manager",
+                      "Sales / Marketing Manager",
+                      "Store Manager / Supervisor",
+                      "Superintendent Pharmacist / Pharmacist",
+                      "Other (e.g., Matron, Doctor, Nurse, Secretary, Head Chef)",
+                    ]}
+                  />
+                </div>
+              ))}
+
+              {/* Add new contact button */}
+              <div
+                className="text-[#3B82F6] flex justify-center items-center gap-2 text-sm cursor-pointer font-medium mt-4"
+                onClick={() =>
+                  setAddLeads({
+                    ...addLeads,
+                    contact: [
+                      ...addLeads.contact,
+                      { name: "", email: "", phone: "", role: "" },
+                    ],
+                  })
+                }
+              >
                 <Plus size={16} />
-                <span>Add Contact Person 2</span>
+                <span>Add Another Contact Person</span>
               </div>
             </>
           )}
+
+
+
+
+
 
           <button
             type="submit"

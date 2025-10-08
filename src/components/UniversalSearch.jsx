@@ -6,7 +6,7 @@ const UniversalSearch = ({
   collection,
   searchPath,
   onResults,
-  onSearchResetPage, 
+  onSearchResetPage,
   placeholder = "Search...",
   auto = true,
   className = '',
@@ -29,9 +29,18 @@ const UniversalSearch = ({
         `/${searchPath}?search=${query}`,
         { collection, searchvalue: query }
       );
+      console.log("Universal search", res)
+      const results = res.data?.data?.data ||
+       res.data?.data?.leads ||
+       res.data?.data?.lpos ||
+        res.data?.data?.customers ||
+        res.data?.data?.invoices ||
+        [];
 
-      const results = res.data?.data || [];
-      onResults(results);
+      const paginationData = res.data?.data?.pagination || {};
+
+      onResults(results, query, paginationData);
+
 
       //  Reset pagination to first page
       if (onSearchResetPage) onSearchResetPage();

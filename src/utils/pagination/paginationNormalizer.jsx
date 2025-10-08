@@ -4,7 +4,12 @@ export const paginationNormalizer = (backendPagination = {}) => {
     totalPages: backendPagination.totalPages || 1,
     totalItems:
       backendPagination.totalLeads ||
-      backendPagination.tasksPerPage ||
+      backendPagination.totalTasks ||
+      backendPagination.totalUsers||
+      backendPagination.totalLpos ||
+      backendPagination.totalSuppliers ||
+      backendPagination.totalCustomers ||
+      backendPagination.totalProducts ||
       backendPagination.totalInvoice ||
       backendPagination.totalItems ||
       backendPagination.count ||
