@@ -4,7 +4,6 @@ import { Bell } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NotificationModal from "./modals/userAction/NotificationModal";
-import EditPersonalInfoModal from "./modals/userAction/EditPersonalInfoModal";
 import SystemSettingModal from "./modals/userAction/SystemSettingModal";
 import EditUserProfileModal from './EditUserProfileModal';
 import { useFullName, useEmail, useLogout, useSetAuth, useImage } from '../store/authStore';
@@ -18,7 +17,6 @@ const UserActionNav = () => {
   const navigate = useNavigate();
 
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
   const [isSystemSettingModalOpen, setSystemSettingModalOpen] = useState(false);
   const [isUserEditModalOpen, setUserEditModalOpen] = useState(false);
 
@@ -53,16 +51,6 @@ const UserActionNav = () => {
 
         <Menu.Items className="absolute p-4 right-0 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
           <div className="py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full px-4 py-2 text-sm`}
-                  onClick={() => setEditModalOpen(true)}
-                >
-                  Personal Info
-                </button>
-              )}
-            </Menu.Item>
             <Menu.Item>
               {({ active }) => (
                 <button
@@ -106,9 +94,6 @@ const UserActionNav = () => {
 
       {isNotificationModalOpen && (
         <NotificationModal onClose={() => setNotificationModalOpen(false)} />
-      )}
-      {isEditModalOpen && (
-        <EditPersonalInfoModal onClose={() => setEditModalOpen(false)} />
       )}
       {isSystemSettingModalOpen && (
         <SystemSettingModal onClose={() => setSystemSettingModalOpen(false)} />

@@ -140,7 +140,7 @@ const LposTable = () => {
           </thead>
           <tbody>
             {loading ? (
-              Array.from({ length: 8 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
+              Array.from({ length: 6 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
             ) : filteredLPOs.length > 0 ?
               (filteredLPOs.map((lpo, index) => (
                 <tr key={lpo._id} className="border-b hover:bg-gray-50 text-start">
@@ -254,12 +254,20 @@ const LposTable = () => {
       )}
 
 
-      {isViewLpoModalOpen && <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} onSuccess={(updatedLpo) => {
+      {isViewLpoModalOpen && 
+      <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} onSuccess={(updatedLpo) => {
         setGetAllLpos(prev =>
           prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
         );
-      }} />}
-      {isCreateLopModalOpen && <CreateLpoModal onClose={handleCreateLpoModal} />}
+      }} 
+      />}
+
+      {isCreateLopModalOpen && <CreateLpoModal 
+      onClose={handleCreateLpoModal} 
+      onSuccess={
+        allLPOs}
+      />}
+
       {isEditLpoModalOpen && (
         <EditLpoModal
           lpo={selectedLpo}

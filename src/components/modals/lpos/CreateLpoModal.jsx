@@ -9,7 +9,7 @@ const paymentTerms = [
     "⁠Payment 2 weeks after delivery",
 ];
 
-const CreateLpoModal = ({ onClose }) => {
+const CreateLpoModal = ({ onClose, onSuccess }) => {
     const  token  = useToken();
 
     const [leads, setLeads] = useState([]);
@@ -19,8 +19,6 @@ const CreateLpoModal = ({ onClose }) => {
     const [terms, setTerms] = useState('');
     const [products, setProducts] = useState([{ product: '', quantity: '' }]);
     const [totalAmount, setTotalAmount] = useState(0);
-    const [getAllLeads, setGetAllLeads] = useState([]);
-    const [getAllProducts, setGetAllProducts] = useState([]);
     const [loading, setLoading] = useState(false);
 
 
@@ -85,7 +83,8 @@ const CreateLpoModal = ({ onClose }) => {
             const res = await instance.post("lpo", payload);
 
             console.log(res)
-            onClose(); // Close modal on success
+            onSuccess();
+            onClose(); 
         } catch (err) {
             console.error(err);
         }
@@ -93,7 +92,7 @@ const CreateLpoModal = ({ onClose }) => {
             setLoading(false);
         }
     };
-
+console.log("products",productsList)
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
             <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
@@ -156,7 +155,7 @@ const CreateLpoModal = ({ onClose }) => {
                                         <option value="">Select product</option>
                                         {productsList.map(item => (
                                             <option key={item._id} value={item._id}>
-                                                {item.productName} - ₦{(item.unitPrice || item.sellingPrice || 0).toLocaleString()}
+                                                {item.productName}
                                             </option>
                                         ))}
                                     </select>

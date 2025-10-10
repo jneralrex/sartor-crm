@@ -31,7 +31,7 @@ const menuItems = [
   { label: 'Invoices', path: 'invoices', icon: invoicesIcon, role: ['Super-Admin', 'Inventory Manager', 'Manager', 'Sales Rep'] },
   { label: 'Merchandisers', path:'merchandisers', icon: lock, role: ['Super-Admin', 'Manager'] },
   { label: 'LPOs', path: 'lpos', icon: lposIcon, role: ['Super-Admin', 'Inventory Manager','Sales Rep', 'Manager'] },
-  { label: 'Commission', path:'commissions', icon: stocksIcon, role: ['Super-Admin', 'Sales Rep', 'Inventory Manager'] },
+  { label: 'Commission', path:'commissions', icon: stocksIcon, role: ['Sales Rep',] },
   { label: 'Stocks', path:'stocks', icon: dollar, role: ['Super-Admin', 'Inventory Manager'] },
   { label: 'Suppliers', path:'suppliers', icon: plug, role: ['Super-Admin', 'Inventory Manager'] },
   { label: 'Vehicles', path:'vehicles', icon: vehicle, role: ['Super-Admin','Inventory Manager'] },
