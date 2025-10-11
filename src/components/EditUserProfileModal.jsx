@@ -13,46 +13,28 @@ const roleOptions = [
 ];
 
 const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
-  const userId = useUserId(); // Custom hook to get user ID
+  const userId = useUserId(); 
   const [formData, setFormData] = useState({
-    id: userId,
+    id: "",  
     fullName: "",
-    email: "",
     phone: "",
     address: "",
-    role: "",
-    image: "",
-    userManagement: false,
-    lpo: false,
-    payment: false,
-    sales: false,
-    clg: false,
-    workflow: false,
   });
 
   const [snackbar, setSnackbar] = useState(null);
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     if (userData) {
+      console.log("Incoming userData:", userData); 
       setFormData({
-        id: userId || "", // changed from _id to id
+        id: userData._id || userId || "",  
         fullName: userData.fullName || "",
-        email: userData.email || "",
         phone: userData.phone || "",
         address: userData.address || "",
-        role: userData.role || "",
-        image: userData.image || "",
-        userManagement: userData.userManagement || false,
-        lpo: userData.lpo || false,
-        payment: userData.payment || false, // fixed: lowercase + removed `|| true`
-        sales: userData.sales || false,
-        clg: userData.clg || false,
-        workflow: userData.workflow || false,
       });
     }
-  }, [userData]);
+  }, [userData, userId]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -65,6 +47,18 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    console.log("Submitting update with id:", formData.id); 
+
+    if (!formData.id) {
+      setSnackbar({
+        type: 'error',
+        message: <span>User ID is missing. Cannot update profile.</span>,
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const { id, ...rest } = formData;
       const res = await instance.put('user/edit', { id, ...rest });
@@ -74,27 +68,36 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
 
         setSnackbar({
           type: 'success',
-          message: <span>{res?.data?.message || "Something went wrong, try again!"}</span>,
+          message: <span>{res?.data?.message || "Profile updated successfully!"}</span>,
         });
 
         setTimeout(() => {
           setSnackbar(null);
-          onUserUpdate && onUserUpdate(updatedUser); // Pass up
-          onClose(); // Close modal
+          onUserUpdate && onUserUpdate(updatedUser);
+          onClose();
         }, 2000);
+      } else {
+        // handle response when status is false
+        setSnackbar({
+          type: 'error',
+          message: <span>{res.data.message || "Failed to update profile."}</span>,
+        });
+        setTimeout(() => setSnackbar(null), 3000);
       }
     } catch (error) {
-
+      console.error(error);
+      console.log(error)
       setSnackbar({
         type: 'error',
         message: <span>{error.message || 'Failed to update profile.'}</span>,
       });
       setTimeout(() => setSnackbar(null), 3000);
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
+
+  console.log(formData)
 
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
@@ -111,11 +114,11 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
           <button onClick={onClose}><X /></button>
         </div>
 
-        {formData.image && (
+        {/* {formData.image && (
           <div className="mb-4 text-center">
             <img src={formData.image} alt="Profile" className="w-20 h-20 rounded-full mx-auto" />
           </div>
-        )}
+        )} */}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
           <div>
@@ -124,18 +127,6 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
               type="text"
               name="fullName"
               value={formData.fullName}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 px-2 py-1"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
               onChange={handleChange}
               required
               className="w-full border border-gray-300 px-2 py-1"
@@ -166,22 +157,6 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
             />
           </div>
 
-          <div>
-            <label className="block mb-1 text-gray-700">Role</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 px-2 py-1"
-            >
-              <option value="">Select Role</option>
-              {roleOptions.map((role, index) => (
-                <option key={index} value={role}>{role}</option>
-              ))}
-            </select>
-          </div>
-
           {loading ? (
             <button
               type="button"
@@ -198,7 +173,6 @@ const EditUserProfileModal = ({ onClose, userData, onUserUpdate }) => {
               Save Changes
             </button>
           )}
-
         </form>
       </div>
     </div>

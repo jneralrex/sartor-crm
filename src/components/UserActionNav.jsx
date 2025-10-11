@@ -3,25 +3,41 @@ import { ChevronDownIcon } from '@heroicons/react/16/solid';
 import { Bell } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import NotificationModal from "./modals/userAction/NotificationModal";
 import SystemSettingModal from "./modals/userAction/SystemSettingModal";
 import EditUserProfileModal from './EditUserProfileModal';
-import { useFullName, useEmail, useLogout, useSetAuth, useImage } from '../store/authStore';
+
+import {
+  useFullName,
+  useEmail,
+  useLogout,
+  useSetAuth,
+  useImage,
+  usePhone,
+  useAddress,
+  useRole // ✅ Import this
+} from '../store/authStore';
 
 const UserActionNav = () => {
   const fullName = useFullName();
   const email = useEmail();
+  const phone = usePhone();
+  const address = useAddress();
   const logout = useLogout();
   const image = useImage();
   const setAuth = useSetAuth();
+  const role = useRole(); // ✅ Get role from Zustand
   const navigate = useNavigate();
+
+  const isSuperAdmin = role === 'Super-Admin';
 
   const [isNotificationModalOpen, setNotificationModalOpen] = useState(false);
   const [isSystemSettingModalOpen, setSystemSettingModalOpen] = useState(false);
   const [isUserEditModalOpen, setUserEditModalOpen] = useState(false);
 
   const handleUserUpdate = (updatedUser) => {
-    setAuth(updatedUser); // updates Zustand state safely
+    setAuth(updatedUser);
   };
 
   const handleLogout = () => {
@@ -33,8 +49,8 @@ const UserActionNav = () => {
     <div className="max-w-[300px] md:max-w-[400px] md:gap-2 flex items-center justify-end absolute right-0 top-3 md:top-0 md:relative">
       <div>
         <img
-          src={image} // optional: add avatar later
-          alt={fullName }
+          src={image}
+          alt={fullName || "User"}
           className="rounded-full size-10 bg-[#D9D9D9] object-cover"
         />
       </div>
@@ -42,8 +58,7 @@ const UserActionNav = () => {
       <Menu as="div" className="relative inline-block text-left z-10">
         <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
           <div className="flex flex-col text-left">
-            <span className="text-[14px] font-semibold">{fullName  || "User"}</span>
-            
+            <span className="text-[14px] font-semibold">{fullName || "User"}</span>
             <span className="text-[12px] text-gray-500">{email || ""}</span>
           </div>
           <ChevronDownIcon className="w-4 h-4 text-black/60" />
@@ -51,26 +66,32 @@ const UserActionNav = () => {
 
         <Menu.Items className="absolute p-4 right-0 mt-2 w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5">
           <div className="py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full px-4 py-2 text-sm`}
-                  onClick={() => setSystemSettingModalOpen(true)}
-                >
-                  System Settings
-                </button>
-              )}
-            </Menu.Item>
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full px-4 py-2 text-sm`}
-                  onClick={() => setUserEditModalOpen(true)}
-                >
-                  Edit Your Profile
-                </button>
-              )}
-            </Menu.Item>
+            {isSuperAdmin && (
+              <>
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full px-4 py-2 text-sm`}
+                      onClick={() => setSystemSettingModalOpen(true)}
+                    >
+                      System Settings
+                    </button>
+                  )}
+                </Menu.Item>
+
+                <Menu.Item>
+                  {({ active }) => (
+                    <button
+                      className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full px-4 py-2 text-sm`}
+                      onClick={() => setUserEditModalOpen(true)}
+                    >
+                      Edit Your Profile
+                    </button>
+                  )}
+                </Menu.Item>
+              </>
+            )}
+
             <Menu.Item>
               {({ active }) => (
                 <button
@@ -95,13 +116,15 @@ const UserActionNav = () => {
       {isNotificationModalOpen && (
         <NotificationModal onClose={() => setNotificationModalOpen(false)} />
       )}
+
       {isSystemSettingModalOpen && (
         <SystemSettingModal onClose={() => setSystemSettingModalOpen(false)} />
       )}
+
       {isUserEditModalOpen && (
         <EditUserProfileModal
           onClose={() => setUserEditModalOpen(false)}
-          userData={{ fullName, email }}
+          userData={{ fullName, email, phone, address }}
           onUserUpdate={handleUserUpdate}
         />
       )}

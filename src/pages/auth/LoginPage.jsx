@@ -37,6 +37,8 @@ const LoginPage = () => {
       const userData = response.data;
       setAuth(userData); 
 
+      console.log(userData)
+
       toast.success(response?.message);
 
       setTimeout(() => {

@@ -18,7 +18,7 @@ const userRoleOptions = [
 ]
 
 const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
-  const  token  = useToken();
+  const token = useToken();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [snackbar, setSnackbar] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -100,10 +100,13 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
       // Only include fields that are true or required
       const filteredAccess = Object.fromEntries(
         Object.entries(addNewEmployeeDetails).filter(([key, value]) => {
-          const coreFields = ['fullName', 'email', 'phone', 'address', 'role', 'userRole', 'password'];
+          const coreFields = employeeToEdit
+            ? ['fullName', 'email', 'phone', 'address', 'role']
+            : ['fullName', 'email', 'phone', 'address', 'role', 'userRole'];
           return coreFields.includes(key) || value === true;
         })
       );
+
 
       let res;
       if (employeeToEdit) {
@@ -141,18 +144,18 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
         throw new Error(res.data?.message || "Failed to save employee.");
       }
     } catch (error) {
-  console.error("API error:", error);
+      console.error("API error:", error);
 
-  setSnackbar({
-    type: 'error',
-    message: (
-      <span className="flex items-center gap-2">
-        {error.message || "Something went wrong"}
-      </span>
-    ),
-  });
-  setTimeout(() => setSnackbar(null), 3000);
-}
+      setSnackbar({
+        type: 'error',
+        message: (
+          <span className="flex items-center gap-2">
+            {error.message || "Something went wrong"}
+          </span>
+        ),
+      });
+      setTimeout(() => setSnackbar(null), 3000);
+    }
     finally {
       setLoading(false);
     }
@@ -217,22 +220,25 @@ const AddNewEmployeeModal = ({ onClose, onSuccess, employeeToEdit = null }) => {
             </div>
           </label>
 
-          <label className='font-medium text-[14px] text-[#1A1A1A]'>Job Role (User Role)
-            <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
-              <select
-                name="userRole"
-                value={addNewEmployeeDetails.userRole}
-                onChange={handleChange}
-                className='bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'
-                required
-              >
-                <option value="">Select Job Role</option>
-                {userRoleOptions.map((opt, idx) => (
-                  <option key={idx} value={opt}>{opt}</option>
-                ))}
-              </select>
-            </div>
-          </label>
+          {!employeeToEdit && (
+            <label className='font-medium text-[14px] text-[#1A1A1A]'>Job Role (User Role)
+              <div className='mt-1 bg-[#F5F5F5] rounded-lg h-[48px] p-4 flex items-center w-full'>
+                <select
+                  name="userRole"
+                  value={addNewEmployeeDetails.userRole}
+                  onChange={handleChange}
+                  className='bg-transparent rounded-lg h-[48px] p-4 flex items-center outline-none w-full'
+                  required
+                >
+                  <option value="">Select Job Role</option>
+                  {userRoleOptions.map((opt, idx) => (
+                    <option key={idx} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
+            </label>
+          )}
+
 
           <button
             type="submit"

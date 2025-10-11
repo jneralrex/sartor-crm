@@ -67,7 +67,7 @@ body {
 } */
 
 .grid-cards {
-  @apply flex items-center gap-5 p-5 bg-primary_white border-b md:border-b-0 md:border-r md:max-w-[277px] h-[139px] md:justify-center w-[90%] m-auto md:m-0 md:w-full md:flex-col xl:flex-row 
+  @apply flex items-center gap-5 p-5 bg-primary_white border-b md:border-b-0 md:border-r h-[139px] md:justify-center w-[90%] m-auto md:m-0 md:w-full md:flex-col xl:flex-row 
 }
 .grid-cards-icons {
   @apply bg-primary_grey size-10 rounded-full flex justify-center items-center

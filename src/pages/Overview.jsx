@@ -7,20 +7,37 @@ import { Calendar, ChevronDownIcon, Download } from 'lucide-react';
 
 import customers from '../assets/images/customers.png';
 import lead from '../assets/images/lead.png';
+import boxx from '../assets/images/boxx.png';
 import chart from '../assets/images/chart.png';
+import invoice from '../assets/images/invoice.png';
+import comm from '../assets/images/comm.png';
+import task from '../assets/images/task.png';
 
 
 import TotalCustomersChart from '../dataset/charts/TotalCustomersChart';
 import TotalRevenueChart from '../dataset/charts/TotalRevenueChart';
 import TopSalesRegions from '../dataset/charts/TopSalesRegion';
+import { usePasswordChanged, useRole } from '../store/authStore';
+import ChangePasswordModal from './auth/modal/ChangePasswordModal';
 
 const Overview = () => {
   const [openCalendar, setOpenCalendar] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const role = useRole();
+
+  const changePasswordCheck = usePasswordChanged();
+
+  const isSuperAdmin = role === 'Super-Admin';
+  const isSalesRep = role === 'Sales Rep';
+  const isInventoryManager = role === 'Inventory Manager';
+  const isMerchandiser = role === 'Merchandiser';
+  const isManager = role === 'Manager'
 
   useEffect(() => {
     const fetchDashboard = async () => {
+
+      console.log("checking", changePasswordCheck)
       try {
         const response = await instance.get('dashboard');
         console.log(response)
@@ -83,50 +100,127 @@ const Overview = () => {
       </div>
 
       {/* Stat cards */}
-      <div className='w-full grid md:grid-cols-4 md:px-4 mt-[90px] md:mt-0'>
-        <div className='grid-cards'>
-          <span className='grid-cards-icons'><img src={customers} alt="Customers" /></span>
-          <div className='grid-text-cards'>
-            <span className='grid-cards-text-main'>{dashboardData.cards.totalCustomers}</span>
-            <span className='grid-cards-text-sub'>Customers</span>
+      <div className='w-full grid md:grid-flow-col md:px-4 mt-[90px] md:mt-0'>
+        {(isSuperAdmin || isManager) && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={customers} alt="Customers" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>{dashboardData?.cards?.totalCustomers}</span>
+              <span className='grid-cards-text-sub'>Customers</span>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className='grid-cards'>
-          <span className='grid-cards-icons'><img src={lead} alt="LPOs" /></span>
-          <div className='grid-text-cards'>
-            <span className='grid-cards-text-main'>{dashboardData.cards.totalLpos}</span>
-            <span className='grid-cards-text-sub'>Total LPOs</span>
-          </div>
-        </div>
+        {(isSuperAdmin || isInventoryManager || isManager) && (
 
-        <div className='grid-cards'>
-          <span className='grid-cards-icons'><img src={chart} alt="Sales" /></span>
-          <div className='grid-text-cards'>
-            <span className='grid-cards-text-main'>₦{dashboardData.cards.totalSales.toLocaleString()}</span>
-            <span className='grid-cards-text-sub'>Total Sales</span>
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={lead} alt="LPOs" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>{dashboardData?.cards?.totalLpos}</span>
+              <span className='grid-cards-text-sub'>Total LPOs</span>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className='grid-cards'>
-          <span className='grid-cards-icons'><img src={chart} alt="Revenue" /></span>
-          <div className='grid-text-cards'>
-            <span className='grid-cards-text-main'>₦{dashboardData.cards.totalSales.toLocaleString()}</span>
-            <span className='grid-cards-text-sub'>Total Revenue</span>
+        {(isMerchandiser) && (
+
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={lead} alt="LPOs" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>{dashboardData?.cards?.totalProducts}</span>
+              <span className='grid-cards-text-sub'>Your Products</span>
+            </div>
           </div>
-        </div>
+        )}
+
+        {(isSuperAdmin || isManager) && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={chart} alt="Sales" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>₦{dashboardData?.cards?.totalSales.toLocaleString()}</span>
+              <span className='grid-cards-text-sub'>Total Sales</span>
+            </div>
+          </div>
+        )}
+
+        {(isSuperAdmin || isManager) && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={chart} alt="Revenue" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>₦{dashboardData?.cards?.totalSales.toLocaleString()}</span>
+              <span className='grid-cards-text-sub'>Total Revenue</span>
+            </div>
+          </div>
+        )}
+
+        {(isSalesRep || isMerchandiser) && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={task} alt="Revenue" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>{dashboardData?.cards?.totalTask}</span>
+              <span className='grid-cards-text-sub'>Your Task</span>
+            </div>
+          </div>
+        )}
+
+        {(isInventoryManager ) && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={task} alt="Revenue" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>{dashboardData?.cards?.totalTask}</span>
+              <span className='grid-cards-text-sub'>Task</span>
+            </div>
+          </div>
+        )}
+        {(isInventoryManager) && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={invoice} alt="Revenue" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>{dashboardData?.cards?.totalInvoice}</span>
+              <span className='grid-cards-text-sub'>Invoices</span>
+            </div>
+          </div>
+        )}
+        {(isInventoryManager) && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={boxx} alt="Revenue" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>{dashboardData?.cards?.totalStocks}</span>
+              <span className='grid-cards-text-sub'>Stocks</span>
+            </div>
+          </div>
+        )}
+        {isSalesRep && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={chart} alt="Revenue" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>₦{dashboardData?.cards?.totalSales.toLocaleString()}</span>
+              <span className='grid-cards-text-sub'>Your Sales</span>
+            </div>
+          </div>
+        )}
+        {isSalesRep && (
+          <div className='grid-cards'>
+            <span className='grid-cards-icons'><img src={comm} alt="Revenue" /></span>
+            <div className='grid-text-cards'>
+              <span className='grid-cards-text-main'>₦{dashboardData?.cards?.totalCommission}</span>
+              <span className='grid-cards-text-sub'>Your Commissions</span>
+            </div>
+          </div>
+        )}
       </div>
+
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 mt-10">
         <div className="bg-white p-4 rounded-md shadow-sm">
           <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Customers</h2>
-          <TotalCustomersChart monthlyCounts={dashboardData.customerChart.monthlyCounts} />
+          <TotalCustomersChart monthlyCounts={dashboardData?.customerChart?.monthlyCounts} />
         </div>
 
         <div className="bg-white p-4 rounded-md shadow-sm">
           <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Top Sales Regions</h2>
-          <TopSalesRegions regions={dashboardData.topRegions} />
+          <TopSalesRegions regions={dashboardData?.topRegions} />
         </div>
 
         <div className="bg-white p-4 rounded-md shadow-sm md:col-span-2">
@@ -137,17 +231,24 @@ const Overview = () => {
               <button className='w-[74px] h-[28px] bg-primary_blue rounded-md text-[12px] text-primary_white'>Revenue</button>
             </div>
           </div>
-          <TotalRevenueChart monthlyRevenue={dashboardData.revenueChart.monthlyRevenue} />
+          <TotalRevenueChart monthlyRevenue={dashboardData?.revenueChart?.monthlyRevenue} />
         </div>
       </div>
 
       {/* Tables */}
-      {/* <div className="p-6 min-h-screen">
-        <div className="flex flex-col md:justify-center items-center lg:items-start lg:flex-row gap-6">
-          <ProductTable />
-          <SalesRepList />
-        </div>
-      </div> */}
+
+
+      {!changePasswordCheck && (
+        <ChangePasswordModal
+          onSuccess={() => {
+            // Optionally update store or refresh
+          }}
+          onCancel={() => {
+            console.log("User cancelled password update.");
+          }}
+        />
+      )}
+
     </>
   );
 };
