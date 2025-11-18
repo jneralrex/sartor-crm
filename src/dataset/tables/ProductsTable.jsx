@@ -172,17 +172,17 @@ const ProductsTable = () => {
                     {prod.status || 'N/A'}
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {prod.sellingPrice}
+                    {prod.price}
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {Array.isArray(prod.restocks) && prod.restocks.length > 0
+                    {Array.isArray(prod.lastRestock) && prod.lastRestock.length > 0
                       ? new Date(Math.max(...prod.restocks.map((r) => new Date(r.date)))).toLocaleDateString()
-                      : prod.expiryDate
-                        ? new Date(prod.expiryDate).toLocaleDateString()
+                      : prod.lastRestock
+                        ? new Date(prod.lastRestock).toLocaleDateString()
                         : 'N/A'}
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {prod.quantity}
+                    {prod.totalQuantityAvailable}
                   </td>
                   <td className="px-4 py-3">
                      <Menu as="div" className="relative inline-block text-left">

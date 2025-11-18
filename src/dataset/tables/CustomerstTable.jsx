@@ -46,7 +46,7 @@ const CustomerstTable = ({ onClose }) => {
             console.log(res);
 
 
-            const customerArray = res.data?.data?.data || [];
+            const customerArray = res.data?.data?.customers || [];
             const paginationData = paginationNormalizer(res.data?.data?.pagination);
             setPagination(paginationData);
 

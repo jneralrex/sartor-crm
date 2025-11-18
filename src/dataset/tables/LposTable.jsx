@@ -6,12 +6,13 @@ import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
 import CreateLpoModal from '../../components/modals/lpos/CreateLpoModal';
 import { useRole, useToken, useUserId } from '../../store/authStore';
 import instance from '../../utils/axiosInstance';
-import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
+import EditLpoStatusModal from '../../components/modals/lpos/EditLpoStatusModal';
 import ConfirmModal from '../../components/ConfirmationPopUp';
 import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
+import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
 
 
 
@@ -24,6 +25,7 @@ const LposTable = () => {
   const [selectedLpoId, setSelectedLpoId] = useState(null);
   const [selectedLpo, setSelectedLpo] = useState(null);
   const [isEditLpoModalOpen, setEditLpoModalOpen] = useState(false);
+  const [isEditLpoStatusModalOpen, setIsEditLpoStatusModalOpen] = useState(false);
   const [lpoToDelete, setLpoToDelete] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ const LposTable = () => {
 
 
     } catch (error) {
-      setError("Failed to fetch LPOs" + " " + error.message || error.response.data.message || error.response.message + "Please try again.")
+      setError("Please try again, Failed to fetch LPOs:" + " " + error.message || error.response.data.message || error.response.message )
       console.log(error);
       setPagination(paginationNormalizer());
       
@@ -218,6 +220,19 @@ const LposTable = () => {
                                 <Menu.Item>
                                   {({ active }) => (
                                     <button
+                                      className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                      onClick={() => {
+                                        setSelectedLpo(lpo);
+                                        setIsEditLpoStatusModalOpen(true);
+                                      }}
+                                    >
+                                      Edit LPO
+                                    </button>
+                                  )}
+                                </Menu.Item>
+                                <Menu.Item>
+                                  {({ active }) => (
+                                    <button
                                       className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-600`}
                                       onClick={() => {
                                         setLpoToDelete(lpo._id);
@@ -241,7 +256,7 @@ const LposTable = () => {
               ) : (
                 <tr>
                   <td colSpan="7" className="text-center py-4 text-red-500">
-                    No LPOs found.
+                    {error}
                   </td>
                 </tr>)}
           </tbody>
@@ -273,6 +288,19 @@ const LposTable = () => {
       onSuccess={
         allLPOs}
       />}
+
+      {isEditLpoStatusModalOpen && (
+        <EditLpoStatusModal
+          lpo={selectedLpo}
+          onClose={() => setIsEditLpoStatusModalOpen(false)}
+          onSuccess={(updatedLpo) => {
+            setGetAllLpos(prev =>
+              prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
+            );
+          }}
+        />
+
+      )}
 
       {isEditLpoModalOpen && (
         <EditLpoModal

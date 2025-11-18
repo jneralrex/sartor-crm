@@ -197,7 +197,7 @@ const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
               <Input label="Number of Stores" name="stores" value={addLeads.stores} onChange={handleChange} />
               <Input label="Company Phone Number" name="phone" value={addLeads.phone} onChange={handleChange} />
               <Input label="Potential Deal Size (₦)" name="dealSize" value={addLeads.dealSize} onChange={handleChange} />
-              <Select
+              { !leadId && (<Select
                 label="Select Status"
                 name="status"
                 value={addLeads.status}
@@ -215,7 +215,7 @@ const AddLeadModal = ({ onClose, onSuccess, leadId }) => {
                   "Closed Won",
                   "Payment Confirmed",
                 ]}
-              />
+              />)}
               <Textarea label="Notes" name="notes" value={addLeads.notes} onChange={handleChange} />
             </>
           )}

@@ -13,12 +13,7 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
 
     const [singleLpo, setSingleLpo] = useState({});
     const [loading, setLoading] = useState(false);
-    const [statusUploadLoading, setStatusUploadLoading] = useState(false);
 
-    const [updatedStatus, setUpdatedStatus] = useState({
-        id: lpoId,
-        status: '',
-    });
 
     useEffect(() => {
         if (!lpoId) return;
@@ -42,27 +37,27 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
         singleLpo();
     }, [token, lpoId]);
 
-    const handleChange = (e) => {
-        setUpdatedStatus({ ...updatedStatus, [e.target.name]: e.target.value });
-    };
+    // const handleChange = (e) => {
+    //     setUpdatedStatus({ ...updatedStatus, [e.target.name]: e.target.value });
+    // };
 
-    const updateStatus = async (e) => {
-        e.preventDefault();
-         setStatusUploadLoading(true);
+    // const updateStatus = async (e) => {
+    //     e.preventDefault();
+    //      setStatusUploadLoading(true);
 
-        if (!lpoId) return;
-        try {
-            const res = await instance.put(`/lpo/status/update`, updatedStatus);
+    //     if (!lpoId) return;
+    //     try {
+    //         const res = await instance.put(`/lpo/status/update`, updatedStatus);
 
-            console.log(res);
-             onSuccess?.(res.data.data.updatedLPO);
-                 onClose();
-        } catch (error) {
-         setStatusUploadLoading(false);
+    //         console.log(res);
+    //          onSuccess?.(res.data.data.updatedLPO);
+    //              onClose();
+    //     } catch (error) {
+    //      setStatusUploadLoading(false);
 
-            console.error("Error updating lead status:", error);
-        }
-    }
+    //         console.error("Error updating lead status:", error);
+    //     }
+    // }
 
     console.log(updatedStatus)
 
@@ -134,7 +129,7 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
                         LPO Status
 
                         <span className='text-[#484848] mt-2'>
-                                                        {singleLpo?.lpo?.status || 'NA'}
+                                                        {singleLpo?.status || 'NA'}
 
                         </span>
                     </label>
@@ -151,7 +146,7 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
                         Address
 
                         <span className='text-[#484848] mt-2'>
-                            {singleLpo?.lead?.address || 'NA'}
+                            {singleLpo?.deliveredTo || 'NA'}
                         </span>
                     </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
@@ -190,40 +185,19 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
                     Delivery Status
 
                     <span className='text-[#484848] mt-2 flex items-center gap-5'>
-                                                    {singleLpo?.status || 'NA'}
+                                                    {singleLpo?.deliveredStatus === false ? "Not Delivered" : "Delivered"}
 
                     </span>
                 </label>
 
-                <Select label="Update Status" name="status" value={updatedStatus.status} onChange={handleChange} options={["Packed", "In-Transit", "Supplied/Delivered", "Cancelled", "Paid"]} />
-                <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
-                    onClick={updateStatus}
-                >
-                   {statusUploadLoading ? "updating" : "Update Status"}
-                </button>
+             
             </div>
         </div>
     )
 }
 
 
-// Reusable Select Component
-const Select = ({ label, name, value, onChange, options = [] }) => (
-    <label className="block text-sm font-medium text-[#1A1A1A] mt-5 mb-3">
-        {label}
-        <select
-            name={name}
-            value={value}
-            onChange={onChange}
-            className="mt-1 w-full h-[48px] bg-[#F5F5F5] rounded-lg px-4 text-sm text-[#484848] outline-none"
-        >
-            <option value="">Select {label}</option>
-            {options.map((opt, idx) => (
-                <option key={idx} value={opt}>{opt}</option>
-            ))}
-        </select>
-    </label>
-);
+
 
 export default LpoDetailsModal
 

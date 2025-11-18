@@ -10,6 +10,7 @@ import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { useToken, useUserId } from '../../store/authStore';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
+import EditLeadStatus from '../../components/modals/leads/EditLeadStatus';
 
 const LeadsTable = () => {
   const token = useToken();
@@ -17,6 +18,7 @@ const LeadsTable = () => {
 
 
   const [isAddLeadModalOpen, setAddLeadModalOpen] = useState(false);
+  const [isEditLeadStatusModalOpen, setIsEditLeadStatusModalOpen] = useState(false);
   const [editingLeadId, setEditingLeadId] = useState(null);
   const [isLeadDetailsModalOpen, setLeadDetailsModalOpen] = useState(false);
   const [getAllLeads, setGetAllLeads] = useState([]);
@@ -27,6 +29,7 @@ const LeadsTable = () => {
   const [pagination, setPagination] = useState();
   const [searchResults, setSearchResults] = useState([]);
   const [searchActive, setSearchActive] = useState(false);
+  const [error, setError] = useState(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,6 +58,16 @@ const LeadsTable = () => {
     setEditingLeadId(null);
   };
 
+  const openEditLeadStatusModal = (id) => {
+    setEditingLeadId(id);
+    setIsEditLeadStatusModalOpen(true);
+  };
+
+  const closeLeadStatusModal = () => {
+    setIsEditLeadStatusModalOpen(false);
+    setEditingLeadId(null);
+  };
+
   const handleLeadDetailsModalToggle = (id) => {
     setSelectedLeadId(id);
     setLeadDetailsModalOpen(true);
@@ -72,6 +85,7 @@ const LeadsTable = () => {
       setGetAllLeads(leads);
     } catch (error) {
       console.log(error);
+       setError("Failed to fetch Leads: " + " " + error.message || error.response.message + "please try again")
       setPagination(paginationNormalizer());
     } finally {
       setLoading(false);
@@ -234,7 +248,18 @@ const LeadsTable = () => {
                                   className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
                                   onClick={() => openEditLeadModal(emp._id)}
                                 >
-                                  Edit
+                                  Edit Lead
+                                </button>
+                              )}
+                            </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                  onClick={() => openEditLeadStatusModal(emp._id)}
+                                >
+                                  Edit Status
                                 </button>
                               )}
                             </Menu.Item>
@@ -261,7 +286,7 @@ const LeadsTable = () => {
               ) : (
                 <tr>
                   <td colSpan="8" className="text-center py-4 text-red-500">
-                    No Leads found.
+                  {error}
                   </td>
                 </tr>
               )}
@@ -285,6 +310,17 @@ const LeadsTable = () => {
           onSuccess={() => {
             allLeads(currentPage);
             closeLeadModal();
+          }}
+        />
+      )}
+
+      { isEditLeadStatusModalOpen && (
+        <EditLeadStatus
+          leadId={editingLeadId}
+          onClose={closeLeadStatusModal}
+          onSuccess={() => {
+            allLeads(currentPage);
+            closeLeadStatusModal();
           }}
         />
       )}
