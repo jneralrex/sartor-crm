@@ -31,6 +31,7 @@ const LposTable = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchActive, setSearchActive] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [error, setError] = useState(false);
 
 
   const perPage = 100;
@@ -50,6 +51,7 @@ const LposTable = () => {
       const { data, totalPages } = res.data.data;
       console.log(res);
       setGetAllLpos(res.data.data.lpos);
+      console.log("All LPOs",getAllLpos)
       const paginationData = paginationNormalizer(
         res.data?.pagination || res.data?.data?.pagination || res.data?.data?.data?.pagination
       );
@@ -57,6 +59,7 @@ const LposTable = () => {
 
 
     } catch (error) {
+      setError("Failed to fetch LPOs" + " " + error.message || error.response.data.message || error.response.message + "Please try again.")
       console.log(error);
       setPagination(paginationNormalizer());
       
@@ -134,7 +137,7 @@ const LposTable = () => {
               <th className="px-4 py-2">Address</th>
               <th className="px-4 py-2">LPO Status</th>
               <th className="px-4 py-2">Date Created</th>
-              <th className="px-4 py-2">Amount</th>
+              <th className="px-4 py-2">Terms</th>
               <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
@@ -157,13 +160,13 @@ const LposTable = () => {
                     {lpo.lead?.address || 'N/A'}
                   </td>
                   <td className={`px-4 py-3 text-xs md:text-xs md:text-[14px] 
-        ${lpo.status === 'Delivered'
+        ${lpo.status === 'Supplied/Delivered'
                       ? ' text-[#00D743]'
-                      : lpo.status === 'In Transit'
+                      : lpo.status === 'Paid'
                         ? ' text-[#000068]'
-                        : lpo.status === 'Processing'
+                        : lpo.status === 'In-Transit'
                           ? ' text-[#FFB400]'
-                          : lpo.status === 'Sorted'
+                          : lpo.status === 'Packed'
                             ? ' text-[#9191FF]'
                             : lpo.status === 'Cancelled'
                               ? ' text-[#FF3B30]'
@@ -208,7 +211,7 @@ const LposTable = () => {
                                         setEditLpoModalOpen(true);
                                       }}
                                     >
-                                      Edit LPO
+                                      Edit Status
                                     </button>
                                   )}
                                 </Menu.Item>
@@ -255,11 +258,14 @@ const LposTable = () => {
 
 
       {isViewLpoModalOpen && 
-      <LpoDetailsModal onClose={() => setViewLpoModalOpen(false)} lpoId={selectedLpoId} onSuccess={(updatedLpo) => {
-        setGetAllLpos(prev =>
-          prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
-        );
-      }} 
+      <LpoDetailsModal 
+      onClose={() => setViewLpoModalOpen(false)} 
+      lpoId={selectedLpoId} 
+       onSuccess={(updatedLpo) => {
+            setGetAllLpos(prev =>
+              prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
+            );
+          }}
       />}
 
       {isCreateLopModalOpen && <CreateLpoModal 

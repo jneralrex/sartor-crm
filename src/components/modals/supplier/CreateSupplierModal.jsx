@@ -67,7 +67,6 @@ const CreateSupplierModal = ({ onClose, onSuccess, editMode = false, supplierToE
         if (!editMode) {
           setSupplierData({
             name: '',
-            product: '',
             contactName: '',
             contactRole: '',
             contactNumber: '',
@@ -122,8 +121,7 @@ const CreateSupplierModal = ({ onClose, onSuccess, editMode = false, supplierToE
 
         <form className="flex flex-col gap-4 mt-5" onSubmit={handleSubmit}>
           {[
-            { label: 'Supplier Name', name: 'name', placeholder: 'Acme Supplies Ltd.' },
-            { label: 'Product', name: 'product', placeholder: 'Office Furniture' },
+            { label: 'Company Name', name: 'name', placeholder: 'Acme Supplies Ltd.' },
             { label: 'Contact Name', name: 'contactName', placeholder: 'Jane Doe' },
             { label: 'Contact Role', name: 'contactRole', placeholder: 'Procurement Manager' },
             { label: 'Contact Number', name: 'contactNumber', placeholder: '+2348012345678' },

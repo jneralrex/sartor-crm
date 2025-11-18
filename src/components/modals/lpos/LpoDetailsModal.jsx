@@ -4,7 +4,7 @@ import { useToken,useRole } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 import DetailsSkeleton from '../../DetailsSkeleton';
 
-const LpoDetailsModal = ({ onClose, lpoId }) => {
+const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
     const  token  = useToken();
     
     
@@ -12,7 +12,9 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
 
 
     const [singleLpo, setSingleLpo] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [statusUploadLoading, setStatusUploadLoading] = useState(false);
+
     const [updatedStatus, setUpdatedStatus] = useState({
         id: lpoId,
         status: '',
@@ -28,7 +30,7 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
 
                 console.log(res);
                 setSingleLpo(res.data.data);
-
+               
             } catch (error) {
                 console.log(error);
             }
@@ -46,14 +48,18 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
 
     const updateStatus = async (e) => {
         e.preventDefault();
+         setStatusUploadLoading(true);
+
         if (!lpoId) return;
         try {
             const res = await instance.put(`/lpo/status/update`, updatedStatus);
 
             console.log(res);
-            // Optionally, you can refresh the lead details or close the modal
-            onClose();
+             onSuccess?.(res.data.data.updatedLPO);
+                 onClose();
         } catch (error) {
+         setStatusUploadLoading(false);
+
             console.error("Error updating lead status:", error);
         }
     }
@@ -63,7 +69,7 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
     if (loading) return <DetailsSkeleton />;
     return (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
-            <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[455px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
+            <div className="bg-primary_white p-6 shadow-lg w-[90%] max-w-[480px] h-[550px] rounded-xl overflow-y-scroll hide-scrollbar">
                 <div className='flex items-center justify-between'>
                     <span className='text[#1A1A1A] font-semibold text-[20px] text-start w-full'>LPO Details </span>
                     <button onClick={onClose}>
@@ -184,16 +190,16 @@ const LpoDetailsModal = ({ onClose, lpoId }) => {
                     Delivery Status
 
                     <span className='text-[#484848] mt-2 flex items-center gap-5'>
-                                                    {singleLpo?.deliveryStaus || 'NA'}
+                                                    {singleLpo?.status || 'NA'}
 
                     </span>
                 </label>
 
-                <Select label="Update Status" name="status" value={updatedStatus.status} onChange={handleChange} options={["Contacted  ", "Order Fulfilled", "Delivered", "Closed Lost", "Follow Up", "Qualified", "Interested", "Hold", "In-Negotiations", "LPO Generated", "Closed Won", "Payment Confirmed"]} />
+                <Select label="Update Status" name="status" value={updatedStatus.status} onChange={handleChange} options={["Packed", "In-Transit", "Supplied/Delivered", "Cancelled", "Paid"]} />
                 <button className="bg-primary_blue text-[#FCFCFD] w-full py-3 rounded-lg text-[16px] font-semibold max-w-[183.5px]"
                     onClick={updateStatus}
                 >
-                    Update Status
+                   {statusUploadLoading ? "updating" : "Update Status"}
                 </button>
             </div>
         </div>

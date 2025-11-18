@@ -7,6 +7,7 @@ const paymentTerms = [
     "Payment On Delivery",
     "⁠Full Payment after 70% stock sold",
     "⁠Payment 2 weeks after delivery",
+    "Sales On Delivery"
 ];
 
 const CreateLpoModal = ({ onClose, onSuccess }) => {

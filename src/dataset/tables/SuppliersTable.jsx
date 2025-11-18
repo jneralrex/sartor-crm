@@ -94,7 +94,7 @@ const SuppliersTable = () => {
 
         <div className="flex gap-2">
           <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans" onClick={handleCreateSupplier}><span><Plus /></span><span>Add Supplier</span></button>
-          <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[168px] md:w-[500px] h-[40px] flex text-center items-center gap-1 text-[#1A1A1A] public-sans" onClick={handleRequestRestock}><span><Plus /></span><span>Request A Restock</span></button>
+          {/* <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[168px] md:w-[500px] h-[40px] flex text-center items-center gap-1 text-[#1A1A1A] public-sans" onClick={handleRequestRestock}><span><Plus /></span><span>Request A Restock</span></button> */}
           <button className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></button>
         </div>
       </div>
@@ -106,7 +106,6 @@ const SuppliersTable = () => {
             <tr>
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Product</th>
               <th className="px-4 py-2">Contact</th>
               <th className="px-4 py-2">Phone</th>
               <th className="px-4 py-2">Email</th>
@@ -132,9 +131,7 @@ const SuppliersTable = () => {
                   <td className="px-4 py-3 text-xs md:text-[14px] text-[#484848]">
                     {supplier.name}
                   </td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] text-[#484848]">
-                    {supplier.product}
-                  </td>
+                 
                   <td className="px-4 py-3 text-xs md:text-[14px] text-[#484848]">
                     {supplier.contactName} ({supplier.contactRole})
                   </td>

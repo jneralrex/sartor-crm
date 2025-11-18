@@ -32,6 +32,7 @@ const ProductsTable = () => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState();
+  const [error, setError] = useState(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,7 +54,8 @@ const ProductsTable = () => {
       console.log("Fetched products:", res);
       setGetAllProducts(products);
       setPagination(paginationData);
-    } catch (error) {
+    } catch (error) { 
+      setError("Failed to fetch products: " + " " + error.message || error.response.message + "please try again")
       console.error("Failed to fetch products:", error);
       setPagination(paginationNormalizer());
     } finally {
@@ -141,7 +143,6 @@ const ProductsTable = () => {
             <tr>
               <th className="px-4 py-2">S/N</th>
               <th className="px-4 py-2">Product Name</th>
-              <th className="px-4 py-2">Supplier</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Price</th>
               <th className="px-4 py-2">Last Restock</th>
@@ -166,11 +167,6 @@ const ProductsTable = () => {
                     <div className="text-xs md:text-[14px] font-medium text-[#484848] flex items-center gap-2">
                       <input type="checkbox" /> {prod.productName}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {Array.isArray(prod.batches) && prod.batches.length > 0
-                      ? [...new Set(prod.batches.map((b) => b?.supplier?.name).filter(Boolean))].join(', ')
-                      : 'N/A'}
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                     {prod.status || 'N/A'}
@@ -262,7 +258,7 @@ const ProductsTable = () => {
             ) : (
               <tr>
                 <td colSpan="9" className="text-center py-4 text-red-500">
-                  No Products Found
+                 {error}
                 </td>
               </tr>
             )}

@@ -4,7 +4,7 @@ import instance from '../../../utils/axiosInstance';
 import { useToken } from '../../../store/authStore';
 
 const lpoStatus = [
-    "Delivered", "In Transit", "Processing", "Cancelled", "Sorted", "Received", "Overdue", "To-Do", "Confirmed"
+    "Delivered", "In Transit", "Processing", "Cancelled", "Sorted", "Received", "Overdue", "Confirmed"
 ];
 
 const EditLpoModal = ({ lpo, onClose, onSuccess }) => {
