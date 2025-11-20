@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
 import instance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
@@ -123,6 +123,7 @@ const LoginPage = () => {
             ) : 'Log In'}
           </button>
         </form>
+        <div className='text-end'> <Link to="/forgot-password">Forgot password?</Link> </div>
       </div>
     </div>
   );

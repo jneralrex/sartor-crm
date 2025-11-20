@@ -16,7 +16,7 @@ import {
   useImage,
   usePhone,
   useAddress,
-  useRole // ✅ Import this
+  useRole 
 } from '../store/authStore';
 
 const UserActionNav = () => {
@@ -71,10 +71,10 @@ const UserActionNav = () => {
                 <Menu.Item>
                   {({ active }) => (
                     <button
-                      className={`${active ? 'bg-gray-100' : ''} group flex items-center w-full px-4 py-2 text-sm`}
+                      className={`${active ? 'bg-gray-100' : ''} group w-full px-4 py-2 text-sm`}
                       onClick={() => setSystemSettingModalOpen(true)}
                     >
-                      System Settings
+                      Change your Password
                     </button>
                   )}
                 </Menu.Item>
@@ -107,10 +107,10 @@ const UserActionNav = () => {
       </Menu>
 
       <div
-        className="hidden md:flex relative rounded-full h-[30px] w-[30px] bg-[#D9D9D9] justify-center items-center cursor-pointer ml-2"
+        className="flex relative rounded-full h-[30px] w-[30px] bg-[#D9D9D9] justify-center items-center cursor-pointer ml-2"
         onClick={() => setNotificationModalOpen(true)}
       >
-        <Bell fill="#000068" strokeWidth={0} size={20} className="mt-1 ml-1" />
+        <Bell fill="#000068" strokeWidth={0} size={20} className="mt-1 ml-1 mr-1" />
       </div>
 
       {isNotificationModalOpen && (
