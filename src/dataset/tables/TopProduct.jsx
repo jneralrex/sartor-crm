@@ -15,8 +15,8 @@ const TopProduct = () => {
         setLoading(true);
         try {
             const res = await instance.get(`merchandiser/overview`);
-            console.log(res.data?.data?.topProducts)
-            setTopProducts(res.data?.data?.data?.topProducts);
+            console.log("res",res.data?.data?.topProducts)
+            setTopProducts(res.data?.data?.topProducts);
         } catch (error) {
             console.error("Failed to fetch task:", error);
 
@@ -40,43 +40,37 @@ const TopProduct = () => {
                 <tbody>
                     {loading ? (
                         Array.from({ length: 3 }).map((_, idx) => <EmployeeSkeletonRow key={idx} />)
-                    ) : topProducts.length > 0 ?
-                        (topProducts.map((topProduct, index) => (
-                            <tr key={lpo._id} className="border-b hover:bg-gray-50 text-start">
-                                <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                                </td>                <td className="px-4 py-3 flex items-center gap-2 ">
-                                    <div>
-                                        <div className="text-[#484848] font-medium text-xs md:text-[14px] flex items-center gap-2">
-                                            <img src={topProduct.productImage} alt="" />
-                                            <p> {topProduct.productName}</p>
-                                        </div>
+                    ) : error ? (
+                        <tr>
+                            <td colSpan={7} className="text-center py-4 text-red-500">
+                                {error}
+                            </td>
+                        </tr>
+                    ) : topProducts.length > 0 ? (
+                        topProducts.map((topProduct) => (
+                            <tr key={topProduct._id} className="border-b hover:bg-gray-50 text-start w-full">
+                                <td className="px-4 py-3 text-xs md:text-[14px] text-[#767676]"></td>
+
+                                <td className="px-4 py-3 flex items-center gap-2">
+                                    <div className="flex items-center gap-2">
+                                        <img src={topProduct.productImage} alt={topProduct.productName} className='size-12'/>
+                                        <p className="text-[#484848]">{topProduct.productName}</p>
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">
-                                    {topProduct.level}
-                                </td>
-                                <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">
-                                    {topProduct.price}
-                                </td>
+
+                                <td className="px-4 py-3 text-[#767676]">{topProduct.level}</td>
+                                <td className="px-4 py-3 text-[#767676]">{topProduct.price}</td>
                             </tr>
                         ))
-                        ) : (
-                           
-                                error ? (
-                                    <tr>
-                                    <td colSpan="7" className="text-center py-4 text-red-500">
-                                        {error}
-                                    </td>
-                                </tr>
-                                ) : (
-                                    <div>
-                                        <td colSpan="7" className="text-center py-4 text-red-500">
-                                            No top products available.
-                                    </td>
-                                    </div>
-                                )
-                            )}
+                    ) : (
+                        <tr>
+                            <td colSpan={7} className="text-center py-4 text-gray-500">
+                                No top products available.
+                            </td>
+                        </tr>
+                    )}
                 </tbody>
+
             </table>
         </div>
     )
