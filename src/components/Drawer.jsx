@@ -32,13 +32,13 @@ const menuItems = [
   { label: 'Merchandisers', path:'merchandisers', icon: lock, role: ['Super-Admin', 'Manager'] },
   { label: 'LPOs', path: 'lpos', icon: lposIcon, role: ['Super-Admin', 'Inventory Manager','Sales Rep', 'Manager'] },
   { label: 'Commission', path:'commissions', icon: stocksIcon, role: ['Sales Rep',] },
-  { label: 'Stocks', path:'stocks', icon: dollar, role: ['Super-Admin', 'Inventory Manager'] },
+  { label: 'Stocks', path:'stocks', icon: dollar, role: ['Super-Admin', 'Merchandiser'] },
   { label: 'Suppliers', path:'suppliers', icon: plug, role: ['Super-Admin', 'Inventory Manager'] },
   { label: 'Vehicles', path:'vehicles', icon: vehicle, role: ['Super-Admin','Inventory Manager'] },
   { label: 'QR code', path:'qr-code', icon: qr, role: ['Super-Admin', 'Inventory Manager'] },
   { label: 'Stock Levels', path:'stock-levels', icon: overViewIcon, role: ['Super-Admin','Inventory Manager'] },
   { label: 'Sales Rep', path:'sales-rep', icon: twopeep, role: ['Super-Admin','Manager'] },
-  { label: 'Products', path: 'products', icon: productIcon, role: ['Super-Admin','Merchandiser'] },
+  { label: 'Products', path: 'products', icon: productIcon, role: ['Super-Admin'] },
   { label: 'Covert Label Gen', path: 'label-gen', icon: labelIcon, role: ['Super-Admin',] },
 ];
 

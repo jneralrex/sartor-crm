@@ -1,5 +1,4 @@
-import { Download, Ellipsis, Option, OptionIcon, Plus, Thermometer } from 'lucide-react';
-import search from '../../assets/images/search.png';
+import { Download, Ellipsis, Plus,  } from 'lucide-react';
 import { Menu } from '@headlessui/react'
 import { useEffect, useState } from 'react';
 import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';

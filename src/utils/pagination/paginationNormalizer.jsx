@@ -11,6 +11,7 @@ export const paginationNormalizer = (backendPagination = {}) => {
       backendPagination.totalCustomers ||
       backendPagination.totalProducts ||
       backendPagination.totalInvoice ||
+      backendPagination.totalStocks ||
       backendPagination.totalItems ||
       backendPagination.count ||
       0,

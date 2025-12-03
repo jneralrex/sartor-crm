@@ -59,7 +59,6 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
     //     }
     // }
 
-    console.log(updatedStatus)
 
     if (loading) return <DetailsSkeleton />;
     return (
@@ -181,14 +180,27 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
                         </ul>
                     </span>
                 </label>
+
+                <div className='flex justify-between'>
+
                 <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                     Delivery Status
 
                     <span className='text-[#484848] mt-2 flex items-center gap-5'>
-                                                    {singleLpo?.deliveredStatus === false ? "Not Delivered" : "Delivered"}
+                       {singleLpo?.deliveredStatus === false ? "Not Delivered" : "Delivered"}
 
                     </span>
                 </label>
+
+                <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                    Delivered To
+
+                    <span className='text-[#484848] mt-2 flex items-center gap-5'>
+                    {singleLpo?.deliveredStatus === true ? singleLpo?.deliveredTo : "Not Delivered Yet"}
+
+                    </span>
+                </label>
+                </div>
 
              
             </div>

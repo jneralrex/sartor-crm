@@ -15,6 +15,7 @@ const EditLpoStatusModal = ({ lpo, onClose, onSuccess }) => {
 
 
     const handleSubmit = async (e) => {
+        console.log(lpo)
         e.preventDefault();
         setLoading(true);
         const payload = {

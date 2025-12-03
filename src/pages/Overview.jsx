@@ -19,6 +19,7 @@ import TotalRevenueChart from '../dataset/charts/TotalRevenueChart';
 import TopSalesRegions from '../dataset/charts/TopSalesRegion';
 import { usePasswordChanged, useRole } from '../store/authStore';
 import ChangePasswordModal from './auth/modal/ChangePasswordModal';
+import TopProduct from '../dataset/tables/TopProduct';
 
 const Overview = () => {
   const [openCalendar, setOpenCalendar] = useState(false);
@@ -163,7 +164,7 @@ const Overview = () => {
           </div>
         )}
 
-        {(isInventoryManager ) && (
+        {(isInventoryManager) && (
           <div className='grid-cards'>
             <span className='grid-cards-icons'><img src={task} alt="Revenue" /></span>
             <div className='grid-text-cards'>
@@ -213,26 +214,39 @@ const Overview = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 mt-10">
-        <div className="bg-white p-4 rounded-md shadow-sm">
-          <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Customers</h2>
-          <TotalCustomersChart monthlyCounts={dashboardData?.customerChart?.monthlyCounts} />
-        </div>
+        {(!isMerchandiser) && (
+          <div className="bg-white p-4 rounded-md shadow-sm">
+            <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Customers</h2>
+            <TotalCustomersChart monthlyCounts={dashboardData?.customerChart?.monthlyCounts} />
+          </div>)}
 
-        <div className="bg-white p-4 rounded-md shadow-sm">
-          <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Top Sales Regions</h2>
-          <TopSalesRegions regions={dashboardData?.topRegions} />
-        </div>
 
-        <div className="bg-white p-4 rounded-md shadow-sm md:col-span-2">
-          <div className='flex items-center justify-between'>
-            <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Revenue</h2>
-            <div className='flex gap-2'>
-              <button className='w-[74px] h-[28px] rounded-md text-[12px]'>Sales</button>
-              <button className='w-[74px] h-[28px] bg-primary_blue rounded-md text-[12px] text-primary_white'>Revenue</button>
+        {(!isMerchandiser) && (
+
+          <div className="bg-white p-4 rounded-md shadow-sm">
+            <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Top Sales Regions</h2>
+            <TopSalesRegions regions={dashboardData?.topRegions} />
+          </div>)}
+
+
+        {(!isMerchandiser) && (
+          <div className="bg-white p-4 rounded-md shadow-sm md:col-span-2">
+            <div className='flex items-center justify-between'>
+              <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Revenue</h2>
+              <div className='flex gap-2'>
+                <button className='w-[74px] h-[28px] rounded-md text-[12px]'>Sales</button>
+                <button className='w-[74px] h-[28px] bg-primary_blue rounded-md text-[12px] text-primary_white'>Revenue</button>
+              </div>
             </div>
+            <TotalRevenueChart monthlyRevenue={dashboardData?.revenueChart?.monthlyRevenue} />
+          </div>)}
+
+        {(isMerchandiser) && (<div className="bg-white p-4 rounded-md shadow-sm md:col-span-2">
+          <div className='flex items-center justify-between'>
+            <h2 className="font-semibold text-lg mb-2 text-[#1A1C21]">Total Product</h2>
           </div>
-          <TotalRevenueChart monthlyRevenue={dashboardData?.revenueChart?.monthlyRevenue} />
-        </div>
+          <TopProduct />
+        </div>)}
       </div>
 
       {/* Tables */}
