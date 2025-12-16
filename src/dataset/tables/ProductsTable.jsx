@@ -145,7 +145,7 @@ const ProductsTable = () => {
               <th className="px-4 py-2">Product Name</th>
               <th className="px-4 py-2">Status</th>
               <th className="px-4 py-2">Price</th>
-              <th className="px-4 py-2">Last Restock</th>
+              <th className="px-4 py-2">Image</th>
               <th className="px-4 py-2">QTY</th>
               <th className="px-4 py-2">Action</th>
             </tr>
@@ -175,11 +175,7 @@ const ProductsTable = () => {
                     {prod.price}
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    {Array.isArray(prod.lastRestock) && prod.lastRestock.length > 0
-                      ? new Date(Math.max(...prod.restocks.map((r) => new Date(r.date)))).toLocaleDateString()
-                      : prod.lastRestock
-                        ? new Date(prod.lastRestock).toLocaleDateString()
-                        : 'N/A'}
+                    <img src={prod?.productImage} alt="" srcset="" className='size-12'/>
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                     {prod.totalQuantityAvailable}
@@ -306,6 +302,7 @@ const ProductsTable = () => {
         <AddBatchWrapperModal
           onClose={() => setIsAddBatchModalOpen(false)}
           productId={addBatchProductId}
+          onSuccess={() => allProducts(currentPage)}
         />
       )}
 

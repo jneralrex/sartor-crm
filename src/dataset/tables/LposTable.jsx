@@ -212,7 +212,7 @@ const LposTable = () => {
                                         setEditLpoModalOpen(true);
                                       }}
                                     >
-                                      Edit Status
+                                      Edit LPO
                                     </button>
                                   )}
                                 </Menu.Item>
@@ -225,7 +225,7 @@ const LposTable = () => {
                                         setIsEditLpoStatusModalOpen(true);
                                       }}
                                     >
-                                      Edit LPO
+                                      Edit Status
                                     </button>
                                   )}
                                 </Menu.Item>

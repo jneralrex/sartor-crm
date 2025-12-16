@@ -51,7 +51,7 @@ const AddBatchFormModal = ({ onClose, onAddBatch, initialBatch = null }) => {
           <Input label="Product Quantity" placeholder="Quantity of Product" name="quantity" value={batch.quantity} onChange={handleChange} />
           <Input label="Expiry Date" placeholder="Enter Expiry Date" name="expiryDate" type="date" value={batch.expiryDate} onChange={handleChange} />
           <Input label="Selling Price" placeholder="Selling Price" name="sellingPrice" value={batch.sellingPrice} onChange={handleChange} />
-          <Input label="Supply Price" placeholder="Supply Price" name="supplyPrice" value={batch.supplyPrice} onChange={handleChange} />
+          <Input label="Cost Price" placeholder="Supply Price" name="supplyPrice" value={batch.supplyPrice} onChange={handleChange} />
 
           <button
             type="submit"

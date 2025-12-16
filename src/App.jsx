@@ -93,7 +93,7 @@ export default function App() {
   return (
     <>
       <RouterProvider router={router} />
-      <ToastContainer position="top-center" />
+      <ToastContainer autoClose={10000} position="top-center" />
     </>
   );
 }

@@ -45,7 +45,9 @@ const LoginPage = () => {
         navigate("/sartor/overview");
       }, 1500);
     } catch (error) {
-      toast.error(error.message);
+      console.error("Login failed:", error);
+      toast.error(error?.response?.data?.message );
+      console.error("error", error?.response?.data?.message )
     } finally {
       setLoading(false);
     }

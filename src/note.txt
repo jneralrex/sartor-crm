@@ -1,12 +1,10 @@
-
 import { X, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import AddBatchFormModal from "./AddBatchFormModal";
 import { useToken } from '../../../store/authStore';
 import instance from "../../../utils/axiosInstance";
-import { toast } from "react-toastify";
 
-const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatchUpdated }) => {
+const AddBatchWrapperModal = ({ productId, onClose, editData, onBatchUpdated }) => {
   const token = useToken();
   const [productDetails, setProductDetails] = useState(null);
   const [getAllSuppliers, setGetAllSuppliers] = useState([]);
@@ -17,10 +15,9 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
   const [editingBatch, setEditingBatch] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // const [priceSuggestion, setPriceSuggestion] = useState(null);
+  const [priceSuggestion, setPriceSuggestion] = useState(null);
   const [showPriceModal, setShowPriceModal] = useState(false);
-  // const [isFetchingSuggestion, setIsFetchingSuggestion] = useState(false);
-
+  const [isFetchingSuggestion, setIsFetchingSuggestion] = useState(false);
   const [newPrice, setNewPrice] = useState('');
   const [submissionLoading, setSubmissionLoading] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
@@ -102,44 +99,44 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
   };
 
   // fetch price suggestion from backend (uses saved data on server; call after successful POST/PUT)
-  // const fetchPriceSuggestion = async () => {
-  //   if (!productId) return;
-  //   if (!batches || batches.length === 0) {
-  //     console.warn("No batches to request price suggestion for.");
-  //     return;
-  //   }
+  const fetchPriceSuggestion = async () => {
+    if (!productId) return;
+    if (!batches || batches.length === 0) {
+      console.warn("No batches to request price suggestion for.");
+      return;
+    }
 
-  //   try {
-  //     setIsFetchingSuggestion(true);
+    try {
+      setIsFetchingSuggestion(true);
 
-  //     const payload = {
-  //       invoiceNumber: form.invoiceNumber,
-  //       supplier: form.supplier,
-  //       manufacturer: form.manufacturer,
-  //       batches: batches.map((batch) => ({
-  //         batchNumber: batch.batchNumber,
-  //         quantity: Number(batch.quantity),
-  //         expiryDate: batch.expiryDate,
-  //         manufactureDate: batch.manufactureDate
-  //       }))
-  //     };
+      const payload = {
+        invoiceNumber: form.invoiceNumber,
+        supplier: form.supplier,
+        manufacturer: form.manufacturer,
+        batches: batches.map((batch) => ({
+          batchNumber: batch.batchNumber,
+          quantity: Number(batch.quantity),
+          expiryDate: batch.expiryDate,
+          manufactureDate: batch.manufactureDate
+        }))
+      };
 
-  //     const res = await instance.get(`/product/price/suggestion/${productId}`, payload);
-  //     console.log(res)
+      const res = await instance.get(`/product/price/suggestion/${productId}`, payload);
+      console.log(res)
 
-  //     if (res.data?.data) {
-  //       setPriceSuggestion(res.data.data);
-  //       setShowPriceModal(true);
-  //     } else {
-  //       console.warn("Price suggestion returned no data", res);
-  //     }
-  //   } catch (error) {
-  //     // server may return 400 if it wants server-saved batches — this call is now done AFTER save, so should succeed.
-  //     console.error("Failed to fetch price suggestion:", error);
-  //   } finally {
-  //     setIsFetchingSuggestion(false);
-  //   }
-  // };
+      if (res.data?.data) {
+        setPriceSuggestion(res.data.data);
+        setShowPriceModal(true);
+      } else {
+        console.warn("Price suggestion returned no data", res);
+      }
+    } catch (error) {
+      // server may return 400 if it wants server-saved batches — this call is now done AFTER save, so should succeed.
+      console.error("Failed to fetch price suggestion:", error);
+    } finally {
+      setIsFetchingSuggestion(false);
+    }
+  };
 
   // final submit: create/update batch(es), then request price suggestion
   const handleSubmit = async () => {
@@ -174,72 +171,39 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
       }
 
       // After successful save, fetch price suggestion (server has persisted batches)
-      // await fetchPriceSuggestion();
-
-
-      setShowPriceModal(true);
-
+      await fetchPriceSuggestion();
 
       // optionally keep the wrapper open so user can see suggestion modal;
       // If you prefer to close wrapper immediately, call onClose() here.
       // onClose();
     } catch (error) {
       console.error("Submit failed:", error);
-      toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const parsePrice = (value) => {
-    if (value === null || value === undefined) return null;
-
-    // Remove commas and spaces
-    const cleaned = String(value).replace(/,/g, "").trim();
-
-    const parsed = Number(cleaned);
-
-    if (Number.isNaN(parsed) || parsed <= 0) {
-      return null;
-    }
-
-    return parsed;
-  };
-
   const handleSetPrice = async () => {
-    const parsedPrice = parsePrice(newPrice);
-
-    if (!parsedPrice || !productId) {
-      setSubmissionError("Please enter a valid price.");
-      return;
-    }
-
+    if (!newPrice || !productId) return;
     setSubmissionLoading(true);
     setSubmissionError(null);
     setSubmissionSuccess(null);
-
     try {
-      await instance.put("product/price", {
-        productId,
-        price: parsedPrice,
-      });
-
-      setSubmissionSuccess("Price set successfully!");
-        onSuccess?.();
-      setTimeout(() => {
-        setShowPriceModal(false);
-        onClose();
-      }, 1500);
+        await instance.post('product/price', {
+            productId: productId,
+            price: newPrice,
+        });
+        setSubmissionSuccess('Price set successfully!');
+        setTimeout(() => {
+            setShowPriceModal(false);
+            onClose();
+        }, 1500);
     } catch (error) {
-      setSubmissionError(
-        error.response?.data?.message || "Failed to set price."
-      );
-      console.error(error);
+        setSubmissionError(error.response?.data?.message || 'Failed to set price.');
     } finally {
-      setSubmissionLoading(false);
+        setSubmissionLoading(false);
     }
-  };
-
+};
 
   return (
     <>
@@ -352,7 +316,7 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
       )}
 
       {/* Price Suggestion Modal */}
-      {/* {showPriceModal && priceSuggestion && (
+      {showPriceModal && priceSuggestion && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
           <div className="bg-white rounded-xl p-6 w-[90%] max-w-[480px] text-left shadow-lg">
             <h3 className="text-lg font-semibold mb-2">Price Suggestion</h3>
@@ -362,7 +326,7 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
               <SummaryRow label="Total Batches" value={priceSuggestion.batchStatistics?.totalBatches} />
               <SummaryRow label="Total Quantity" value={priceSuggestion.batchStatistics?.totalQuantity} />
               <SummaryRow label="Average Cost Price" value={priceSuggestion.batchStatistics?.averageCostPrice ? `₦${priceSuggestion.batchStatistics?.averageCostPrice.toFixed(2)}` : '-'} />
-              <SummaryRow label="Average Selling Price" value={priceSuggestion.batchStatistics?.averageSellingPrice ? `₦${priceSuggestion.batchStatistics?.averageSellingPrice.toFixed(2)}` : '-'} />
+              <SummaryRow label="Average Selling Price" value={priceSuggestion.batchStatistics?.suggestedSellingPrice ? `₦${priceSuggestion.batchStatistics?.suggestedSellingPrice.toFixed(2)}` : '-'} />
               <SummaryRow label="Markup % Used" value={priceSuggestion.batchStatistics?.markupPercentage ? `${((priceSuggestion.batchStatistics?.markupPercentage * 100) - 100).toFixed(2)}%` : '-'} />
             </div>
 
@@ -406,76 +370,17 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
 
           </div>
         </div>
-      )} */}
-
-
-      {showPriceModal && (
-        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-xl p-6 w-[90%] max-w-[480px] shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Set Product Price</h3>
-
-            {/* Batch summary */}
-            <div className="space-y-2 text-sm mb-4">
-              {batches.map((batch, idx) => (
-                <div
-                  key={idx}
-                  className="bg-[#F5F5F5] rounded p-2 flex justify-between"
-                >
-                  <span>BN: {batch.batchNumber}</span>
-                  <span>Qty: {batch.quantity}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Price input */}
-            <Input
-              label="Selling Price"
-              name="newPrice"
-              placeholder="Enter selling price"
-              value={newPrice}
-              onChange={(e) => setNewPrice(e.target.value)}
-            />
-
-            {submissionError && (
-              <p className="text-red-500 text-xs mt-1">{submissionError}</p>
-            )}
-            {submissionSuccess && (
-              <p className="text-green-500 text-xs mt-1">{submissionSuccess}</p>
-            )}
-
-            <div className="flex gap-2 mt-4">
-              <button
-                onClick={handleSetPrice}
-                disabled={submissionLoading}
-                className="bg-primary_blue text-white py-2 rounded-md font-semibold w-full"
-              >
-                {submissionLoading ? "Setting Price..." : "Set Price"}
-              </button>
-
-              <button
-                onClick={() => {
-                  setShowPriceModal(false);
-                  onClose();
-                }}
-                className="bg-gray-300 text-gray-800 py-2 rounded-md font-semibold w-full"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
       )}
 
-
       {/* Loading for suggestion */}
-      {/* {isFetchingSuggestion && (
+      {isFetchingSuggestion && (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow text-center">
             <p className="text-sm text-[#666] mb-2">Calculating price suggestion...</p>
             <div className="loader w-6 h-6 mx-auto" />
           </div>
         </div>
-      )} */}
+      )}
     </>
   );
 };
@@ -484,9 +389,7 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
 const Input = ({ label, placeholder, name, value, onChange }) => (
   <label className="block">
     <span className="block text-[#1A1A1A] font-medium text-sm mb-1">{label}</span>
-    <input type="number"
-      min="0"
-      step="0.01" placeholder={placeholder} name={name} value={value} onChange={onChange}
+    <input type="text" placeholder={placeholder} name={name} value={value} onChange={onChange}
       className="bg-[#F5F5F5] rounded-lg w-full h-[48px] px-4 text-sm outline-none" />
   </label>
 );

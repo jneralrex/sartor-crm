@@ -16,7 +16,9 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
     const [uploadProgress, setUploadProgress] = useState(0);
     const [loading, setLoading] = useState(false);
     const [snackbar, setSnackbar] = useState(null);
-
+    const [priceSuggestion, setPriceSuggestion] = useState(null);
+    const [showPriceModal, setShowPriceModal] = useState(false);
+    const [isFetchingSuggestion, setIsFetchingSuggestion] = useState(false);
 
 
     useEffect(() => {
@@ -148,8 +150,46 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
         }
     };
 
+    // fetch price suggestion from backend (uses saved data on server; call after successful POST/PUT)
+    const fetchPriceSuggestion = async () => {
+        if (!productId) return;
+        if (!batches || batches.length === 0) {
+            console.warn("No batches to request price suggestion for.");
+            return;
+        }
 
-    console.log("Form Data:", formData);
+        try {
+            setIsFetchingSuggestion(true);
+
+            const payload = {
+                invoiceNumber: form.invoiceNumber,
+                supplier: form.supplier,
+                manufacturer: form.manufacturer,
+                batches: batches.map((batch) => ({
+                    batchNumber: batch.batchNumber,
+                    quantity: Number(batch.quantity),
+                    expiryDate: batch.expiryDate,
+                    manufactureDate: batch.manufactureDate
+                }))
+            };
+
+            const res = await instance.get(`/product/price/suggestion/${productId}`, payload);
+            console.log(res)
+
+            if (res.data?.data) {
+                setPriceSuggestion(res.data.data);
+                setShowPriceModal(true);
+            } else {
+                console.warn("Price suggestion returned no data", res);
+            }
+        } catch (error) {
+            // server may return 400 if it wants server-saved batches — this call is now done AFTER save, so should succeed.
+            console.error("Failed to fetch price suggestion:", error);
+        } finally {
+            setIsFetchingSuggestion(false);
+        }
+    };
+
 
     return (
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
@@ -218,11 +258,62 @@ const CreateProductModal = ({ onClose, onSubmit, onSuccess, productToEdit = null
                 </form>
             </div>
             {snackbar && (
-  <div className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md z-50 
+                <div className={`absolute top-5 right-5 px-4 py-3 rounded-md text-sm shadow-md z-50 
     ${snackbar.type === 'error' ? 'bg-red-100 text-red-700 border border-red-400' : 'bg-green-100 text-green-700 border border-green-400'}`}>
-    {snackbar.message}
-  </div>
-)}
+                    {snackbar.message}
+                </div>
+            )}
+
+            {/* Price Suggestion Modal */}
+            {showPriceModal && priceSuggestion && (
+                <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded-xl p-6 w-[90%] max-w-[480px] text-left shadow-lg">
+                        <h3 className="text-lg font-semibold mb-2">Price Suggestion</h3>
+
+                        <div className="space-y-2 text-sm">
+                            <SummaryRow label="Product" value={priceSuggestion.product?.name} />
+                            <SummaryRow label="Total Batches" value={priceSuggestion.batchStatistics?.totalBatches} />
+                            <SummaryRow label="Total Quantity" value={priceSuggestion.batchStatistics?.totalQuantity} />
+                            <SummaryRow label="Average Cost Price" value={priceSuggestion.batchStatistics?.averageCostPrice ? `₦${priceSuggestion.batchStatistics?.averageCostPrice.toFixed(2)}` : '-'} />
+                            <SummaryRow label="Average Selling Price" value={priceSuggestion.batchStatistics?.suggestedSellingPrice ? `₦${priceSuggestion.batchStatistics?.suggestedSellingPrice.toFixed(2)}` : '-'} />
+                            <SummaryRow label="Markup % Used" value={priceSuggestion.batchStatistics?.markupPercentage ? `${((priceSuggestion.batchStatistics?.markupPercentage * 100) - 100).toFixed(2)}%` : '-'} />
+                        </div>
+
+                        <hr className="my-4" />
+
+                        <h4 className="font-medium mb-2">Selling Price Per Batch:</h4>
+                        <div className="space-y-2 max-h-[150px] overflow-y-auto">
+                            {priceSuggestion.batches?.map((b, i) => (
+                                <div key={i} className="text-sm bg-[#F5F5F5] rounded p-2 flex justify-between items-center">
+                                    <span>{b.batchNumber}</span>
+                                    <span className="text-green-600 font-semibold">₦{(b.sellingPrice ?? 0).toFixed(2)}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={() => {
+                                setShowPriceModal(false);
+                                onClose();
+                            }}
+                            className="mt-4 bg-primary_blue text-white px-6 py-2 rounded-md font-semibold w-full"
+                        >
+                            Close
+                        </button>
+
+                    </div>
+                </div>
+            )}
+
+            {/* Loading for suggestion */}
+            {isFetchingSuggestion && (
+                <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow text-center">
+                        <p className="text-sm text-[#666] mb-2">Calculating price suggestion...</p>
+                        <div className="loader w-6 h-6 mx-auto" />
+                    </div>
+                </div>
+            )}
 
         </div>
     );
@@ -251,6 +342,13 @@ const Input = ({ label, name, type = "text", value, onChange, placeholder, error
         )}
         {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
+);
+
+const SummaryRow = ({ label, value }) => (
+  <div className="flex justify-between text-sm font-medium">
+    <span>{label}</span>
+    <span>{value ?? '-'}</span>
+  </div>
 );
 
 export default CreateProductModal;

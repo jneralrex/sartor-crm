@@ -105,9 +105,7 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
                         Amount
 
                         <span className='text-[#484848] mt-2'>
-                            {Array.isArray(singleLpo.products)
-                                ? singleLpo.products.reduce((sum, item) => sum + (Number(item.amount) || 0), 0)
-                                : 'NA'}
+                            {singleLpo?.totalAmount  || 'NA'}
 
                         </span>
                     </label>

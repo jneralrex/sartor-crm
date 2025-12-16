@@ -89,6 +89,65 @@ const InvoiceTable = ({ }) => {
     getAllInvoices(currentPage);
   }, [currentPage]);
 
+
+  const convertInvoicesToCSV = (invoices = []) => {
+    if (!invoices.length) return '';
+
+    const headers = [
+      'Invoice ID',
+      'Customer Name',
+      'Status',
+      'Due Date',
+      'Total Amount',
+      'Total Quantity',
+    ];
+
+    const rows = invoices.map((inv) => [
+      inv._id,
+      inv.name || '',
+      inv.status || '',
+      inv.dueDate
+        ? new Date(inv.dueDate).toLocaleDateString()
+        : '',
+      inv.totalAmount ?? '',
+      inv.qty ?? '',
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) =>
+        row
+          .map((cell) =>
+            `"${String(cell).replace(/"/g, '""')}"`
+          )
+          .join(',')
+      ),
+    ].join('\n');
+
+    return csvContent;
+  };
+
+  const downloadInvoicesCSV = () => {
+    const invoicesToDownload = searchActive ? searchResults : getInvoices;
+
+    if (!invoicesToDownload.length) return;
+
+    const csv = convertInvoicesToCSV(invoicesToDownload);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.setAttribute('download', `invoices-${Date.now()}.csv`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   const filteredInvoice = searchActive ? searchResults : getInvoices;
 
 
@@ -117,8 +176,9 @@ const InvoiceTable = ({ }) => {
             auto={true}
           />
         </div>
-        <div className="flex gap-2">
-          <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
+        <div className="flex gap-2" onClick={downloadInvoicesCSV}
+        >
+          <button className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></button>
         </div>
       </div>
 
