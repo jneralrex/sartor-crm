@@ -172,13 +172,15 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
                 <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                     Delivery Status
 
-                    {/* <span className='text-[#484848] mt-2 flex items-center gap-5'>
-                        <div>Packaging</div>
-                        <div className='border border-primary_blue w-[40px]' />
-                        <div>In Transit</div>
-                        <div className='border border-primary_blue w-[40px]' />
-                        <div className='line-through'>Delivered</div>
-                    </span> */}
+                    {singleInvoice?.lpo?.deliveryStatus ? (
+                        <span className='text-[#484848] mt-2'>
+                            Delivered
+                        </span>
+                    ) : (
+                        <span className='text-[#484848] mt-2'>
+                            Not Delivered
+                        </span>
+                    )}
                 </label>
 
 

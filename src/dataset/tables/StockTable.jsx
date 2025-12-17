@@ -12,6 +12,9 @@ import UniversalPagination from "../../components/UniversalPagination";
 import CreateStocks from "../../components/modals/stocks/CreateStocks";
 import StockDetails from "../../components/modals/stocks/StocksDetails";
 
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 const StockTable = () => {
   const [stocks, setStocks] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -62,6 +65,113 @@ const StockTable = () => {
     setIsDetailsModalOpen(true);
   };
 
+    const convertToCSV = (stocks = []) => {
+      if (!stocks.length) return '';
+  
+      const headers = [
+      'Product Name',
+      'Customer Name',
+      'Status',
+      'Last Restock',
+      'Contact Number',
+      'Address',
+      'Level',
+      'Date Created',
+    ];
+      
+      const rows = stocks.map((stock) => [
+      stock.product?.productName || '',
+      stock.customer?.lead?.name || '',
+      stock.status || '',
+      stock.lastStock || '',
+      stock.contactNumber || '',
+      stock.address || '',
+      stock.level || '',
+      stock.createdAt
+        ? new Date(stock.createdAt).toLocaleDateString()
+        : '',
+    ]);
+  
+      const csvContent = [
+        headers.join(','),
+        ...rows.map((row) =>
+          row
+            .map((cell) =>
+              `"${String(cell).replace(/"/g, '""')}"`
+            )
+            .join(',')
+        ),
+      ].join('\n');
+  
+      return csvContent;
+    };
+  
+    const downloadPDF = () => {
+    const stocksToDownload = searchActive ? searchResults : stocks;
+
+    if (!stocksToDownload.length) return;
+
+    const doc = new jsPDF('landscape');
+  
+    doc.setFontSize(16);
+    doc.text('Stocks Report', 14, 15);
+  
+    const tableColumn = [
+      'Product Name',
+      'Customer Name',
+      'Status',
+      'Last Restock',
+      'Contact Number',
+      'Address',
+      'Level',
+      'Date Created',
+    ];
+      
+    const tableRows = stocksToDownload.map((stock) => [
+      stock.product?.productName || '',
+      stock.customer?.lead?.name || '',
+      stock.status || '',
+      stock.lastStock || '',
+      stock.contactNumber || '',
+      stock.address || '',
+      stock.level || '',
+      stock.createdAt
+        ? new Date(stock.createdAt).toLocaleDateString()
+        : '',
+    ]);
+  
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [0, 0, 104] },
+    });
+  
+    doc.save(`stocks-${Date.now()}.pdf`);
+  };
+  
+    const downloadCSV = () => {
+    const stocksToDownload = searchActive ? searchResults : stocks;
+
+      if (!stocksToDownload.length) return;
+
+      const csv = convertToCSV(stocksToDownload);
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+  
+      link.href = url;
+      link.setAttribute('download', `stocks-${Date.now()}.csv`);
+
+      document.body.appendChild(link);
+      link.click();
+  
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    };
+
   const stocksToRender = searchActive ? searchResults : stocks;
 
   // ---------------------------------
@@ -102,9 +212,24 @@ const StockTable = () => {
             <Plus /> Add Stocks
           </button>
 
-          <button className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md">
+           <button
+            onClick={downloadCSV}
+            className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+          >
             <Download className="text-primary_white h-[16.67px]" />
-            <span className="text-primary_white text-[12px]">Download CSV</span>
+            <span className="text-primary_white text-[12px]">
+              Download CSV
+            </span>
+          </button>
+
+          <button
+            onClick={downloadPDF}
+            className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+          >
+            <Download className="text-primary_white h-[16.67px]" />
+            <span className="text-primary_white text-[12px]">
+              Download PDF
+            </span>
           </button>
         </div>
       </div>

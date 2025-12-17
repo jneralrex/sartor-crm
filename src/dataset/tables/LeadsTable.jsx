@@ -11,6 +11,8 @@ import { useToken, useUserId } from '../../store/authStore';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
 import EditLeadStatus from '../../components/modals/leads/EditLeadStatus';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const LeadsTable = () => {
   const token = useToken();
@@ -85,7 +87,7 @@ const LeadsTable = () => {
       setGetAllLeads(leads);
     } catch (error) {
       console.log(error);
-       setError("Failed to fetch Leads: " + " " + error.message || error.response.message + "please try again")
+      setError("Failed to fetch Leads: " + " " + error.message || error.response.message + "please try again")
       setPagination(paginationNormalizer());
     } finally {
       setLoading(false);
@@ -109,9 +111,110 @@ const LeadsTable = () => {
   };
 
   useEffect(() => {
-  allLeads(currentPage);
-}, [currentPage]);
+    allLeads(currentPage);
+  }, [currentPage]);
 
+
+
+  const convertToCSV = (getAllLeads = []) => {
+    if (!getAllLeads.length) return '';
+
+    const headers = [
+      'Name',
+      'Contact',
+      'Status',
+      'Date Added',
+      'Phone Number',
+    ];
+
+
+    const rows = getAllLeads.map((lead) => [
+      lead?.name || '',
+      Array.isArray(lead.contacts) && lead.contacts.length > 0
+        ? `${lead.contacts[0].name} - ${lead.contacts[0].phone}`
+        : '---',
+      lead?.status || '',
+      lead?.creationDateTime
+        ? new Date(lead.creationDateTime).toLocaleDateString()
+        : '',
+      lead?.phone || ''
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) =>
+        row
+          .map((cell) =>
+            `"${String(cell).replace(/"/g, '""')}"`
+          )
+          .join(',')
+      ),
+    ].join('\n');
+
+    return csvContent;
+  };
+
+  const downloadPDF = () => {
+    const leadToDownload = searchActive ? searchResults : getAllLeads;
+
+    if (!leadToDownload.length) return;
+
+    const doc = new jsPDF('landscape');
+
+    doc.setFontSize(16);
+    doc.text('Leads Report', 14, 15);
+
+    const tableColumn = [
+      'Name',
+      'Contact',
+      'Status',
+      'Date Added',
+      'Phone Number',
+    ];
+
+    const tableRows = leadToDownload.map((lead) => [
+      lead?.name || '',
+      Array.isArray(lead.contacts) && lead.contacts.length > 0
+        ? `${lead.contacts[0].name} - ${lead.contacts[0].phone}`
+        : '---',
+      lead?.status || '',
+      lead?.creationDateTime
+        ? new Date(lead.creationDateTime).toLocaleDateString()
+        : '',
+      lead?.phone || ''
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [0, 0, 104] },
+    });
+
+    doc.save(`leads-${Date.now()}.pdf`);
+  };
+
+  const downloadCSV = () => {
+    const leadToDownload = searchActive ? searchResults : getAllLeads;
+
+    if (!leadToDownload.length) return;
+
+    const csv = convertToCSV(leadToDownload);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.setAttribute('download', `leads-${Date.now()}.csv`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
 
 
   const filteredLeads = searchActive ? searchResults : getAllLeads;
@@ -121,7 +224,7 @@ const LeadsTable = () => {
     <>
       <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
         <div className="flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md">
-           <UniversalSearch
+          <UniversalSearch
             collection="lead"
             searchPath="leads"
             placeholder="Search"
@@ -149,10 +252,27 @@ const LeadsTable = () => {
             <Plus />
             <span>Add Leads</span>
           </button>
-          <button className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md">
-            <Download className="text-primary_white h-[16.67px]" />
-            <span className="text-primary_white text-[14px] font-[sfpro]">Download csv</span>
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={downloadCSV}
+              className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+            >
+              <Download className="text-primary_white h-[16.67px]" />
+              <span className="text-primary_white text-[12px]">
+                Download CSV
+              </span>
+            </button>
+
+            <button
+              onClick={downloadPDF}
+              className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+            >
+              <Download className="text-primary_white h-[16.67px]" />
+              <span className="text-primary_white text-[12px]">
+                Download PDF
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -286,7 +406,7 @@ const LeadsTable = () => {
               ) : (
                 <tr>
                   <td colSpan="8" className="text-center py-4 text-red-500">
-                  {error}
+                    {error}
                   </td>
                 </tr>
               )}
@@ -295,7 +415,7 @@ const LeadsTable = () => {
       </div>
 
       {/* Pagination */}
-       {pagination && (
+      {pagination && (
         <UniversalPagination
           pagination={pagination}
           onPageChange={(page) => setCurrentPage(page)}
@@ -314,7 +434,7 @@ const LeadsTable = () => {
         />
       )}
 
-      { isEditLeadStatusModalOpen && (
+      {isEditLeadStatusModalOpen && (
         <EditLeadStatus
           leadId={editingLeadId}
           onClose={closeLeadStatusModal}

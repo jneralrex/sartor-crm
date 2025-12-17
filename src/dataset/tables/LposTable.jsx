@@ -1,4 +1,4 @@
-import { Download, Ellipsis, Plus,  } from 'lucide-react';
+import { Download, Ellipsis, Plus, } from 'lucide-react';
 import { Menu } from '@headlessui/react'
 import { useEffect, useState } from 'react';
 import LpoDetailsModal from '../../components/modals/lpos/LpoDetailsModal';
@@ -12,6 +12,8 @@ import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
 import EditLpoModal from '../../components/modals/lpos/EditLpoModal';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 
 
@@ -42,7 +44,7 @@ const LposTable = () => {
 
 
 
-  
+
   const allLPOs = async (page = 1) => {
     setLoading(true);
 
@@ -52,7 +54,7 @@ const LposTable = () => {
       const { data, totalPages } = res.data.data;
       console.log(res);
       setGetAllLpos(res.data.data.lpos);
-      console.log("All LPOs",getAllLpos)
+      console.log("All LPOs", getAllLpos)
       const paginationData = paginationNormalizer(
         res.data?.pagination || res.data?.data?.pagination || res.data?.data?.data?.pagination
       );
@@ -60,16 +62,16 @@ const LposTable = () => {
 
 
     } catch (error) {
-      setError("Please try again, Failed to fetch LPOs:" + " " + error.message || error.response.data.message || error.response.message )
+      setError("Please try again, Failed to fetch LPOs:" + " " + error.message || error.response.data.message || error.response.message)
       console.log(error);
       setPagination(paginationNormalizer());
-      
+
     } finally {
       setLoading(false);
     }
   };
-  
-  
+
+
   const confirmDelete = async () => {
     if (!lpoToDelete) return;
     try {
@@ -83,20 +85,116 @@ const LposTable = () => {
       setLpoToDelete(null);
     }
   };
-  
-  
+
+
   useEffect(() => {
     allLPOs(currentPage);
   }, [currentPage, token]);
-  
+
   const handleViewLpoModalToggle = (id) => {
     setSelectedLpoId(id);
     setViewLpoModalOpen(true);
   };
-  
+
   const handleCreateLpoModal = () => {
     setCreateLpoModal((prev => !prev))
   }
+
+  const convertToCSV = (getAllLpos = []) => {
+    if (!getAllLpos.length) return '';
+
+    const headers = [
+      'Customer',
+      'Address',
+      'LPO Status',
+      'Date Created',
+      'Terms',
+    ];
+
+    const rows = getAllLpos.map((lpo) => [
+      lpo?.lead?.name || '',
+      lpo?.lead?.address || '',
+      lpo?.status || '',
+      lpo?.creationDateTime
+        ? new Date(lpo.creationDateTime).toLocaleDateString()
+        : '',
+      lpo?.terms || ''
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) =>
+        row
+          .map((cell) =>
+            `"${String(cell).replace(/"/g, '""')}"`
+          )
+          .join(',')
+      ),
+    ].join('\n');
+
+    return csvContent;
+  };
+
+  const downloadPDF = () => {
+    const lpoToDownload = searchActive ? searchResults : getAllLpos;
+
+    if (!lpoToDownload.length) return;
+
+    const doc = new jsPDF('landscape');
+
+    doc.setFontSize(16);
+    doc.text('LPOs Report', 14, 15);
+
+    const tableColumn = [
+      'Customer',
+      'Address',
+      'LPO Status',
+      'Date Created',
+      'Terms',
+    ];
+
+    const tableRows = lpoToDownload.map((lpo) => [
+      lpo?.lead?.name || '',
+      lpo?.lead?.address || '',
+      lpo?.status || '',
+      lpo?.creationDateTime
+        ? new Date(lpo.creationDateTime).toLocaleDateString()
+        : '',
+      lpo?.terms || ''
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [0, 0, 104] },
+    });
+
+    doc.save(`lpos-${Date.now()}.pdf`);
+  };
+
+  const downloadCSV = () => {
+    const lpoToDownload = searchActive ? searchResults : getAllLpos;
+
+    if (!lpoToDownload.length) return;
+
+    const csv = convertToCSV(lpoToDownload);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.setAttribute('download', `lpos-${Date.now()}.csv`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   const filteredLPOs = searchActive ? searchResults : getAllLpos;
 
   return (
@@ -125,8 +223,28 @@ const LposTable = () => {
         </div>
         <div className="flex gap-2">
           <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans" onClick={handleCreateLpoModal}><span><Plus /></span><span>Create LPO</span></button>
-          <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px] text-[12px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
-        </div>
+          <div className="flex gap-2">
+            <button
+              onClick={downloadCSV}
+              className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+            >
+              <Download className="text-primary_white h-[16.67px]" />
+              <span className="text-primary_white text-[12px]">
+                Download CSV
+              </span>
+            </button>
+
+            <button
+              onClick={downloadPDF}
+              className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+            >
+              <Download className="text-primary_white h-[16.67px]" />
+              <span className="text-primary_white text-[12px]">
+                Download PDF
+              </span>
+            </button>
+          </div>       
+       </div>
       </div>
 
       <div className="overflow-x-auto rounded-lg border">
@@ -179,7 +297,7 @@ const LposTable = () => {
                   </td>
                   <td className="px-4 py-3 text-[#767676] text-xs md:text-[14px] font-normal">
                     {/* If you have an amount field, use it. Otherwise, show terms or N/A */}
-                    {lpo.amount || lpo.terms || 'N/A'}
+                    {lpo.terms || 'N/A'}
                   </td>
                   <td className="px-4 py-3 ">
                     {/* Menu Dropdown */}
@@ -271,21 +389,21 @@ const LposTable = () => {
       )}
 
 
-      {isViewLpoModalOpen && 
-      <LpoDetailsModal 
-      onClose={() => setViewLpoModalOpen(false)} 
-      lpoId={selectedLpoId} 
-       onSuccess={(updatedLpo) => {
+      {isViewLpoModalOpen &&
+        <LpoDetailsModal
+          onClose={() => setViewLpoModalOpen(false)}
+          lpoId={selectedLpoId}
+          onSuccess={(updatedLpo) => {
             setGetAllLpos(prev =>
               prev.map(item => (item._id === updatedLpo._id ? updatedLpo : item))
             );
           }}
-      />}
+        />}
 
-      {isCreateLopModalOpen && <CreateLpoModal 
-      onClose={handleCreateLpoModal} 
-      onSuccess={
-        allLPOs}
+      {isCreateLopModalOpen && <CreateLpoModal
+        onClose={handleCreateLpoModal}
+        onSuccess={
+          allLPOs}
       />}
 
       {isEditLpoStatusModalOpen && (

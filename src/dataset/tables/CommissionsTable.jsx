@@ -8,6 +8,8 @@ import { useToken } from "../../store/authStore";
 import { paginationNormalizer } from "../../utils/pagination/paginationNormalizer";
 import UniversalPagination from "../../components/UniversalPagination";
 import UniversalSearch from "../../components/UniversalSearch";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const CommissionsTable = () => {
   const token = useToken();
@@ -62,6 +64,97 @@ const CommissionsTable = () => {
     fetchCommissions();
   }, [token]);
 
+  const convertToCSV = (commissions = []) => {
+    if (!commissions.length) return '';
+
+    const headers = [
+      'Role',
+      'Price',
+      'Status',
+      'Date Created',
+    ];
+
+    const rows = commissions.map((commission) => [
+      commission?.role || '',
+      commission?.price || '',
+      commission?.status || '',
+      commission?.creationDateTime
+        ? new Date(commission.creationDateTime).toLocaleDateString()
+        : '',
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) =>
+        row
+          .map((cell) =>
+            `"${String(cell).replace(/"/g, '""')}"`
+          )
+          .join(',')
+      ),
+    ].join('\n');
+
+    return csvContent;
+  };
+
+  const downloadPDF = () => {
+    const commissionsToDownload = searchActive ? searchResults : commissions;
+
+    if (!commissionsToDownload.length) return;
+
+    const doc = new jsPDF('landscape');
+
+    doc.setFontSize(16);
+    doc.text('Commissions Report', 14, 15);
+
+    const tableColumn = [
+      'Role',
+      'Price',
+      'Status',
+      'Date Created',
+    ];
+
+    const tableRows = commissionsToDownload.map((commission) => [
+      commission?.role || '',
+      commission?.price || '',
+      commission?.status || '',
+      commission?.creationDateTime
+        ? new Date(commission.creationDateTime).toLocaleDateString()
+        : '',
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [0, 0, 104] },
+    });
+
+    doc.save(`commissions-${Date.now()}.pdf`);
+  };
+
+  const downloadCSV = () => {
+    const commissionsToDownload = searchActive ? searchResults : commissions;
+
+    if (!commissionsToDownload.length) return;
+
+    const csv = convertToCSV(commissionsToDownload);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.setAttribute('download', `commissions-${Date.now()}.csv`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   const commissionToRender = searchActive ? searchResults : commissions;
 
   return (
@@ -72,7 +165,7 @@ const CommissionsTable = () => {
           Commissions
         </h2>
 
-         <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
+        <div className='flex items-center gap-2 w-[252px] md:max-w-[235px] border-primary_grey px-3 py-2 bg-primary_white rounded-md'>
           {/* <UniversalSearch
             collection="commission"
             searchPath="commissions"
@@ -94,9 +187,24 @@ const CommissionsTable = () => {
           /> */}
         </div>
         <div className="flex gap-2">
-          <button className="flex items-center bg-primary_blue h-[40px] w-[140px] justify-center rounded-md">
-            <Download className="text-white h-4" />
-            <span className="text-white text-sm ml-2">Download CSV</span>
+          <button
+            onClick={downloadCSV}
+            className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+          >
+            <Download className="text-primary_white h-[16.67px]" />
+            <span className="text-primary_white text-[12px]">
+              Download CSV
+            </span>
+          </button>
+
+          <button
+            onClick={downloadPDF}
+            className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+          >
+            <Download className="text-primary_white h-[16.67px]" />
+            <span className="text-primary_white text-[12px]">
+              Download PDF
+            </span>
           </button>
         </div>
       </div>
@@ -136,8 +244,8 @@ const CommissionsTable = () => {
                   </td>
                   <td
                     className={`px-4 py-3 text-xs md:text-[14px] font-medium ${commission.status === true || commission.status === "true"
-                        ? "text-green-500"
-                        : "text-red-500"
+                      ? "text-green-500"
+                      : "text-red-500"
                       }`}
                   >
                     {commission.status === true || commission.status === "true" ? "Active" : "Inactive"}
@@ -182,14 +290,14 @@ const CommissionsTable = () => {
           </tbody>
         </table>
       </div>
-      
-            {/* Pagination */}
-            {pagination && (
-                <UniversalPagination
-                    pagination={pagination}
-                    onPageChange={(page) => setCurrentPage(page)}
-                />
-            )}
+
+      {/* Pagination */}
+      {pagination && (
+        <UniversalPagination
+          pagination={pagination}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
+      )}
     </>
   );
 };

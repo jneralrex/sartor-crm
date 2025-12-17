@@ -12,6 +12,8 @@ import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 
 
@@ -80,7 +82,6 @@ const EmployeeTable = ({ activeTab }) => {
   });
 
 
-
   const handleAssignTaskModalToggle = () => {
     setAssignTaskModalOpen((prev) => !prev);
   };
@@ -113,6 +114,101 @@ const EmployeeTable = ({ activeTab }) => {
     }
   };
 
+  const convertToCSV = (getAllEmployee = []) => {
+    if (!getAllEmployee.length) return '';
+
+    const headers = [
+      'Name',
+      'Position',
+      'Date Added',
+      'Phone Number',
+    ];
+
+
+    const rows = getAllEmployee.map((employee) => [
+      employee?.fullName || '',
+      employee?.role || '',
+      employee?.creationDateTime
+        ? new Date(employee.creationDateTime).toLocaleDateString()
+        : '',
+      employee?.phone || '',
+    ]);
+
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) =>
+        row
+          .map((cell) =>
+            `"${String(cell).replace(/"/g, '""')}"`
+          )
+          .join(',')
+      ),
+    ].join('\n');
+
+    return csvContent;
+  };
+
+  const downloadPDF = () => {
+    const employeeToDownload = searchActive ? searchResults : getAllEmployee;
+
+    if (!employeeToDownload.length) return;
+
+    const doc = new jsPDF('landscape');
+
+    doc.setFontSize(16);
+    doc.text('Employees Report', 14, 15);
+
+    const tableColumn = [
+      'Name',
+      'Position',
+      'Date Added',
+      'Phone Number',
+    ];
+
+
+    const tableRows = employeeToDownload.map((employee) => [
+      employee?.fullName || '',
+      employee?.role || '',
+      employee?.creationDateTime
+        ? new Date(employee.creationDateTime).toLocaleDateString()
+        : '',
+      employee?.phone || '',
+    ]);
+
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [0, 0, 104] },
+    });
+
+    doc.save(`employees-${Date.now()}.pdf`);
+  };
+
+  const downloadCSV = () => {
+    const employeeToDownload = searchActive ? searchResults : getAllEmployee;
+
+    if (!employeeToDownload.length) return;
+
+    const csv = convertToCSV(employeeToDownload);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.setAttribute('download', `commissions-${Date.now()}.csv`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
 
 
   return (
@@ -141,8 +237,27 @@ const EmployeeTable = ({ activeTab }) => {
         </div>
         <div className="flex gap-2">
           <button className="bg-primary_white border px-2 py-2 rounded-md text-sm max-w-[148px] md:w-[160px] h-[40px] flex text-center items-center gap-1 md:gap-2 text-[#1A1A1A] public-sans" onClick={handleAddEmployee}><span><Plus /></span><span>Add Employee</span></button>
-          <buttton className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></buttton>
-        </div>
+          <div className="flex gap-2">
+            <button
+              onClick={downloadCSV}
+              className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+            >
+              <Download className="text-primary_white h-[16.67px]" />
+              <span className="text-primary_white text-[12px]">
+                Download CSV
+              </span>
+            </button>
+
+            <button
+              onClick={downloadPDF}
+              className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+            >
+              <Download className="text-primary_white h-[16.67px]" />
+              <span className="text-primary_white text-[12px]">
+                Download PDF
+              </span>
+            </button>
+          </div>        </div>
       </div>
 
       <div className="overflow-x-auto rounded-lg border">
@@ -275,7 +390,7 @@ const EmployeeTable = ({ activeTab }) => {
       </div>
 
       {/* pagination */}
-       {pagination && (
+      {pagination && (
         <UniversalPagination
           pagination={pagination}
           onPageChange={(page) => setCurrentPage(page)}

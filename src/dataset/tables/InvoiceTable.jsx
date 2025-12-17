@@ -10,6 +10,8 @@ import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 
 const InvoiceTable = ({ }) => {
@@ -94,7 +96,7 @@ const InvoiceTable = ({ }) => {
     if (!invoices.length) return '';
 
     const headers = [
-      'Invoice ID',
+      // 'Invoice ID',
       'Customer Name',
       'Status',
       'Due Date',
@@ -126,6 +128,48 @@ const InvoiceTable = ({ }) => {
 
     return csvContent;
   };
+
+  const downloadInvoicesPDF = () => {
+    const invoicesToDownload = searchActive ? searchResults : getInvoices;
+
+    if (!invoicesToDownload.length) return;
+
+    const doc = new jsPDF('landscape');
+
+    doc.setFontSize(16);
+    doc.text('Invoices Report', 14, 15);
+
+    const tableColumn = [
+      // 'Invoice ID',
+      'Customer Name',
+      'Status',
+      'Due Date',
+      'Total Amount',
+      'Total Qty',
+    ];
+
+    const tableRows = invoicesToDownload.map((inv) => [
+      // inv._id,
+      inv.name || 'N/A',
+      inv.status || 'N/A',
+      inv.dueDate
+        ? new Date(inv.dueDate).toLocaleDateString()
+        : 'N/A',
+      inv.totalAmount ?? 'N/A',
+      inv.qty ?? 'N/A',
+    ]);
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 25,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [0, 0, 104] },
+    });
+
+    doc.save(`invoices-${Date.now()}.pdf`);
+  };
+
 
   const downloadInvoicesCSV = () => {
     const invoicesToDownload = searchActive ? searchResults : getInvoices;
@@ -176,10 +220,28 @@ const InvoiceTable = ({ }) => {
             auto={true}
           />
         </div>
-        <div className="flex gap-2" onClick={downloadInvoicesCSV}
-        >
-          <button className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'><Download className='text-primary_white h-[16.67px]' /><span className='text-primary_white text-[12px] font-[sfpro]'>Download csv</span></button>
+        <div className="flex gap-2">
+          <button
+            onClick={downloadInvoicesCSV}
+            className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+          >
+            <Download className="text-primary_white h-[16.67px]" />
+            <span className="text-primary_white text-[12px]">
+              Download CSV
+            </span>
+          </button>
+
+          <button
+            onClick={downloadInvoicesPDF}
+            className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+          >
+            <Download className="text-primary_white h-[16.67px]" />
+            <span className="text-primary_white text-[12px]">
+              Download PDF
+            </span>
+          </button>
         </div>
+
       </div>
 
       <div className="overflow-x-auto rounded-lg border">

@@ -10,6 +10,8 @@ import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { useToken, useUserId } from '../../store/authStore';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const CustomerstTable = ({ onClose }) => {
     const token = useToken();
@@ -60,7 +62,6 @@ const CustomerstTable = ({ onClose }) => {
         }
     };
 
-    const filteredCustomers = searchActive ? searchResults : getAllCustomer;
 
 
     useEffect(() => {
@@ -88,6 +89,103 @@ const CustomerstTable = ({ onClose }) => {
         }
     };
 
+    const convertToCSV = (customers = []) => {
+        if (!customers.length) return '';
+
+        const headers = [
+            'Name',
+            'Location',
+            'Status',
+            'Date Added',
+            'Phone Number',
+        ];
+
+        const rows = customers.map((customer) => [
+            customer.lead?.name || '',
+            customer?.lead?.state || '',
+            customer.status || '',
+            customer.creationDateTime
+                ? new Date(customer.creationDateTime).toLocaleDateString()
+                : '',
+            customer?.lead?.phone || '',
+        ]);
+
+        const csvContent = [
+            headers.join(','),
+            ...rows.map((row) =>
+                row
+                    .map((cell) =>
+                        `"${String(cell).replace(/"/g, '""')}"`
+                    )
+                    .join(',')
+            ),
+        ].join('\n');
+
+        return csvContent;
+    };
+
+    const downloadPDF = () => {
+        const customersToDownload = searchActive ? searchResults : getAllCustomer;
+
+        if (!customersToDownload.length) return;
+
+        const doc = new jsPDF('landscape');
+
+        doc.setFontSize(16);
+        doc.text('Customers Report', 14, 15);
+
+        const tableColumn = [
+            'Name',
+            'Location',
+            'Status',
+            'Date Added',
+            'Phone Number',
+        ];
+
+        const tableRows = customersToDownload.map((customer) => [
+            customer?.lead?.name || '',
+            customer?.lead?.state || '',
+            customer?.status || '',
+            customer?.creationDateTime
+                ? new Date(customer.creationDateTime).toLocaleDateString()
+                : '',
+            customer?.lead?.phone || '',
+        ]);
+
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 25,
+            styles: { fontSize: 9 },
+            headStyles: { fillColor: [0, 0, 104] },
+        });
+
+        doc.save(`customers-${Date.now()}.pdf`);
+    };
+
+    const downloadCSV = () => {
+        const customersToDownload = searchActive ? searchResults : getAllCustomer;
+
+        if (!customersToDownload.length) return;
+
+        const csv = convertToCSV(customersToDownload);
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.setAttribute('download', `customers-${Date.now()}.csv`);
+
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    };
+
+    const filteredCustomers = searchActive ? searchResults : getAllCustomer;
+
     return (
         <>
             <div className="flex justify-between items-center mb-4 flex-col md:flex-row gap-3 mt-20">
@@ -113,9 +211,24 @@ const CustomerstTable = ({ onClose }) => {
                     />
                 </div>
                 <div className="flex gap-2">
-                    <button className='flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md'>
-                        <Download className='text-primary_white h-[16.67px]' />
-                        <span className='text-primary_white text-[12px]'>Download CSV</span>
+                    <button
+                        onClick={downloadCSV}
+                        className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+                    >
+                        <Download className="text-primary_white h-[16.67px]" />
+                        <span className="text-primary_white text-[12px]">
+                            Download CSV
+                        </span>
+                    </button>
+
+                    <button
+                        onClick={downloadPDF}
+                        className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+                    >
+                        <Download className="text-primary_white h-[16.67px]" />
+                        <span className="text-primary_white text-[12px]">
+                            Download PDF
+                        </span>
                     </button>
                 </div>
             </div>

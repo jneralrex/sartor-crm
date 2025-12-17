@@ -12,6 +12,8 @@ import UniversalSearch from '../../components/UniversalSearch';
 import EmployeeSkeletonRow from '../../components/EmployeeSkeletonRow';
 import { paginationNormalizer } from '../../utils/pagination/paginationNormalizer';
 import UniversalPagination from '../../components/UniversalPagination';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const ProductsTable = () => {
   const token = useToken();
@@ -54,7 +56,7 @@ const ProductsTable = () => {
       console.log("Fetched products:", res);
       setGetAllProducts(products);
       setPagination(paginationData);
-    } catch (error) { 
+    } catch (error) {
       setError("Failed to fetch products: " + " " + error.message || error.response.message + "please try again")
       console.error("Failed to fetch products:", error);
       setPagination(paginationNormalizer());
@@ -96,6 +98,101 @@ const ProductsTable = () => {
     setIsViewBatchesOpen(true);
   };
 
+  const convertToCSV = (products = []) => {
+    if (!products.length) return '';
+
+    const headers = [
+     'Product Name',
+    'Status',
+    'Price',
+    'Quantity',
+    'Date Created',
+  ];
+
+    const rows = products.map((prod) => [
+    prod.productName || '',
+    prod.status || '',
+    prod.price || '',
+    prod.totalQuantityAvailable || '',
+    prod.createdAt
+      ? new Date(prod.createdAt).toLocaleDateString()
+      : '',
+  ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map((row) =>
+        row
+          .map((cell) =>
+            `"${String(cell).replace(/"/g, '""')}"`
+          )
+          .join(',')
+      ),
+    ].join('\n');
+
+    return csvContent;
+  };
+
+  const downloadPDF = () => {
+  const productsToDownload = searchActive ? searchResults : getAllProducts;
+
+  if (!productsToDownload.length) return;
+
+  const doc = new jsPDF('landscape');
+
+  doc.setFontSize(16);
+  doc.text('Products Report', 14, 15);
+
+  const tableColumn = [
+    'Product Name',
+    'Status',
+    'Price',
+    'Quantity',
+    'Date Created',
+  ];
+
+  const tableRows = productsToDownload.map((prod) => [
+    prod.productName || '',
+    prod.status || '',
+    prod.price || '',
+    prod.totalQuantityAvailable || '',
+    prod.createdAt
+      ? new Date(prod.createdAt).toLocaleDateString()
+      : '',
+  ]);
+
+  autoTable(doc, {
+    head: [tableColumn],
+    body: tableRows,
+    startY: 25,
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [0, 0, 104] },
+  });
+
+  doc.save(`products-${Date.now()}.pdf`);
+};
+
+  const downloadCSV = () => {
+  const productsToDownload = searchActive ? searchResults : getAllProducts;
+
+    if (!productsToDownload.length) return;
+
+    const csv = convertToCSV(productsToDownload);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.setAttribute('download', `products-${Date.now()}.csv`);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   // search or normal
   const productsToRender = searchActive ? searchResults : getAllProducts;
 
@@ -124,15 +221,30 @@ const ProductsTable = () => {
           />
         </div>
         <div className="flex gap-2">
-          <button
+        <button
             className="bg-primary_white border px-2 py-2 rounded-md text-sm h-[40px] flex text-center items-center gap-1 text-[#1A1A1A]"
             onClick={() => setIsModalCreateProductModalOpen(true)}
           >
             <Plus /> Add Product
           </button>
-          <button className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md">
+          <button
+            onClick={downloadCSV}
+            className="flex items-center bg-primary_blue h-[40px] w-[119px] justify-center rounded-md"
+          >
             <Download className="text-primary_white h-[16.67px]" />
-            <span className="text-primary_white text-[12px]">Download CSV</span>
+            <span className="text-primary_white text-[12px]">
+              Download CSV
+            </span>
+          </button>
+
+          <button
+            onClick={downloadPDF}
+            className="flex items-center bg-[#000068] h-[40px] w-[119px] justify-center rounded-md"
+          >
+            <Download className="text-primary_white h-[16.67px]" />
+            <span className="text-primary_white text-[12px]">
+              Download PDF
+            </span>
           </button>
         </div>
       </div>
@@ -175,86 +287,86 @@ const ProductsTable = () => {
                     {prod.price}
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
-                    <img src={prod?.productImage} alt="" srcset="" className='size-12'/>
+                    <img src={prod?.productImage} alt="" srcset="" className='size-12' />
                   </td>
                   <td className="px-4 py-3 text-xs md:text-[14px] font-normal text-[#767676]">
                     {prod.totalQuantityAvailable}
                   </td>
                   <td className="px-4 py-3">
-                     <Menu as="div" className="relative inline-block text-left">
-                        <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
-                          <Ellipsis />
-                        </Menu.Button>
-                        <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                          <div className="py-1">
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => handleViewProductDetailModalToggle(prod._id)}
-                                >
-                                  View Details
-                                </button>
-                              )}
-                            </Menu.Item>
-                          </div>
-                          <div>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => {
-                                    setProductToEdit(prod);
-                                    setIsEditProductModalOpen(true);
-                                  }}
-                                >
-                                  Edit
-                                </button>
-                              )}
-                            </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => handleAddBatchModalToggle(prod._id)}
-                                >
-                                  Add Batch
-                                </button>
-                              )}
-                            </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
-                                  onClick={() => handleViewBatches(prod._id)}
-                                >
-                                  View Batches
-                                </button>
-                              )}
-                            </Menu.Item>
-                            <Menu.Item>
-                              {({ active }) => (
-                                <button
-                                  className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
-                                  onClick={() => {
-                                    setProductToDelete(prod._id);
-                                    setIsConfirmOpen(true);
-                                  }}
-                                >
-                                  Delete
-                                </button>
-                              )}
-                            </Menu.Item>
-                          </div>
-                        </Menu.Items>
-                      </Menu>
+                    <Menu as="div" className="relative inline-block text-left">
+                      <Menu.Button className="inline-flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-black">
+                        <Ellipsis />
+                      </Menu.Button>
+                      <Menu.Items className="absolute p-2 right-0 z-[99] w-40 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                        <div className="py-1">
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => handleViewProductDetailModalToggle(prod._id)}
+                              >
+                                View Details
+                              </button>
+                            )}
+                          </Menu.Item>
+                        </div>
+                        <div>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => {
+                                  setProductToEdit(prod);
+                                  setIsEditProductModalOpen(true);
+                                }}
+                              >
+                                Edit
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => handleAddBatchModalToggle(prod._id)}
+                              >
+                                Add Batch
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-gray-100 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-gray-900`}
+                                onClick={() => handleViewBatches(prod._id)}
+                              >
+                                View Batches
+                              </button>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                className={`${active ? 'bg-red-200 rounded-md' : ''} group flex items-center w-full gap-2 px-4 py-2 text-sm text-red-500`}
+                                onClick={() => {
+                                  setProductToDelete(prod._id);
+                                  setIsConfirmOpen(true);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </Menu.Item>
+                        </div>
+                      </Menu.Items>
+                    </Menu>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
                 <td colSpan="9" className="text-center py-4 text-red-500">
-                 {error}
+                  {error}
                 </td>
               </tr>
             )}
