@@ -48,10 +48,10 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
 
 
         const today = new Date().toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
 
 
         const BRAND_COLOR = [0, 82, 204];
@@ -379,12 +379,12 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
                     >
                         Download PDF
                     </button>
-                    <button
+                    {/* <button
                         onClick={downloadInvoicesPDF}
                         className="bg-gray-400 text-red-700 px-4 py-2 rounded-md transition w-full"
                     >
                         Cancel Invoice
-                    </button>
+                    </button> */}
                 </div>
 
             </div>
