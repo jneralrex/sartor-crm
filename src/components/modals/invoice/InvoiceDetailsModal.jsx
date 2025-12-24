@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 import DetailsSkeleton from '../../DetailsSkeleton';
+import jsPDF from 'jspdf';
+import COMPANY_LOGO from '/logo.png';
 
 const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
     const token = useToken();
@@ -31,6 +33,194 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
 
         singleLpo();
     }, [token, invoiceId]);
+
+
+
+
+    const downloadInvoicesPDF = () => {
+        if (!singleInvoice) return;
+
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+        });
+
+
+        const today = new Date().toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+
+        const BRAND_COLOR = [0, 82, 204];
+        let y = 20;
+
+        const drawLine = (yPos) => {
+            doc.setDrawColor(220);
+            doc.line(14, yPos, 196, yPos);
+        };
+
+        // ===== LOGO =====
+        if (COMPANY_LOGO) {
+            doc.addImage(COMPANY_LOGO, 'PNG', 14, y - 5, 30, 15);
+        }
+
+        // ===== TITLE =====
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(22);
+        doc.setTextColor(...BRAND_COLOR);
+        doc.text('INVOICE', 150, y);
+
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(10);
+        y += 8;
+
+        doc.text(`Invoice ID: ${singleInvoice?.invoiceId || 'N/A'}`, 150, y);
+        y += 5;
+        doc.text(`Status: ${singleInvoice?.status || 'N/A'}`, 150, y);
+
+        y += 8;
+        drawLine(y);
+        y += 10;
+
+        // ===== BILL TO =====
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...BRAND_COLOR);
+        doc.setFontSize(12);
+        doc.text('Bill To', 14, y);
+
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(10);
+        y += 6;
+
+        doc.text(`Name: ${singleInvoice?.name || 'N/A'}`, 14, y);
+        y += 5;
+        doc.text(`Email: ${singleInvoice?.lead?.email || 'N/A'}`, 14, y);
+        y += 5;
+        doc.text(`Phone: ${singleInvoice?.lead?.phone || 'N/A'}`, 14, y);
+        y += 5;
+        doc.text(`Address: ${singleInvoice?.lead?.address || 'N/A'}`, 14, y);
+
+        y += 8;
+        drawLine(y);
+        y += 10;
+
+        // ===== INVOICE DETAILS =====
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...BRAND_COLOR);
+        doc.text('Invoice Details', 14, y);
+
+        doc.setTextColor(0, 0, 0);
+        doc.setFont('helvetica', 'normal');
+        y += 6;
+
+        doc.text(`Sales Rep: ${singleInvoice?.lead?.name || 'N/A'}`, 14, y);
+        y += 5;
+        doc.text(
+            `Date Created: ${singleInvoice?.creationDateTime
+                ? new Date(singleInvoice.creationDateTime).toLocaleDateString()
+                : 'N/A'
+            }`,
+            14,
+            y
+        );
+        y += 5;
+        doc.text(
+            `Due Date: ${singleInvoice?.dueDate
+                ? new Date(singleInvoice.dueDate).toLocaleDateString()
+                : 'N/A'
+            }`,
+            14,
+            y
+        );
+
+        y += 8;
+        drawLine(y);
+        y += 10;
+
+        // ===== PRODUCTS =====
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...BRAND_COLOR);
+        doc.text('Products', 14, y);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        y += 6;
+
+        if (Array.isArray(singleInvoice?.lpoProducts) && singleInvoice.lpoProducts.length) {
+            singleInvoice.lpoProducts.forEach((item, index) => {
+                if (y > 260) {
+                    doc.addPage();
+                    y = 20;
+                }
+
+                doc.text(
+                    `${index + 1}. ${item.product?.productName || 'Unnamed Product'} — Qty: ${item.quantity}`,
+                    16,
+                    y
+                );
+                y += 6;
+            });
+        } else {
+            doc.text('No products listed', 16, y);
+            y += 6;
+        }
+
+        y += 6;
+        drawLine(y);
+        y += 10;
+
+        // ===== SUMMARY =====
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...BRAND_COLOR);
+        doc.text('Summary', 14, y);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(0, 0, 0);
+        y += 6;
+
+        doc.text(`Total Quantity: ${singleInvoice?.qty || 'N/A'}`, 14, y);
+        y += 5;
+        doc.text(`Total Amount: ${singleInvoice?.totalAmount || 'N/A'}`, 14, y);
+        y += 5;
+        doc.text(`Payment Terms: ${singleInvoice?.lpo?.terms || 'N/A'}`, 14, y);
+        y += 5;
+        doc.text(
+            `Delivery Status: ${singleInvoice?.lpo?.deliveryStatus ? 'Delivered' : 'Not Delivered'
+            }`,
+            14,
+            y
+        );
+
+        y += 20;
+        drawLine(y);
+        y += 15;
+
+        // ===== SIGNATURE AREA =====
+        doc.setFont('helvetica', 'normal');
+        doc.text('Authorized Signature:', 14, y);
+        doc.line(60, y + 1, 120, y + 1);
+
+        doc.text(`Date: ${today}`, 140, y);
+
+
+        y += 20;
+
+        // ===== FOOTER =====
+        doc.setFontSize(9);
+        doc.text(
+            'This invoice was generated electronically and is valid without a signature.',
+            14,
+            y
+        );
+
+        doc.save(`invoice-${singleInvoice?.invoiceId || Date.now()}.pdf`);
+    };
+
+
+
 
     if (loading) return <DetailsSkeleton />;
     return (
@@ -182,9 +372,23 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
                         </span>
                     )}
                 </label>
-
+                <div className="flex justify-between items-center mt-4 gap-3 ">
+                    <button
+                        onClick={downloadInvoicesPDF}
+                        className="bg-primary_blue text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full"
+                    >
+                        Download PDF
+                    </button>
+                    <button
+                        onClick={downloadInvoicesPDF}
+                        className="bg-gray-400 text-red-700 px-4 py-2 rounded-md transition w-full"
+                    >
+                        Cancel Invoice
+                    </button>
+                </div>
 
             </div>
+
         </div>
     )
 }
