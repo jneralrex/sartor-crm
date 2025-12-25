@@ -484,7 +484,8 @@ const AddBatchWrapperModal = ({ productId, onClose, onSuccess, editData, onBatch
 const Input = ({ label, placeholder, name, value, onChange }) => (
   <label className="block">
     <span className="block text-[#1A1A1A] font-medium text-sm mb-1">{label}</span>
-    <input type="number"
+    <input 
+    // type="number"
       min="0"
       step="0.01" placeholder={placeholder} name={name} value={value} onChange={onChange}
       className="bg-[#F5F5F5] rounded-lg w-full h-[48px] px-4 text-sm outline-none" />

@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
-import { useToken } from '../../../store/authStore';
+import { useFullName, useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
 import DetailsSkeleton from '../../DetailsSkeleton';
 import jsPDF from 'jspdf';
@@ -8,6 +8,7 @@ import COMPANY_LOGO from '/logo.png';
 
 const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
     const token = useToken();
+    const fullName = useFullName();
 
     const [singleInvoice, setSingleInvoice] = useState({});
     const [loading, setLoading] = useState(true);
@@ -37,188 +38,238 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
 
 
 
-    const downloadInvoicesPDF = () => {
-        if (!singleInvoice) return;
 
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-        });
+const downloadInvoicesPDF = () => {
+    if (!singleInvoice) return;
 
+    const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+    });
 
-        const today = new Date().toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
+    /* ================= CONSTANTS ================= */
+    const today = new Date().toLocaleDateString("en-GB");
+    const issuedBy = fullName || "N/A";
+    const BRAND_COLOR = [0, 82, 204];
+    let y = 20;
 
+    const COMPANY_NAME = "Sartor Health Company Ltd";
+    const ACCOUNT_NUMBER = "1017425534";
+    const BANK_NAME = "Zenith Bank Nig PLC";
+    const PAID_STAMP_IMAGE = null;
 
-        const BRAND_COLOR = [0, 82, 204];
-        let y = 20;
+    const pageHeight = doc.internal.pageSize.height;
 
-        const drawLine = (yPos) => {
-            doc.setDrawColor(220);
-            doc.line(14, yPos, 196, yPos);
-        };
-
-        // ===== LOGO =====
-        if (COMPANY_LOGO) {
-            doc.addImage(COMPANY_LOGO, 'PNG', 14, y - 5, 30, 15);
+    const ensureSpace = (space = 20) => {
+        if (y + space > pageHeight - 15) {
+            doc.addPage();
+            y = 20;
         }
-
-        // ===== TITLE =====
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(22);
-        doc.setTextColor(...BRAND_COLOR);
-        doc.text('INVOICE', 150, y);
-
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(10);
-        y += 8;
-
-        doc.text(`Invoice ID: ${singleInvoice?.invoiceId || 'N/A'}`, 150, y);
-        y += 5;
-        doc.text(`Status: ${singleInvoice?.status || 'N/A'}`, 150, y);
-
-        y += 8;
-        drawLine(y);
-        y += 10;
-
-        // ===== BILL TO =====
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(...BRAND_COLOR);
-        doc.setFontSize(12);
-        doc.text('Bill To', 14, y);
-
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(10);
-        y += 6;
-
-        doc.text(`Name: ${singleInvoice?.name || 'N/A'}`, 14, y);
-        y += 5;
-        doc.text(`Email: ${singleInvoice?.lead?.email || 'N/A'}`, 14, y);
-        y += 5;
-        doc.text(`Phone: ${singleInvoice?.lead?.phone || 'N/A'}`, 14, y);
-        y += 5;
-        doc.text(`Address: ${singleInvoice?.lead?.address || 'N/A'}`, 14, y);
-
-        y += 8;
-        drawLine(y);
-        y += 10;
-
-        // ===== INVOICE DETAILS =====
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(...BRAND_COLOR);
-        doc.text('Invoice Details', 14, y);
-
-        doc.setTextColor(0, 0, 0);
-        doc.setFont('helvetica', 'normal');
-        y += 6;
-
-        doc.text(`Sales Rep: ${singleInvoice?.lead?.name || 'N/A'}`, 14, y);
-        y += 5;
-        doc.text(
-            `Date Created: ${singleInvoice?.creationDateTime
-                ? new Date(singleInvoice.creationDateTime).toLocaleDateString()
-                : 'N/A'
-            }`,
-            14,
-            y
-        );
-        y += 5;
-        doc.text(
-            `Due Date: ${singleInvoice?.dueDate
-                ? new Date(singleInvoice.dueDate).toLocaleDateString()
-                : 'N/A'
-            }`,
-            14,
-            y
-        );
-
-        y += 8;
-        drawLine(y);
-        y += 10;
-
-        // ===== PRODUCTS =====
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(...BRAND_COLOR);
-        doc.text('Products', 14, y);
-
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        y += 6;
-
-        if (Array.isArray(singleInvoice?.lpoProducts) && singleInvoice.lpoProducts.length) {
-            singleInvoice.lpoProducts.forEach((item, index) => {
-                if (y > 260) {
-                    doc.addPage();
-                    y = 20;
-                }
-
-                doc.text(
-                    `${index + 1}. ${item.product?.productName || 'Unnamed Product'} — Qty: ${item.quantity}`,
-                    16,
-                    y
-                );
-                y += 6;
-            });
-        } else {
-            doc.text('No products listed', 16, y);
-            y += 6;
-        }
-
-        y += 6;
-        drawLine(y);
-        y += 10;
-
-        // ===== SUMMARY =====
-        doc.setFont('helvetica', 'bold');
-        doc.setTextColor(...BRAND_COLOR);
-        doc.text('Summary', 14, y);
-
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(0, 0, 0);
-        y += 6;
-
-        doc.text(`Total Quantity: ${singleInvoice?.qty || 'N/A'}`, 14, y);
-        y += 5;
-        doc.text(`Total Amount: ${singleInvoice?.totalAmount || 'N/A'}`, 14, y);
-        y += 5;
-        doc.text(`Payment Terms: ${singleInvoice?.lpo?.terms || 'N/A'}`, 14, y);
-        y += 5;
-        doc.text(
-            `Delivery Status: ${singleInvoice?.lpo?.deliveryStatus ? 'Delivered' : 'Not Delivered'
-            }`,
-            14,
-            y
-        );
-
-        y += 20;
-        drawLine(y);
-        y += 15;
-
-        // ===== SIGNATURE AREA =====
-        doc.setFont('helvetica', 'normal');
-        doc.text('Authorized Signature:', 14, y);
-        doc.line(60, y + 1, 120, y + 1);
-
-        doc.text(`Date: ${today}`, 140, y);
-
-
-        y += 20;
-
-        // ===== FOOTER =====
-        doc.setFontSize(9);
-        doc.text(
-            'This invoice was generated electronically and is valid without a signature.',
-            14,
-            y
-        );
-
-        doc.save(`invoice-${singleInvoice?.invoiceId || Date.now()}.pdf`);
     };
 
+    /* ================= AMOUNT TO WORDS ================= */
+    const numberToWords = (num) => {
+        if (!num || num <= 0) return "Zero Naira Only";
+
+        const a = [
+            "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine",
+            "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen",
+            "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+        ];
+        const b = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+        const toWords = (n) => {
+            if (n < 20) return a[n];
+            if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? " " + a[n % 10] : "");
+            if (n < 1000)
+                return a[Math.floor(n / 100)] + " Hundred" + (n % 100 ? " " + toWords(n % 100) : "");
+            if (n < 1000000)
+                return toWords(Math.floor(n / 1000)) + " Thousand" + (n % 1000 ? " " + toWords(n % 1000) : "");
+            return "";
+        };
+
+        const naira = Math.floor(num);
+        const kobo = Math.round((num - naira) * 100);
+
+        let words = `${toWords(naira)} Naira`;
+        if (kobo > 0) words += ` and ${toWords(kobo)} Kobo`;
+        return words + " Only";
+    };
+
+    /* ================= HEADER ================= */
+    if (COMPANY_LOGO) {
+        doc.addImage(COMPANY_LOGO, "PNG", 14, y - 5, 30, 15);
+    }
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(...BRAND_COLOR);
+    doc.text("INVOICE", 150, y);
+
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    y += 8;
+    doc.text(`Invoice ID: ${singleInvoice?.invoiceId || "N/A"}`, 150, y);
+    y += 5;
+    doc.text(`Status: ${singleInvoice?.status || "N/A"}`, 150, y);
+    y += 5;
+    doc.text(`Issued By: ${issuedBy}`, 150, y);
+
+    y += 10;
+
+    /* ================= BILL TO ================= */
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(12);
+    doc.setTextColor(...BRAND_COLOR);
+    doc.text("Bill To", 14, y);
+    y += 6;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+
+    doc.text(`Name: ${singleInvoice?.name || "N/A"}`, 14, y);
+    y += 5;
+    doc.text(`Email: ${singleInvoice?.lead?.email || "N/A"}`, 14, y);
+    y += 5;
+    doc.text(`Phone: ${singleInvoice?.lead?.phone || "N/A"}`, 14, y);
+    y += 5;
+    doc.text(`Address: ${singleInvoice?.lead?.address || "N/A"}`, 14, y);
+
+    y += 10;
+
+    /* ================= PRODUCTS TABLE ================= */
+    ensureSpace(60);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...BRAND_COLOR);
+    doc.text("Products", 14, y);
+    y += 6;
+
+    // Table Header
+    doc.rect(14, y, 182, 8);
+    doc.line(24, y, 24, y + 8);
+    doc.line(110, y, 110, y + 8);
+    doc.line(140, y, 140, y + 8);
+
+    doc.text("#", 17, y + 5);
+    doc.text("Product", 30, y + 5);
+    doc.text("Qty", 115, y + 5);
+    doc.text("Amount", 145, y + 5);
+
+    y += 8;
+    doc.setFont("helvetica", "normal");
+
+    let grandTotal = 0;
+    let totalQty = 0;
+
+    singleInvoice?.lpoProducts?.forEach((item, i) => {
+        ensureSpace(10);
+
+        const qty = Number(item.quantity || 0);
+        const unitPrice = Number(item.unitPrice || item.product?.price || 0);
+        const lineTotal = qty * unitPrice;
+
+        totalQty += qty;
+        grandTotal += lineTotal;
+
+        doc.rect(14, y, 182, 8);
+        doc.line(24, y, 24, y + 8);
+        doc.line(110, y, 110, y + 8);
+        doc.line(140, y, 140, y + 8);
+
+        doc.text(String(i + 1), 17, y + 5);
+        doc.text(item.product?.productName || "Product", 30, y + 5);
+        doc.text(String(qty), 115, y + 5);
+        doc.text(lineTotal.toLocaleString(), 145, y + 5);
+
+        y += 8;
+    });
+
+    /* ================= SUMMARY ================= */
+    ensureSpace(35);
+    y += 6;
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...BRAND_COLOR);
+    doc.text("Summary", 14, y);
+
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+    y += 6;
+
+    doc.text(`Total Quantity: ${totalQty}`, 14, y);
+    y += 5;
+    doc.text(`Grand Total: ${grandTotal.toLocaleString()}`, 14, y);
+    y += 5;
+    doc.text(`Amount in Words: ${numberToWords(grandTotal)}`, 14, y, { maxWidth: 180 });
+
+    y += 12;
+
+
+      /* ================= PLEASE NOTE ================= */
+        ensureSpace(70);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(...BRAND_COLOR);
+        doc.text("Please Note", 14, y);
+        y += 6;
+
+        const pleaseNoteText = `
+1. Our team at Sartor try to make sure we supply our customer with quality products however, for any complaints please notify us within 3 working days of receiving our products. We do not issue return/refunds for products supplied in good conditiion.
+
+2. Sellers and Buyers agree that Products shall sold on a 'Sales Or Return', 'Payment on Delivery', 'Payment after 2 weeks of delivery', 'Full payment after 70% stock sold' or any other agreed terms basis as stated on the LPO. Retail and Wholesale sales of Seller's Products will be evaluated by Buyer on a rolling six month basis and Buyers may elect to discountinue any Products and return the same to the Seller if, during such six month period, either sales of such Products fall below the minimum threshold in your company-owned stores or do not the meet the minimum Overall inventory Turn Rate in your company-owned stores. Invoices are due for full payment and restocking upon 70% or depletion of inventory
+`;
+
+        const noteLines = doc.splitTextToSize(pleaseNoteText.trim(), 180);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0, 0, 0);
+        doc.text(noteLines, 14, y);
+        y += noteLines.length * 5 + 5;
+
+    /* ================= PAYMENT DETAILS ================= */
+    ensureSpace(40);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...BRAND_COLOR);
+    doc.text("Payment Details", 14, y);
+    y += 6;
+
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+
+    doc.rect(14, y, 182, 24);
+    doc.line(75, y, 75, y + 24);
+    doc.line(135, y, 135, y + 24);
+
+    doc.text("Pay To", 16, y + 6);
+    doc.text("Banking Details", 77, y + 6);
+    doc.text("Other Details", 137, y + 6);
+
+    doc.text(COMPANY_NAME, 16, y + 14);
+    doc.text(`Acct No: ${ACCOUNT_NUMBER}`, 77, y + 14);
+    doc.text(BANK_NAME, 137, y + 14);
+
+    y += 35;
+
+    /* ================= SIGNATURES ================= */
+    ensureSpace(35);
+    y += 10;
+
+    doc.text("Manager Signature:", 14, y);
+    doc.line(55, y + 1, 110, y + 1);
+
+    doc.text("Customer Signature:", 120, y);
+    doc.line(165, y + 1, 196, y + 1);
+
+    y += 15;
+    doc.text(`Date: ${today}`, 14, y);
+
+    if (PAID_STAMP_IMAGE) {
+        doc.addImage(PAID_STAMP_IMAGE, "PNG", 130, y - 30, 50, 30);
+    }
+
+    /* ================= SAVE ================= */
+    doc.save(`invoice-${singleInvoice?.invoiceId || Date.now()}.pdf`);
+};
 
 
 
@@ -377,7 +428,7 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
                         onClick={downloadInvoicesPDF}
                         className="bg-primary_blue text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full"
                     >
-                        Download PDF
+                        Download Invoice
                     </button>
                     {/* <button
                         onClick={downloadInvoicesPDF}
