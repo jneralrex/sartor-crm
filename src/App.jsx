@@ -42,6 +42,7 @@ import SartorCrm from './pages/SartorCrm';
 import SalesNavigatorPlus from './pages/SalesNavigatorPlus';
 import SartorChain from './pages/SartorChain';
 import PricingTable from './pages/PricingTable';
+import './utils/pdfFonts'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
