@@ -54,9 +54,13 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
         const today = new Date().toLocaleDateString("en-GB");
         const issuedBy = fullName || "N/A";
         const BRAND_COLOR = [0, 82, 204];
-        let y = 20;
+        let y = 10;
 
         const COMPANY_NAME = "Sartor Health Company Ltd";
+        const COMPANY_ADDRESS = "A3-443, HFP Eastline Shopping Complex Abraham Adesanya Juction Lekki-Ekpe Expressway, Lagos, Nigeria";
+        const COMPANY_EMAIL = "info@sartorhealth.com";
+        const COMPANY_WEBSITE = "www.sartorhealth.com";
+        const TIN = "22512901-0001";
         const ACCOUNT_NUMBER = "1017425534";
         const BANK_NAME = "Zenith Bank Nig PLC";
         const PAID_STAMP_IMAGE = null;
@@ -101,8 +105,34 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
 
         /* ================= HEADER ================= */
         if (COMPANY_LOGO) {
-            doc.addImage(COMPANY_LOGO, "PNG", 14, y - 5, 30, 15);
+            doc.addImage(COMPANY_LOGO, "PNG", 14, y, 30, 15);
         }
+
+        y += 18;
+
+        /* ================= COMPANY DETAILS ================= */
+        doc.setFont("NotoSans", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(...BRAND_COLOR);
+        doc.text(COMPANY_NAME, 14, y);
+        y += 6;
+
+        doc.setFont("NotoSans", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        
+        // Address with line break if too long
+        const addressLines = doc.splitTextToSize(COMPANY_ADDRESS, 180);
+        doc.text(addressLines, 14, y);
+        y += addressLines.length * 4;
+
+        doc.text(COMPANY_EMAIL, 14, y);
+        y += 4;
+        doc.text(COMPANY_WEBSITE, 14, y);
+        y += 4;
+        doc.text(`TIN: ${TIN}`, 14, y);
+
+        y += 8;
 
         doc.setFont("NotoSans", "normal");
         doc.setFontSize(22);
@@ -180,15 +210,24 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
             totalQty += qty;
             grandTotal += lineTotal;
 
-            doc.rect(14, y, 182, 8);
+            // Handle product name with word count check
+            const productName = item.product?.productName || "Product";
+            const wordCount = productName.split(/\s+/).length;
+            const productNameLines = wordCount > 35 
+                ? doc.splitTextToSize(productName, 65)
+                : [productName];
+            
+            const rowHeight = Math.max(8, productNameLines.length * 4);
 
-            doc.line(22, y, 22, y + 8);
-            doc.line(90, y, 90, y + 8);
-            doc.line(110, y, 110, y + 8);
-            doc.line(140, y, 140, y + 8);
+            doc.rect(14, y, 182, rowHeight);
+
+            doc.line(22, y, 22, y + rowHeight);
+            doc.line(90, y, 90, y + rowHeight);
+            doc.line(110, y, 110, y + rowHeight);
+            doc.line(140, y, 140, y + rowHeight);
 
             doc.text(String(i + 1), 16, y + 5);
-            doc.text(item.product?.productName || "Product", 30, y + 5);
+            doc.text(productNameLines, 30, y + 5);
             doc.text(String(qty), 95, y + 5);
 
             /* ===== UNIT PRICE ===== */
@@ -199,7 +238,7 @@ const InvoiceDetailsModal = ({ onClose, invoiceId }) => {
             doc.addImage(naira, "PNG", 148, y + 2, 4, 4);
             doc.text(`      ${lineTotal.toLocaleString()}`, 150, y + 5);
 
-            y += 8;
+            y += rowHeight;
         });
 
         /* ================= SUMMARY ================= */

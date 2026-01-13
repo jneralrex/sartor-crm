@@ -12,6 +12,8 @@ const LoginPage = () => {
   const [loginDetails, setLoginDetails] = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [error, setError] = useState(null)
+
 
   const setAuth = useAuthStore((state) => state.setAuth); 
 
@@ -22,6 +24,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null)
 
     try {
       const res = await instance.post("auth/login", loginDetails);
@@ -42,11 +45,12 @@ const LoginPage = () => {
       toast.success(response?.message);
 
       setTimeout(() => {
-        navigate("/sartor/overview");
+        navigate("/dashboard/overview");
       }, 1500);
     } catch (error) {
       console.error("Login failed:", error);
-      toast.error(error?.response?.data?.message );
+      toast.error(error?.message || error?.response?.data?.message  + " " + " check your internet connection and try again ");
+      setError(error?.message || error?.response?.data?.message );
       console.error("error", error?.response?.data?.message )
     } finally {
       setLoading(false);
@@ -71,6 +75,8 @@ const LoginPage = () => {
         <div className="text-center mb-6">
           <h1 className="text-[22px] font-semibold text-[#1A1A1A]">Log In</h1>
           <p className="text-sm text-[#767676]">Enter your credentials to access your account</p>
+
+          { error && (<p className="text-sm text-red-600">{error + " " + " check your internet connection and try again "}</p>)}
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

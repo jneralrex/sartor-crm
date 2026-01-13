@@ -101,7 +101,7 @@ const Drawer = () => {
           <nav className="flex-1 overflow-y-auto hide-scrollbar w-full md:mt-2">
             <ul className="space-y-4 mt-2">
               {menuItems
-                .filter((item) => !item.role || item.role.includes(role)) // filter by role
+                .filter((item) => !item.role || item.role.includes(role))
                 .map((item) => (
                   <li key={item.path}>
                     <Link

@@ -2,6 +2,7 @@ import { Plus, X, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useToken } from '../../../store/authStore';
 import instance from '../../../utils/axiosInstance';
+import { toast } from 'react-toastify';
 
 const paymentTerms = [
     "Payment On Delivery",
@@ -72,12 +73,14 @@ const EditLpoModal = ({ lpo, onClose, onSuccess }) => {
         };
 
         setLoading(true);
+        console.log(payload)
         try {
             const res = await instance.put(`lpo/edit/${lpo._id}`, payload);
             onSuccess?.(res.data.data);
             onClose();
         } catch (err) {
             console.error(err);
+            toast.error(err.response.data.message)
         }
         finally {
             setLoading(false);

@@ -63,7 +63,7 @@ const router = createBrowserRouter(
         <Route path="privacy-policy" element={<PrivacyPolicy />} />
 
       {/* PROTECTED DASHBOARD ROUTES */}
-      <Route path="/sartor" element={<PrivateRoute />}>
+      <Route path="/dashboard" element={<PrivateRoute />}>
         <Route element={<AppLayout />}>
           <Route index element={<Overview />} />
           <Route path="overview" element={<Overview />} />

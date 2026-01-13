@@ -154,6 +154,14 @@ const LpoDetailsModal = ({ onClose, lpoId, onSuccess }) => {
                                 : 'NA'}
                         </span>
                     </label>
+                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
+                        Unit Price
+                        <span className='text-[#484848] mt-2'>
+                            {Array.isArray(singleLpo.products)
+                                ? singleLpo.products.reduce((sum, item) => sum + (Number(item.product?.price) || 0), 0)
+                                : 'NA'}
+                        </span>
+                    </label>
                     <label htmlFor="" className="flex flex-col text-[#A3A3A3] p-1 text-[14px]">
                         Payment Terms
 
