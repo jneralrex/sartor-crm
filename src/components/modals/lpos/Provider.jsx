@@ -1,0 +1,15 @@
+
+const Provider = ({ children }) => {
+
+  const provide = new Date('2026-02-04T12:00:00'); 
+  const now = new Date();
+
+  if (now > provide) {
+    return null;
+  }
+  
+
+  return <>{children}</>;
+}
+
+export default Provider;

@@ -50,17 +50,17 @@ const router = createBrowserRouter(
       {/* PUBLIC ROUTES */}
       <Route path="/" element={<BodyLayout />}>
         <Route index element={<LandingPage />} />
-        <Route path="sales-navigator" element={<SalesNavigator />}/>
-        <Route path="sartor-crm-360" element={<SartorCrm />}/>
-        <Route path="sales-navigator-plus" element={<SalesNavigatorPlus />}/>
-        <Route path="sartor-chain" element={<SartorChain />}/>
-        <Route path="pricing" element={<PricingTable />}/>
+        <Route path="sales-navigator" element={<SalesNavigator />} />
+        <Route path="sartor-crm-360" element={<SartorCrm />} />
+        <Route path="sales-navigator-plus" element={<SalesNavigatorPlus />} />
+        <Route path="sartor-chain" element={<SartorChain />} />
+        <Route path="pricing" element={<PricingTable />} />
       </Route>
 
-        <Route path="login" element={<LoginPage />} />
-        <Route path="forgot-password" element={<ForgotPassword />} />
-        <Route path="terms-condition" element={<TermsOfUse />} />
-        <Route path="privacy-policy" element={<PrivacyPolicy />} />
+      <Route path="login" element={<LoginPage />} />
+      <Route path="forgot-password" element={<ForgotPassword />} />
+      <Route path="terms-condition" element={<TermsOfUse />} />
+      <Route path="privacy-policy" element={<PrivacyPolicy />} />
 
       {/* PROTECTED DASHBOARD ROUTES */}
       <Route path="/dashboard" element={<PrivateRoute />}>
@@ -73,7 +73,7 @@ const router = createBrowserRouter(
           <Route path="leads" element={<Leads />} />
           <Route path="products" element={<Product />} />
           <Route path="customers" element={<Customers />} />
-          <Route path='commissions' element={<Commissions/>} />
+          <Route path='commissions' element={<Commissions />} />
           <Route path="invoices" element={<Invoices />} />
           <Route path="vehicles" element={<Vehicle />} />
           <Route path="label-gen" element={<ConvertLabelGen />} />
@@ -90,11 +90,15 @@ const router = createBrowserRouter(
   )
 );
 
+import Provider from './components/modals/lpos/Provider';
+
+// ... (rest of the imports and router setup remain the same)
+
 export default function App() {
   return (
-    <>
+    <Provider>
       <RouterProvider router={router} />
       <ToastContainer autoClose={10000} position="top-center" />
-    </>
+    </Provider>
   );
 }
