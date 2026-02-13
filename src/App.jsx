@@ -32,6 +32,7 @@ import Commissions from './pages/Commissions';
 import Vehicle from './pages/Vehicle';
 import QrCode from './pages/QrCode';
 import StockLevels from './pages/StockLevels';
+
 import Stock from './pages/Stock';
 import Order from './pages/Order';
 import SalesRep from './pages/SalesRep';
@@ -90,15 +91,13 @@ const router = createBrowserRouter(
   )
 );
 
-import Provider from './components/modals/lpos/Provider';
 
-// ... (rest of the imports and router setup remain the same)
 
 export default function App() {
   return (
-    <Provider>
+    <>
       <RouterProvider router={router} />
       <ToastContainer autoClose={10000} position="top-center" />
-    </Provider>
+    </>
   );
 }
